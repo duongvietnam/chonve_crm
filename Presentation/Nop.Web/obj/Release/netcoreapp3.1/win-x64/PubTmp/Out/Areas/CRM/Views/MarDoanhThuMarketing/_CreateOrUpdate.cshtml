@@ -1,0 +1,55 @@
+﻿@model MarDoanhThuMarketingModel
+
+  
+<div class="card card-custom card-shadowless rounded-top-0">
+    <div class="card-body p-0">
+        <div class="row justify-content-center py-8 px-8 py-lg-15 px-lg-10">
+            <div class="col-xl-12 col-xxl-10">
+                <input asp-for="Id" type="hidden" />
+<div class="form-group row">
+<label class="col-2 col-form-label">ID:</label>
+<div class="col-10">
+<nop-editor asp-for="ID" />
+<span asp-validation-for="ID"></span>
+</div>
+</div>
+<div class="form-group row">
+<label class="col-2 col-form-label">EVENT_ID:</label>
+<div class="col-10">
+<nop-editor asp-for="EVENT_ID" />
+<span asp-validation-for="EVENT_ID"></span>
+</div>
+</div>
+<div class="form-group row">
+<label class="col-2 col-form-label">NGAY_EVENT:</label>
+<div class="col-10">
+<nop-editor asp-for="NGAY_EVENT" />
+<span asp-validation-for="NGAY_EVENT"></span>
+</div>
+</div>
+<div class="form-group row">
+<label class="col-2 col-form-label">LUOT_KHACH:</label>
+<div class="col-10">
+<nop-editor asp-for="LUOT_KHACH" />
+<span asp-validation-for="LUOT_KHACH"></span>
+</div>
+</div>
+<div class="form-group row">
+<label class="col-2 col-form-label">DOANH_THU:</label>
+<div class="col-10">
+<nop-editor asp-for="DOANH_THU" />
+<span asp-validation-for="DOANH_THU"></span>
+</div>
+</div>
+<div class="form-group row">
+<label class="col-2 col-form-label">DOANH_NGHIEP_ID:</label>
+<div class="col-10">
+<nop-editor asp-for="DOANH_NGHIEP_ID" />
+<span asp-validation-for="DOANH_NGHIEP_ID"></span>
+</div>
+</div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,69 @@
+﻿@using Newtonsoft.Json
+@using Nop.Services.Messages
+@{
+    //Get messages from TempData
+    var notes = TempData.ContainsKey(NopMessageDefaults.NotificationListKey)
+        ? JsonConvert.DeserializeObject<IList<NotifyData>>(TempData[NopMessageDefaults.NotificationListKey].ToString())
+        : null;
+    if (notes != null)
+    {
+        foreach (var note in notes)
+        {
+            var cssStyle = "";
+            var iIcon = "";
+            switch (note.Type)
+            {
+                case NotifyType.Success:
+                    cssStyle = "alert-success";
+                    iIcon = "flaticon-paper-plane";
+                    break;
+                case NotifyType.Error:
+                    cssStyle = "alert-danger";
+                    iIcon = "flaticon-circle";
+                    break;
+                case NotifyType.Warning:
+                    cssStyle = "alert-warning";
+                    iIcon = "flaticon-warning";
+                    break;
+            }
+            <div class="alert @cssStyle fade show" role="alert">
+                <div class="alert-icon"><i class="@iIcon"></i></div>
+                <div class="alert-text">
+                    @if (note.Encode)
+                    {
+                        <text>
+                            @note.Message
+                        </text>
+                    }
+                    else
+                    {
+                        <text>
+                            @Html.Raw(note.Message)
+                        </text>
+                    }
+                </div>
+                <div class="alert-close">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true"><i class="la la-close"></i></span>
+                    </button>
+                </div>
+            </div>
+
+        }
+        if (notes.Count > 0)
+        {
+            <text>
+                <script>
+                    $(document).ready(function () {
+                        window.setTimeout(function () {
+                            $(".alert").fadeTo(500, 0).slideUp(500, function () {
+                                $(this).remove();
+                            });
+                        }, 1000);
+                    });
+                </script>
+            </text>
+        }
+
+    }
+}

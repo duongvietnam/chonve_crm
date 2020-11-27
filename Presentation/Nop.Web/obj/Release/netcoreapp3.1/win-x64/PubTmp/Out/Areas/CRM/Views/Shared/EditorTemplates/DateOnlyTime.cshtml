@@ -1,0 +1,28 @@
+﻿@model DateTime?
+    <div class="input-group date">
+        <input type="text" class="form-control" placeholder="Chọn thời gian" id="@Html.IdForModel()" value="@(Model > DateTime.MinValue || Model.HasValue ? Model.Value.ToString("yyyy-MM-dd HH:mm:ss") : DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))" />
+        <div class="input-group-append">
+            <span class="input-group-text">
+                <i class="la la-calendar glyphicon-th"></i>
+            </span>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+
+        $("#@Html.IdForModel()").datetimepicker({
+            format: "hh:ii",
+            showMeridian: !0,
+            todayHighlight: !0,
+            autoclose: !0,
+            startView: 1,
+            minView: 0,
+            maxView: 1,
+            forceParse: 0,
+            pickerPosition: "bottom-left",
+            language: moment.locale("vi"),
+            
+        });
+    });
+    </script>

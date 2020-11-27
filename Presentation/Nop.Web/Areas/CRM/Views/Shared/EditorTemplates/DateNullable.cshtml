@@ -1,0 +1,14 @@
+﻿@model DateTime?
+<input id="@Html.IdForModel()" class="form-control" autocomplete="off"  name="@Html.NameForModel()" value="@(Model > DateTime.MinValue || Model.HasValue ? Model.Value.ToShortDateString() : null)" />
+<script>
+    $(document).ready(function () {
+        $("#@Html.IdForModel()").datepicker({
+            language: "vi",
+            autoclose: true,
+            todayHighlight: !0,
+        });
+        $("#@Html.IdForModel()").inputmask("99/99/9999", {
+            placeholder: "__/__/____",
+        });
+    });
+</script>

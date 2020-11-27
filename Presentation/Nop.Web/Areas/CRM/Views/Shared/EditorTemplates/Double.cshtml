@@ -1,0 +1,25 @@
+@model Double
+<input asp-for="@Model" type="text"/>
+@{
+    var postfix = "";
+    if (ViewData.ContainsKey("postfix") && ViewData["postfix"] != null)
+    {
+        postfix = ViewData["postfix"].ToString();
+    }
+}
+<script>
+    $(document).ready(function() {
+        $("#@Html.IdForModel()").TouchSpin({
+            min: @Html.Raw(double.MinValue),
+            max: @Html.Raw(double.MaxValue),
+            decimals: 4, //always display 4 digits
+            forcestepdivisibility: "none",
+            verticalbuttons: true,
+            verticalup: '<i class="la la-angle-up"></i>',
+            verticaldown: '<i class="la la-angle-down"></i>',
+            buttondown_class: "btn btn-secondary",
+            buttonup_class: "btn btn-secondary",
+            postfix: "@postfix"
+        });
+    });
+</script>

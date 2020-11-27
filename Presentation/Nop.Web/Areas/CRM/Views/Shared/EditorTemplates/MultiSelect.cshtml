@@ -1,0 +1,30 @@
+﻿@model List<int>
+@{ 
+    var items = (IEnumerable<SelectListItem>)ViewData["SelectList"];
+}
+    <select class="form-control select2" id="@Html.IdForModel()" multiple="multiple" name="@Html.IdForModel()">
+        @foreach (var item in items)
+        {
+            if (item.Selected)
+            {
+                <option value="@item.Value" selected>@item.Text</option>
+            }
+            else
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+            
+        }
+    </select>
+    <script>
+        $(document).ready(function () {
+            setTimeout(function () {
+                $("#@Html.IdForModel()").select2({
+        placeholder: "Chọn",
+        });
+            }, 150);
+        
+        
+
+    });
+    </script>

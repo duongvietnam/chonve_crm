@@ -1,0 +1,13 @@
+@model DateTime?
+@using System.Globalization
+<input id="@Html.IdForModel()" class="form-control" autocomplete="off"  name="@Html.NameForModel()" value="@(Model > DateTime.MinValue || Model.HasValue ? Model.Value.ToString("dd/MM/yyyy HH:mm") : null)" />
+<script>
+    $(document).ready(function () {
+        $("#@Html.IdForModel()").datetimepicker({
+            language: moment.locale("vi"),
+            todayHighlight: !0,
+            format: "dd/mm/yyyy hh:ii",
+            autoclose: true,
+});
+    });
+</script>

@@ -1,0 +1,324 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model TaiKhoanModel
+
+@using Newtonsoft.Json
+
+<!--begin::Row-->
+<div class="row">
+    <div class="col-xl-2"></div>
+    <div class="col-xl-7">
+        <div class="my-2">
+            <div class="panel-body">
+                <div class="form-group row">
+                    <label class="col-form-label col-3 text-lg-right text-left text-required">Username : </label>
+                    <div class="col-9">
+                        <div class="input-group input-group-lg input-group-solid">
+                            @Html.TextBoxFor(m => m.Username, new { @class = "form-control form-control-lg form-control-solid", @type = "text", @placeholder = "Tên Đăng Nhập" , @autocomplete = "off" })
+                        </div>
+                        <span asp-validation-for="Username"></span>
+                    </div>
+                </div>
+
+                <!--begin::Group-->
+                <div class="form-group row">
+                    <label class="col-form-label col-3 text-lg-right text-left ">
+                        Địa Chỉ Email :
+                        <span class="d-block text-warning text-sm">(Tự động điền theo Username)</span>
+                    </label>
+                    <div class="col-9">
+                        <div class="input-group input-group-lg input-group-solid">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="la la-at"></i>
+                                </span>
+                            </div>
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control form-control-lg form-control-solid", @type = "text", @readonly = "", @data_domainstore = @ViewBag.domainStore })
+                        </div>
+                        <span asp-validation-for="Email"></span>
+                    </div>
+                </div>
+                <!--end::Group-->
+
+                <div class="form-group row">
+                    <label class="col-form-label col-3 text-lg-right text-left text-required">Mật Khẩu : </label>
+                    <div class="col-9">
+
+                        @if (Model.Id > 0)
+                        {
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="input-group input-group-lg input-group-solid">
+                                        @Html.TextBoxFor(m => m.Password, new { @class = "form-control form-control-lg form-control-solid", @type = "password", @placeholder = "Nhập Mật Khẩu" })
+
+                                    </div>
+                                </div>
+                                <div class="input-group-btn col-4">
+                                    <button id="changePWBtn" type="submit" name="changepassword" class="btn btn-info">
+                                        @T("Admin.Customers.Customers.Fields.Password.Change")
+                                    </button>
+                                </div>
+                            </div>
+
+                        }
+                        else
+                        {
+                            <div class="input-group input-group-lg input-group-solid">
+                                @Html.TextBoxFor(m => m.Password, new { @class = "form-control form-control-lg form-control-solid", @type = "password", @placeholder = "Nhập Mật Khẩu" })
+
+                            </div>
+                        }
+                        <span asp-validation-for="Password"></span>
+                    </div>
+                </div>
+
+                @if (Model.Id > 0) { }
+                else
+                {
+                    <!--begin::Footer-->
+                    <div class="pb-0 mb-3 pb-3">
+                        <div class="row">
+                            <div class="col-xl-4"></div>
+                            <div class="col-xl-7">
+                                <div class="row">
+                                    <div class="col-3"></div>
+                                    <div class="col-9">
+                                        <button type="button" id="btnL" class="btn btn-light-primary font-weight-bold">Tạo Tài Khoản</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Footer-->
+                }
+                <div class="mb-10 border-top mt-10"></div>
+
+                <div class="form-group row">
+                    <label class="col-form-label col-3 text-lg-right text-left">Tên Người Dùng : </label>
+                    <div class="col-9">
+                        <div class="input-group input-group-lg input-group-solid">
+                            @Html.TextBoxFor(m => m.FullName, new { @class = "form-control form-control-lg form-control-solid", @type = "text", @value = Model.FullName ?? "Admin Hệ Thống" })
+                        </div>
+                        <span asp-validation-for="FullName"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-3 col-form-label text-lg-right">Giới Tính : </label>
+                    <div class="col-9 col-form-label">
+                        <div class="radio-inline">
+                            <label class="radio">
+                                @Html.RadioButton("Gender", "M", (Model.Gender == "M"), new { id = "Gender_Male" })
+                                <span></span>Nam
+                            </label>
+                            <label class="radio">
+                                @Html.RadioButton("Gender", "F", (Model.Gender == "F"), new { id = "Gender_Female" })
+                                <span></span>Nữ
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-3 text-lg-right text-left">Số Điện Thoại : </label>
+                    <div class="col-9">
+                        <div class="input-group input-group-lg input-group-solid">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="la la-phone"></i>
+                                </span>
+                            </div>
+                            @Html.TextBoxFor(m => m.Phone, new { @class = "form-control form-control-lg form-control-solid", @type = "text" })
+                        </div>
+                        <span asp-validation-for="Phone"></span>
+                    </div>
+                </div>
+                <div id="roleDiv" class="form-group row">
+                    <label class="col-form-label col-3 text-lg-right text-left">Vai Trò Tài Khoản : </label>
+                    <div class="col-9">
+                        <div class="input-group input-group-required">
+                            <nop-select asp-for="SelectedCustomerRoleIds" asp-items="Model.AvailableCustomerRoles" asp-multiple="true" />
+                            <div class="input-group-btn">
+                                <nop-required />
+                            </div>
+                        </div>
+                        @*<script>
+                            $(document).ready(function() {
+                                var customerRolesIdsInput = $('#@Html.IdFor(model => model.SelectedCustomerRoleIds)').data("kendoMultiSelect");
+                                customerRolesIdsInput.setOptions({
+                                    customerRolesIdsInput: false,
+                                    filter: "contains"
+                                });
+
+                                @if (Model.AvailableCustomerRoles.Count == 0)
+                                {
+                                    <text>
+                                        customerRolesIdsInput.setOptions({
+                                            enable: false,
+                                            placeholder: '@T("Admin.Customers.Customers.Fields.CustomerRoles.NoRoles")'
+                                        });
+                                        customerRolesIdsInput._placeholder();
+                                        customerRolesIdsInput._enable();
+                                    </text>
+                                }
+                            });
+                                    </script>*@
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-3 col-form-label text-lg-right">Hoạt Động : </label>
+                    <div class="col-9 col-form-label">
+                        <div class="checkbox-inline">
+                            <label class="checkbox">
+                                @Html.CheckBoxFor(m => m.Active)
+                                <span></span>
+                            </label>
+                        </div>
+                        <span asp-validation-for="Active"></span>
+                    </div>
+                </div>
+                @if (Model.Id > 0)
+                {
+                    <!--begin::Footer-->
+                    <div class="card-footer pb-0 mb-10 border-bottom pb-10">
+                        <div class="row">
+                            <div class="col-xl-4"></div>
+                            <div class="col-xl-7">
+                                <div class="row">
+                                    <div class="col-3"></div>
+                                    <div class="col-9">
+                                        <button type="button" id="btnUpdateAdmin" class="btn btn-light-primary font-weight-bold">Lưu Thông Tin</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Footer-->
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<nop-alert asp-alert-id="statesAlert" asp-alert-message="@T("Admin.Common.Alert.States.Failed")" />
+<script>
+    $(document).ready(function () {
+        //AUTO COMPLETE EMAIL
+        $('input#Username').change(function () {
+            var emailTail = $('input#Email').data('domainstore');
+            $('input#Email').val($(this).val() +"@("@")"+ emailTail);
+        });
+        //CHANGE PASSWORD
+        $('#changePWBtn').click(function () {
+            var postData = {
+                fromAjax: true,
+                Id:@Model.Id,
+                Email: $("#@Html.IdFor(m=>m.Email)").val(),
+                Password: $("#@Html.IdFor(m=>m.Password)").val()
+            }
+            addAntiForgeryToken(postData);
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url: "@Url.Action("ChangePassword", "TaiKhoan")",
+                data: postData,
+                success: function (data, textStatus, jqXHR) {
+                    if (data.IsSuccess) {
+                        ShowSuccess(data.Message);
+                    } else {
+                        console.log(data);
+                        display_valid_error(data.ObjectInfo);
+                        ShowError(data.Message);
+                    }
+                },
+                complete: function (jqXHR, textStatus) {
+                }
+            });
+        });
+        $('.datepicker').datepicker({
+            format: 'mm/dd/yyyy',
+            //startDate: '-3d'
+        });
+        //CREATE ADMIN
+        $("#btnL").click(function (e) {
+            var fullname = $("#@Html.IdFor(m=>m.FullName)").val();
+            var fullnameArr = fullname.split(" ");
+            var postData = {
+                Username:$("#@Html.IdFor(m=>m.Username)").val(),
+                Email: $("#@Html.IdFor(m=>m.Username)").val() + "@("@")" + $("#@Html.IdFor(m=>m.Email)").data("domainstore"),
+                Password: $("#@Html.IdFor(m=>m.Password)").val(),
+                FirstName: fullnameArr[0],
+                LastName: fullnameArr.filter(l => l != fullnameArr[0]).join(" "),
+                FullName: $("#@Html.IdFor(m=>m.FullName)").val(),
+                Gender: $("input[name='@Html.NameFor(m=>m.Gender)']:checked").val(),
+                SelectedCustomerRoleIds: $("#@Html.IdFor(m=>m.SelectedCustomerRoleIds)").val(),
+                Active: $("#@Html.IdFor(m=>m.Active)").val(),
+                Phone: $("#@Html.IdFor(m=>m.Phone)").val(),
+                fromAjax: false,
+                idStore: @ViewBag.idStore,
+            }
+            //console.log(postData);
+            addAntiForgeryToken(postData);
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url: "@Url.Action("Create", "TaiKhoan")",
+                data: postData,
+                success: function (data, textStatus, jqXHR) {
+                    if (data.IsSuccess) {
+                        ShowSuccess(data.Message);
+                        $('#accountTab').click();
+                    } else {
+                        console.log(data);
+                        display_valid_error(data.ObjectInfo);
+                    }
+                },
+                complete: function (jqXHR, textStatus) {
+                }
+            });
+         });
+        //UPDATE ADMIN
+        $("#btnUpdateAdmin").click(function (e) {
+            //alert("a");
+            var fullname = $("#@Html.IdFor(m=>m.FullName)").val();
+            var fullnameArr = fullname.split(" ");
+            var postData = {
+                Id:@Model.Id,
+                Username:$("#@Html.IdFor(m=>m.Username)").val(),
+                Email: $("#@Html.IdFor(m=>m.Username)").val() + "@("@")" + $("#@Html.IdFor(m=>m.Email)").data("domainstore"),
+                Password: $("#@Html.IdFor(m=>m.Password)").val(),
+                FirstName: fullnameArr[0],
+                LastName: fullnameArr.filter(l => l != fullnameArr[0]).join(" "),
+                FullName: $("#@Html.IdFor(m=>m.FullName)").val(),
+                Gender: $("input[name='@Html.NameFor(m=>m.Gender)']:checked").val(),
+                SelectedCustomerRoleIds: $("#@Html.IdFor(m=>m.SelectedCustomerRoleIds)").val(),
+                Active: $("#@Html.IdFor(m=>m.Active)").val(),
+                Phone: $("#@Html.IdFor(m=>m.Phone)").val(),
+                fromAjax: false,
+                idStore: @ViewBag.idStore,
+            }
+            console.log(postData);
+            addAntiForgeryToken(postData);
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url: "@Url.Action("Update", "TaiKhoan")",
+                data: postData,
+                success: function (data, textStatus, jqXHR) {
+                    if (data.IsSuccess) {
+                        ShowSuccess(data.Message);
+                    } else {
+                        //display errors if returned
+                        debugger
+                        console.log(data);
+                        display_valid_error(data.ObjectInfo);
+                    }
+                },
+                complete: function (jqXHR, textStatus) {
+                }
+            });
+            //e.preventDefault();
+        });
+    });
+</script>

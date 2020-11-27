@@ -1,0 +1,105 @@
+﻿@model DvDichVuModel
+@{
+    //page title
+    ViewBag.Title = T("CRM.CRM.Combo.DvDichVu").Text;
+    //active menu item (system name)
+    Html.SetActiveMenuItemSystemName("ComboDichVu.DanhSach");
+}
+
+<nop-antiforgery-token />
+<div class="d-flex flex-column-fluid">
+    <div class="container">
+        <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+            <div class="subheader py-2 py-lg-4 subheader-transparent" id="kt_subheader">
+                <div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+                    <div class="d-flex align-items-center flex-wrap mr-2">
+                        <h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">
+                            Thêm mới @ViewBag.Title
+                        </h5>
+                        <div class="subheader-separator subheader-separator-ver mt-2 mb-2 mr-5 bg-gray-200"></div>
+                        <div class="d-flex align-items-center" id="kt_subheader_search">
+                            <span class="text-dark-50 font-weight-bold" id="kt_subheader_total">Nhập thông tin chi tiết và nhấn lưu</span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center">
+                        <a asp-action="ListCombo" class="btn btn-default font-weight-bold btn-sm px-3 font-size-base">
+                            <i class="la la-long-arrow-left"></i>
+                            Trở lại danh sách
+                        </a>
+                        <a class="btn btn-success btn-bold" id="btnSaveComboDichVu">
+                            <i class="flaticon2-hourglass-1"></i>
+                            Lưu
+                        </a>
+                        <a class="btn btn-brand btn-bold" id="btnSaveAndContinueComboDichVu">
+                            <i class="flaticon2-writing"></i>
+                            Lưu và tiếp tục sửa
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            @await Html.PartialAsync("_CreateOrUpdateCombo", Model)
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#validateListCombo").hide();
+
+        $("#btnSaveComboDichVu").click(function () {
+            $("#validateListCombo").hide();
+            if ($(".ListDichVuCombo").length < 2) {
+                $("#validateListCombo").show();
+            } else {
+                $('#btnSaveComboDichVu').attr('disabled', true);
+                InsertComboDichVu(false);
+            }
+        });
+
+        $("#btnSaveAndContinueComboDichVu").click(function () {
+            $('#btnSaveAndContinueComboDichVu').attr('disabled', true);
+            InsertComboDichVu(true);
+        });
+    })
+
+    function InsertComboDichVu(isContinue) {
+        var _listComboDichVu = [];
+        $(".ListDichVuCombo").each(function () {
+            var idDichVuCombo = $(this).attr("data-idDichVuCombo");
+            var _comboDichVu = {
+                DichVuId: $("#DichVuId_" + idDichVuCombo).val(),
+                SoLuong: $("#SoLuong_" + idDichVuCombo).val()
+            };
+            _listComboDichVu.push(_comboDichVu);
+        });
+
+        var _data = {
+            IS_COMBO: $("#IS_COMBO").val(),
+            TEN: $("#TEN").val(),
+            GiaBanLe: $("#GiaBanLe").val(),
+            DIEM_DICH_VU: $("#DIEM_DICH_VU").val(),
+            comBoDichVuModels: _listComboDichVu
+        };
+        addAntiForgeryToken(_data);
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("CreateCombo", "DvDichVu")",
+            data: _data,
+            success: function (data, textStatus, jqXHR) {
+                if (data.IsSuccess) {
+                    ShowSuccess(data.Message);
+                    if (isContinue) {
+                        window.location.href = "/CRM/DvDichVu/EditCombo?id=" + data.ObjectInfo.Id;
+                    }else {
+                        window.location.href = "/CRM/DvDichVu/ListCombo";
+                    }
+                } else {
+                    display_valid_error(data.ObjectInfo);
+                }
+            }
+        });
+    }
+</script>

@@ -1,0 +1,292 @@
+﻿<div class="card card-custom gutter-b card-stretch">
+    <!--begin::Header-->
+    <div class="card-header border-0 pt-5">
+        <div class="card-title font-weight-bolder">
+            <div class="card-label">
+                <span class="font-weight-bolder text-dark">
+                    Thống kê giao dịch hiện tại
+                </span>
+                <ul class="nav nav-pills nav-pills-sm nav-dark-75 d-inline-flex" role="tablist">
+                    <li class="nav-item">
+                        <a data-revenue="True" data-volume="False" data-year="@DateTime.Now.Year" class="btn-chart-TKGDHT  nav-link py-0 px-4 label-info active" data-toggle="tab" href="#chart_11">
+                            <span id="rev-btn-click" class="nav-text font-size-sm">Doanh thu</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a data-revenue="False" data-volume="True" data-year="@DateTime.Now.Year" class="btn-chart-TKGDHT  nav-link py-0 px-4 label-info" data-toggle="tab" href="#chart_11">
+                            <span class="nav-text font-size-sm">Số Lượt</span>
+                        </a>
+                    </li>
+                </ul>
+                <span class="text-muted mt-3 font-weight-bold font-size-sm"></span>
+                <div class="font-size-sm text-muted mt-2" id="DoanhThuDVtotal"></div>
+            </div>
+        </div>
+        <div class="card-toolbar">
+            <ul class="nav nav-pills nav-pills-sm nav-dark-75" role="tablist">
+                <li class="nav-item">
+                    <a data-month="0" data-year="0"  data-weekday="False" class=" btn-chart-SSNT nav-link py-2 px-4 active" data-toggle="tab" href="#kt_charts_widget_2_chart">
+                        <span class="nav-text font-size-sm">So với năm trước</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a data-month="0" data-year="@DateTime.Now.Year" data-weekday="False" class=" btn-chart-SSNT nav-link py-2 px-4" data-toggle="tab" href="#kt_charts_widget_2_chart">
+                        <span class="nav-text font-size-sm">So với tháng trước</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a data-month="@DateTime.Now.Month" data-year="@DateTime.Now.Year" data-weekday="False" class=" btn-chart-SSNT nav-link py-2 px-4" data-toggle="tab" href="#kt_charts_widget_2_chart">
+                        <span class="nav-text font-size-sm">So với ngày hôm trước</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a data-month="0" data-year="@DateTime.Now.Year" data-weekday="True" class=" btn-chart-SSNT nav-link py-2 px-4" data-toggle="tab" href="#kt_charts_widget_2_chart">
+                        <span class="nav-text font-size-sm">So với tuần trước</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--end::Header-->
+    <!--begin::Body-->
+    <div class="card-body p-0 d-flex flex-column">
+        <!--begin::Chart-->
+        <div id="kt_charts_widget_2_chart" style="min-height: 365px;"></div>
+
+        <script>
+            $(document).ready(function () {
+
+                    const primary = '#6993FF';
+                    const success = '#1BC5BD';
+                    const info = '#8950FC';
+                    const warning = '#FFA800';
+                    const danger = '#F64E60';
+                    function SortBySoLuong(a, b) {
+                        var aSL = a.SoLuong;
+                        var bSL = b.SoLuong;
+                        return ((aSL > bSL) ? -1 : ((aSL < bSL) ? 1 : 0));
+                    }
+                    var pushCate = function (startNumCate, endNumCate, prefix = "",suffix = "") {
+                        categories = [];
+                        for (var i = startNumCate; i <= endNumCate; i++) {
+                            categories.push(prefix + i.toString() + suffix);
+                        }
+                        return categories;
+                }
+                var get_chart = function (nam = 0, thang = 0, wd = false) {
+                    rev = $('.btn-chart-TKGDHT.active').data("revenue");
+                    vol = $('.btn-chart-TKGDHT.active').data("volume");
+                    console.log(rev);
+                    console.log(vol);
+                    $.get("@Url.Action("GetSSGDNTChart", "GdGiaoDich")", { soMoc: 2, year: nam, month: thang ,weekday: wd}, function (data) {
+                         series = [];
+                        categories = [];
+                        prefix = "";
+                        subffix = "";
+                        maxlength = 0;
+                        if (nam == 0 && thang == 0 ) {
+                                categories = pushCate(1, 12, "Th", "");
+                                maxlength = 12;
+                            }
+                        if (nam > 0 && thang == 0 ) {
+                            categories = pushCate(1, 31, "Ng ", "");
+                                maxlength = 31;
+                        }
+                        console.log(data);
+                        if (nam > 0 && thang == 0 && wd == "True") {
+                            categories = pushCate(2, 7, "Thứ ", "");
+                            categories.push("Chủ Nhật");
+                            maxlength = 7;
+                        }
+                        if (nam > 0 && thang > 0) {
+                            categories = pushCate(0, 23, "", "h");
+                                maxlength = 24;
+                            }
+
+                        if (rev == "True" && vol == "False") {
+                            prefix = "₫";
+                            subffix = " Triệu VNĐ";
+                            for (var item of data) {
+                                var newSeries = {
+                                    name: item.Label,
+                                    data: []
+                                };
+                                //var arr = item.GiaoDichChildren;
+                                for (var i = 0; i < maxlength /*arr[arr.length - 1].Time*/; i++) {
+                                    newSeries.data.push(0);
+                                }
+
+                                for (var gd of item.GiaoDichChildren) {
+                                    if (nam > 0 && thang > 0) {
+                                        newSeries.data[gd.Time] = Math.round((gd.Amount / 1000000) * Math.pow(10, 2)) / Math.pow(10, 2);
+                                    } else {
+                                        newSeries.data[gd.Time - 1] = Math.round((gd.Amount / 1000000) * Math.pow(10, 2)) / Math.pow(10, 2);
+                                    }
+                                    //newSeries.data[gd.Time - 1] = Math.round((gd.Amount / 1000000) * Math.pow(10, 2)) / Math.pow(10, 2);
+                                }
+
+                                series.push(newSeries);
+                            }
+                        }
+                        if (rev == "False" && vol == "True") {
+                            subffix = " Lượt";
+                            for (var item of data) {
+                                var newSeries = {
+                                    name: item.Label,
+                                    data: []
+                                };
+                                //var arr = item.GiaoDichChildren;
+                                for (var i = 0; i < maxlength /*arr[arr.length - 1].Time*/; i++) {
+                                    newSeries.data.push(0);
+                                }
+
+                                for (var gd of item.GiaoDichChildren) {
+                                    if (nam > 0 && thang > 0) {
+                                        newSeries.data[gd.Time] = gd.Quantity ;
+                                    } else {
+                                        newSeries.data[gd.Time - 1] = gd.Quantity ;
+                                    }
+                                }
+
+                                series.push(newSeries);
+                            }
+                        }
+                        _initChartsWidget2(series, categories, prefix, subffix);
+                    });
+                    }
+                    $('.btn-chart-SSNT').click(function () {
+                        $('.btn-chart-SSNT').removeClass("active");
+                        $(this).addClass("active");
+                        month = $(this).data("month");
+                        year = $(this).data("year");
+                        wd = $(this).data("weekday")
+                        //hour = $(this).data("hour") == 0 ? false : true;
+                        get_chart(year, month, wd);
+                    });
+                get_chart(0, 0, false);
+                $('.btn-chart-TKGDHT').click(function () {
+                    $('.btn-chart-TKGDHT').removeClass("active");
+                    $(this).addClass("active");
+                    month = $('.btn-chart-SSNT.active').data("month");
+                    year = $('.btn-chart-SSNT.active').data("year");
+                    wd = $('.btn-chart-SSNT.active').data("weekday");
+                    get_chart(year, month, wd);
+                });
+                var _initChartsWidget2 = function (series, categories, prefix, subffix) {
+                    $('#kt_charts_widget_2_chart').empty();
+                    var element = document.getElementById("kt_charts_widget_2_chart");
+
+                    if (!element) {
+                        return;
+                    }
+
+                    var options = {
+                        series: series,
+                        chart: {
+                            type: 'bar',
+                            height: 350,
+                            toolbar: {
+                                show: false
+                            }
+                        },
+                        plotOptions: {
+                            bar: {
+                                horizontal: false,
+                                columnWidth: ['40%'],
+                                endingShape: 'rounded'
+                            },
+                        },
+                        legend: {
+                            show: true
+                        },
+                        dataLabels: {
+                            enabled: false
+                        },
+                        stroke: {
+                            show: true,
+                            width: 2,
+                            colors: ['transparent']
+                        },
+                        xaxis: {
+                            categories: categories,
+                            axisBorder: {
+                                show: false,
+                            },
+                            axisTicks: {
+                                show: false
+                            },
+                            labels: {
+                                style: {
+                                    colors: KTApp.getSettings()['colors']['gray']['gray-500'],
+                                    fontSize: '12px',
+                                    fontFamily: KTApp.getSettings()['font-family']
+                                }
+                            }
+                        },
+                        yaxis: {
+                            labels: {
+                                style: {
+                                    colors: KTApp.getSettings()['colors']['gray']['gray-500'],
+                                    fontSize: '12px',
+                                    fontFamily: KTApp.getSettings()['font-family']
+                                }
+                            }
+                        },
+                        fill: {
+                            opacity: 1
+                        },
+                        states: {
+                            normal: {
+                                filter: {
+                                    type: 'none',
+                                    value: 0
+                                }
+                            },
+                            hover: {
+                                filter: {
+                                    type: 'none',
+                                    value: 0
+                                }
+                            },
+                            active: {
+                                allowMultipleDataPointsSelection: false,
+                                filter: {
+                                    type: 'none',
+                                    value: 0
+                                }
+                            }
+                        },
+                        tooltip: {
+                            style: {
+                                fontSize: '12px',
+                                fontFamily: KTApp.getSettings()['font-family']
+                            },
+                            y: {
+                                formatter: function (val) {
+                                    return /*"₫"*/prefix + val + subffix/*" Triệu VNĐ"*/
+                                }
+                            }
+                        },
+                        colors: [KTApp.getSettings()['colors']['gray']['gray-300'], KTApp.getSettings()['colors']['theme']['base']['warning'],],
+                        grid: {
+                            borderColor: KTApp.getSettings()['colors']['gray']['gray-200'],
+                            strokeDashArray: 4,
+                            yaxis: {
+                                lines: {
+                                    show: true
+                                }
+                            }
+                        }
+                    };
+
+                    var chart = new ApexCharts(element, options);
+                    chart.render();
+                }
+                //_initChartsWidget2();
+            });
+        </script>
+        <!--end::Chart-->
+    </div>
+    <!--end::Body-->
+</div>
+

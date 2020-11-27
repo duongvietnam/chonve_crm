@@ -1,0 +1,90 @@
+﻿@{
+
+}
+<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+    <!--begin::Entry-->
+    <div class="d-flex flex-column-fluid">
+        <!--begin::Container-->
+        <div class="container">
+            <!--begin::Dashboard-->
+            <!--begin::Row-->
+            <div class="row mt-0 mt-lg-3">
+                <div class="col-xl-4">
+                    <!--begin::Mixed Widget 17-->
+                    @await Html.PartialAsync("_ThongKeDoanhThuDichVu")
+                    <!--end::Mixed Widget 17-->
+                </div>
+                <div class="col-xl-4">
+                    <!--begin::List Widget 9-->
+                    @await Html.PartialAsync("_TimeLineActive")
+                    <!--end: List Widget 9-->
+                </div>
+                <div class="col-xl-4">
+                    <!--begin::Mixed Widget 1-->
+                    @await Html.PartialAsync("_TrangThaiDoanhThu")
+                    <!--end::Mixed Widget 1-->
+                </div>
+
+            </div>
+            <!--end::Row-->
+            <!--begin::Row-->
+            <div id="SoSanhDoanhThu1" class="row">
+                <div class="col-xl-8">
+                    <!--begin::Mixed Widget NT-->
+                    @await Html.PartialAsync("_SosanhCungKyNamTruoc")
+                    <!--end::Mixed Widget NT-->
+                </div>
+                <div class="col-xl-4">
+                    <!--begin::KHPhanHang-->
+                    @await Html.PartialAsync("_ThongKeSoLuongKHTheoPhanHang")
+                    <!--end::KHPhanHang-->
+                </div>
+            </div>
+            <!--end::Row-->
+            <!--begin::Row-->
+            <div class="row">
+                <div class="col-lg-8">
+                    <!--begin::bao cao thang-->
+                    @await Html.PartialAsync("_BaoCaoCungKyNgay")
+                    <!--end:bao cao thang-->
+                </div>
+                <div class="col-lg-4">
+                    <!--begin::bao cao thang-->
+                    @await Html.PartialAsync("_BaoCaoCungKyThang")
+                    <!--end:bao cao thang-->
+                </div>
+            </div>
+            <!--end::Row-->
+            <!--begin::Row-->
+            <div class="row">
+                <div class="col-lg-4">
+                    <!--begin::List Widget 4-->
+                    @await Html.PartialAsync("_ThongKeSoLuongKHTheoNhom")
+                    <!--end:List Widget 4-->
+                </div>
+                <div id="ThongKeDoanhThu" class="col-xl-8">
+                    <!--begin::Mixed Widget 17-->
+                    @await Html.PartialAsync("_ThongKeDoanhThu")
+                    <!--end::Mixed Widget 17-->
+                </div>
+                <div id="thongKeGD" class="col-lg-8 d-none">
+                    <!--begin::Advance Table Widget 2-->
+                    <!--end::Advance Table Widget 2-->
+                </div>
+            </div>
+            <!--end::Row-->
+            <!--begin::Row-->
+            <div id="TongLuongGiaoDich1" class="row">
+                <div class="col-xl-12">
+                    <!--begin::Mixed Widget NT-->
+                    @await Html.PartialAsync("_ThongKeGiaoDich")
+                    <!--end::Mixed Widget NT-->
+                </div>
+            </div>
+            <!--end::Row-->
+            <!--end::Dashboard-->
+        </div>
+        <!--end::Container-->
+    </div>
+    <!--end::Entry-->
+</div>

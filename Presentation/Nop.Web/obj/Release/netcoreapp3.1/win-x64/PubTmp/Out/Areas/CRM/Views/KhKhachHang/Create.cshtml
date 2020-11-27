@@ -1,0 +1,112 @@
+﻿@model KhKhachHangModel
+@{
+    //page title
+    ViewBag.Title = T("CRM.CRM.CRM.KhKhachHang").Text;
+    //active menu item (system name)
+    Html.SetActiveMenuItemSystemName("KhachHang.ThemMoi");
+}
+
+<nop-antiforgery-token />
+<div class="d-flex flex-column-fluid">
+    <div class="container">
+        <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+            <div class="subheader py-2 py-lg-4 subheader-transparent" id="kt_subheader">
+                <div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+                    <div class="d-flex align-items-center flex-wrap mr-2">
+                        <h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">
+                            Thêm mới @ViewBag.Title
+                        </h5>
+                        <div class="subheader-separator subheader-separator-ver mt-2 mb-2 mr-5 bg-gray-200"></div>
+                        <div class="d-flex align-items-center" id="kt_subheader_search">
+                            <span class="text-dark-50 font-weight-bold" id="kt_subheader_total">Nhập thông tin chi tiết và nhấn lưu</span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center">
+                        <a asp-action="List" class="btn btn-default font-weight-bold btn-sm px-3 font-size-base">
+                            <i class="la la-long-arrow-left"></i>
+                            Trở lại danh sách
+                        </a>
+                        <a class="btn btn-success btn-bold" id="BtnSaveKhachHang">
+                            <i class="flaticon2-hourglass-1"></i>
+                            Lưu
+                        </a>
+                        <a class="btn btn-brand btn-bold" id="btnSaveAndContinue">
+                            <i class="flaticon2-writing"></i>
+                            Lưu và tiếp tục sửa
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            @await Html.PartialAsync("_CreateOrUpdate", Model)
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#BtnSaveKhachHang").click(function () {
+            $('#BtnSaveKhachHang').attr('disabled', true);
+            InsertKhachHang(false);
+        });
+
+        $("#btnSaveAndContinue").click(function () {
+            $('#btnSaveAndContinue').attr('disabled', true);
+            InsertKhachHang(true);
+        });
+    })
+
+    function InsertKhachHang(isContinue) {
+        var _listSoDienThoai = [];
+        $(".ListSoDienThoai").each(function () {
+            var idSoDienThoai = $(this).attr("data-idSoDienThoai");
+            var _soDienThoai = {
+                NHOM_DANH_BA: $("#NHOM_DANH_BA_" + idSoDienThoai).val(),
+                SO_DIEN_THOAI: $("#SO_DIEN_THOAI_" + idSoDienThoai).val()
+            };
+            _listSoDienThoai.push(_soDienThoai);
+        });
+
+        var _listCauHinhMoRong = [];
+        $(".cauHinhMoRong").each(function () {
+            var idCauHinh = $(this).attr("data-cauHinhId");
+            var _cauHinhMoRong = {
+                CauHinhId: idCauHinh,
+                Value: $("#cauHinhMoRong_" + idCauHinh).val()
+            };
+            _listCauHinhMoRong.push(_cauHinhMoRong);
+        });
+
+        var _data = {
+            TEN: $("#TEN").val(),
+            NGAY_SINH: $("#NGAY_SINH").val(),
+            GIOI_TINH: $("#GIOI_TINH").val(),
+            LOAI_KHACH_HANG: $("#LOAI_KHACH_HANG").val(),
+            FACEBOOK: $("#FACEBOOK").val(),
+            EMAIL: $("#EMAIL").val(),
+            ZALO: $("#ZALO").val(),
+            DanhBaDienThoai: _listSoDienThoai,
+            ListCauHinhMoRong: _listCauHinhMoRong
+        };
+        addAntiForgeryToken(_data);
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("Create", "KhKhachHang")",
+            data: _data,
+            success: function (data, textStatus, jqXHR) {
+                if (data.IsSuccess) {
+                    ShowSuccess(data.Message);
+                    if (isContinue) {
+                        window.location.href = "/CRM/KhKhachHang/Edit?id=" + data.ObjectInfo.Id;
+                    }else {
+                        window.location.href = "/CRM/KhKhachHang/List";
+                    }
+                } else {
+                    display_valid_error(data.ObjectInfo);
+                }
+            }
+        });
+    }
+</script>

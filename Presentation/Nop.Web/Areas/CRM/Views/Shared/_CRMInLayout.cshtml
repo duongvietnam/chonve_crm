@@ -1,0 +1,969 @@
+﻿@inject IStoreContext storeContext
+@inject ICustomerService customerService
+@inject IGenericAttributeService genericAttributeService
+@inject IDateTimeHelper dateTimeHelper
+@{
+    
+    var currentCustomer = workContext.CurrentCustomer;
+    string adminPageTitle = !string.IsNullOrWhiteSpace(ViewBag.Title) ? ViewBag.Title + " / " : "";
+    adminPageTitle += T("crm.title").Text;
+    string CustomerFullName = customerService.GetCustomerFullName(currentCustomer);
+    string CustomerPhone = genericAttributeService.GetAttribute<string>(currentCustomer, NopCustomerDefaults.PhoneAttribute);
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<!--begin::Head-->
+<!-- Added by HTTrack -->
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head>
+    <meta charset="utf-8" />
+    <title>@adminPageTitle</title>
+    <meta name="description" content="Updates and statistics" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!--begin::Fonts-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
+    <!--end::Fonts-->
+    <!--begin::Page Vendors Styles(used by this page)-->
+    <link href="/metronic/theme/html/dist/assets/plugins/custom/fullcalendar/fullcalendar.bundle526f.css?v=7.0.8" rel="stylesheet" type="text/css" />
+    <!--end::Page Vendors Styles-->
+    <!--begin::Global Theme Styles(used by all pages)-->
+    <link href="/metronic/theme/html/dist/assets/plugins/global/plugins.bundle526f.css?v=7.0.8" rel="stylesheet" type="text/css" />
+    <link href="/metronic/theme/html/dist/assets/plugins/custom/prismjs/prismjs.bundle526f.css?v=7.0.8" rel="stylesheet" type="text/css" />
+    <link href="/metronic/theme/html/dist/assets/css/style.bundle526f.css?v=7.0.8" rel="stylesheet" type="text/css" />
+    <link href="/css/style.crm.css?v1" rel="stylesheet" type="text/css" />
+    <!--end::Global Theme Styles-->
+    <!--begin::Layout Themes(used by all pages)-->
+    <!--end::Layout Themes-->
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <script src="/metronic/theme/html/dist/assets/plugins/global/plugins.bundle526f.js?v=7.0.8"></script>
+    <script src="/metronic/theme/html/dist/assets/plugins/custom/prismjs/prismjs.bundle526f.js?v=7.0.8"></script>
+    <script src="/metronic/theme/html/dist/assets/js/scripts.bundle526f.js?v=7.0.8"></script>
+    <script src="/metronic/theme/html/dist/assets/plugins/custom/datatables/datatables.bundle526f.js" type="text/javascript"></script>
+    <script src="/js/bootstrap-datepicker.vi.min.js" type="text/javascript"></script>
+    <script src="/js/crm.common.js?v1"></script>
+</head>
+<!--end::Head-->
+<!--begin::Body-->
+<body id="kt_body" class="header-fixed header-mobile-fixed page-loading">
+    <div id="ajaxBusy">
+        <div class='btn btn-outline-danger spinner spinner-darker-danger spinner-left mr-3"'>Đang xử lý...</div>
+    </div>
+    <!--begin::Main-->
+    <!--begin::Header Mobile-->
+    <div id="kt_header_mobile" class="header-mobile bg-primary header-mobile-fixed">
+        <!--begin::Logo-->
+        <a href="/">
+            <span class="svg-icon svg-icon-primary svg-icon-2x">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30px" height="30px" viewBox="0 0 30 30" version="1.1">
+                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                        <polygon points="0 0 24 0 24 24 0 24" />
+                        <circle fill="#000000" opacity="0.3" cx="15" cy="17" r="5" />
+                        <circle fill="#000000" opacity="0.3" cx="9" cy="17" r="5" />
+                        <circle fill="#000000" opacity="0.3" cx="7" cy="11" r="5" />
+                        <circle fill="#000000" opacity="0.3" cx="17" cy="11" r="5" />
+                        <circle fill="#000000" opacity="0.3" cx="12" cy="7" r="5" />
+                    </g>
+                </svg><!--end::Svg Icon-->
+            </span>
+        </a>
+        <!--end::Logo-->
+        <!--begin::Toolbar-->
+        <div class="d-flex align-items-center">
+            <button class="btn p-0 burger-icon burger-icon-left ml-4" id="kt_header_mobile_toggle">
+                <span></span>
+            </button>
+            <button class="btn p-0 ml-2" id="kt_header_mobile_topbar_toggle">
+                <span class="svg-icon svg-icon-xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <polygon points="0 0 24 0 24 24 0 24" />
+                            <path d="M12,11 C9.790861,11 8,9.209139 8,7 C8,4.790861 9.790861,3 12,3 C14.209139,3 16,4.790861 16,7 C16,9.209139 14.209139,11 12,11 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
+                            <path d="M3.00065168,20.1992055 C3.38825852,15.4265159 7.26191235,13 11.9833413,13 C16.7712164,13 20.7048837,15.2931929 20.9979143,20.2 C21.0095879,20.3954741 20.9979143,21 20.2466999,21 C16.541124,21 11.0347247,21 3.72750223,21 C3.47671215,21 2.97953825,20.45918 3.00065168,20.1992055 Z" fill="#000000" fill-rule="nonzero" />
+                        </g>
+                    </svg>
+                    <!--end::Svg Icon-->
+                </span>
+            </button>
+        </div>
+        <!--end::Toolbar-->
+    </div>
+    <!--end::Header Mobile-->
+    <div class="d-flex flex-column flex-root">
+        <!--begin::Page-->
+        <div class="d-flex flex-row flex-column-fluid page">
+            <!--begin::Wrapper-->
+            <div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
+                <!--begin::Header-->
+                <div id="kt_header" class="header flex-column header-fixed">
+                    <!--begin::Top-->
+                    <div class="header-top">
+                        <!--begin::Container-->
+                        <div class="container">
+                            <!--begin::Left-->
+                            <div class="d-none d-lg-flex align-items-center mr-3">
+                                <!--begin::Logo-->
+                                <a href="/" class="mr-20">
+                                    <span style="font-size:3.5rem;color:white;font-weight:bold;">CRM</span>
+                                </a>
+                                <!--end::Logo-->
+                                <!--begin::Desktop Search-->
+                                <!--end::Desktop Search-->
+                            </div>
+                            <!--end::Left-->
+                            <!--begin::Topbar-->
+                            <div class="topbar">
+
+                                <!--begin::Notifications-->
+                                <div class="dropdown">
+                                    <!--begin::Toggle-->
+                                    <div class="topbar-item" data-toggle="dropdown" data-offset="10px,0px">
+                                        <div class="btn btn-icon btn-hover-transparent-white btn-dropdown btn-lg mr-1 pulse pulse-white">
+                                            <span class="svg-icon svg-icon-xl">
+                                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                        <rect x="0" y="0" width="24" height="24" />
+                                                        <path d="M2.56066017,10.6819805 L4.68198052,8.56066017 C5.26776695,7.97487373 6.21751442,7.97487373 6.80330086,8.56066017 L8.9246212,10.6819805 C9.51040764,11.267767 9.51040764,12.2175144 8.9246212,12.8033009 L6.80330086,14.9246212 C6.21751442,15.5104076 5.26776695,15.5104076 4.68198052,14.9246212 L2.56066017,12.8033009 C1.97487373,12.2175144 1.97487373,11.267767 2.56066017,10.6819805 Z M14.5606602,10.6819805 L16.6819805,8.56066017 C17.267767,7.97487373 18.2175144,7.97487373 18.8033009,8.56066017 L20.9246212,10.6819805 C21.5104076,11.267767 21.5104076,12.2175144 20.9246212,12.8033009 L18.8033009,14.9246212 C18.2175144,15.5104076 17.267767,15.5104076 16.6819805,14.9246212 L14.5606602,12.8033009 C13.9748737,12.2175144 13.9748737,11.267767 14.5606602,10.6819805 Z" fill="#000000" opacity="0.3" />
+                                                        <path d="M8.56066017,16.6819805 L10.6819805,14.5606602 C11.267767,13.9748737 12.2175144,13.9748737 12.8033009,14.5606602 L14.9246212,16.6819805 C15.5104076,17.267767 15.5104076,18.2175144 14.9246212,18.8033009 L12.8033009,20.9246212 C12.2175144,21.5104076 11.267767,21.5104076 10.6819805,20.9246212 L8.56066017,18.8033009 C7.97487373,18.2175144 7.97487373,17.267767 8.56066017,16.6819805 Z M8.56066017,4.68198052 L10.6819805,2.56066017 C11.267767,1.97487373 12.2175144,1.97487373 12.8033009,2.56066017 L14.9246212,4.68198052 C15.5104076,5.26776695 15.5104076,6.21751442 14.9246212,6.80330086 L12.8033009,8.9246212 C12.2175144,9.51040764 11.267767,9.51040764 10.6819805,8.9246212 L8.56066017,6.80330086 C7.97487373,6.21751442 7.97487373,5.26776695 8.56066017,4.68198052 Z" fill="#000000" />
+                                                    </g>
+                                                </svg>
+                                                <!--end::Svg Icon-->
+                                            </span>
+                                            <span class="pulse-ring"></span>
+                                        </div>
+                                    </div>
+                                    <!--end::Toggle-->
+                                    <!--begin::Dropdown-->
+                                    <div class="dropdown-menu p-0 m-0 dropdown-menu-right dropdown-menu-anim-up dropdown-menu-lg">
+                                        <form>
+                                            <!--begin::Header-->
+                                            <div class="d-flex flex-column pt-12 bg-dark-o-5 rounded-top">
+                                                <!--begin::Title-->
+                                                <h4 class="d-flex flex-center">
+                                                    <span class="text-dark">Thông báo</span>
+                                                    <span class="btn btn-text btn-warning btn-sm font-weight-bold btn-font-md ml-2">23 new</span>
+                                                </h4>
+                                                <!--end::Title-->
+
+                                            </div>
+                                            <!--end::Header-->
+                                            <!--begin::Content-->
+                                            <div class="tab-content">
+                                                <!--begin::Tabpane-->
+                                                <div class="tab-pane  active show p-8" id="topbar_notifications_events" role="tabpanel">
+                                                    <!--begin::Nav-->
+                                                    <div class="navi navi-hover scroll my-4" data-scroll="true" data-height="300" data-mobile-height="200">
+                                                        <!--begin::Item-->
+                                                        <a href="#" class="navi-item">
+                                                            <div class="navi-link">
+                                                                <div class="navi-icon mr-2">
+                                                                    <i class="flaticon2-line-chart text-success"></i>
+                                                                </div>
+                                                                <div class="navi-text">
+                                                                    <div class="font-weight-bold">New report has been received</div>
+                                                                    <div class="text-muted">23 hrs ago</div>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                        <!--end::Item-->
+                                                        <!--begin::Item-->
+                                                        <a href="#" class="navi-item">
+                                                            <div class="navi-link">
+                                                                <div class="navi-icon mr-2">
+                                                                    <i class="flaticon2-paper-plane text-danger"></i>
+                                                                </div>
+                                                                <div class="navi-text">
+                                                                    <div class="font-weight-bold">Finance report has been generated</div>
+                                                                    <div class="text-muted">25 hrs ago</div>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                        <!--end::Item-->
+                                                        <!--begin::Item-->
+                                                        <a href="#" class="navi-item">
+                                                            <div class="navi-link">
+                                                                <div class="navi-icon mr-2">
+                                                                    <i class="flaticon2-user flaticon2-line- text-success"></i>
+                                                                </div>
+                                                                <div class="navi-text">
+                                                                    <div class="font-weight-bold">New order has been received</div>
+                                                                    <div class="text-muted">2 hrs ago</div>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                        <!--end::Item-->
+                                                        <!--begin::Item-->
+                                                        <a href="#" class="navi-item">
+                                                            <div class="navi-link">
+                                                                <div class="navi-icon mr-2">
+                                                                    <i class="flaticon2-pin text-primary"></i>
+                                                                </div>
+                                                                <div class="navi-text">
+                                                                    <div class="font-weight-bold">New customer is registered</div>
+                                                                    <div class="text-muted">3 hrs ago</div>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                        <!--end::Item-->
+                                                        <!--begin::Item-->
+                                                        <a href="#" class="navi-item">
+                                                            <div class="navi-link">
+                                                                <div class="navi-icon mr-2">
+                                                                    <i class="flaticon2-sms text-danger"></i>
+                                                                </div>
+                                                                <div class="navi-text">
+                                                                    <div class="font-weight-bold">Application has been approved</div>
+                                                                    <div class="text-muted">3 hrs ago</div>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                        <!--end::Item-->
+                                                        <!--begin::Item-->
+                                                        <a href="#" class="navi-item">
+                                                            <div class="navi-link">
+                                                                <div class="navi-icon mr-2">
+                                                                    <i class="flaticon2-pie-chart-3 text-warning"></i>
+                                                                </div>
+                                                                <div class="navinavinavi-text">
+                                                                    <div class="font-weight-bold">New file has been uploaded</div>
+                                                                    <div class="text-muted">5 hrs ago</div>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                        <!--end::Item-->
+                                                        <!--begin::Item-->
+                                                        <a href="#" class="navi-item">
+                                                            <div class="navi-link">
+                                                                <div class="navi-icon mr-2">
+                                                                    <i class="flaticon-pie-chart-1 text-info"></i>
+                                                                </div>
+                                                                <div class="navi-text">
+                                                                    <div class="font-weight-bold">New user feedback received</div>
+                                                                    <div class="text-muted">8 hrs ago</div>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                        <!--end::Item-->
+                                                        <!--begin::Item-->
+                                                        <a href="#" class="navi-item">
+                                                            <div class="navi-link">
+                                                                <div class="navi-icon mr-2">
+                                                                    <i class="flaticon2-settings text-success"></i>
+                                                                </div>
+                                                                <div class="navi-text">
+                                                                    <div class="font-weight-bold">System reboot has been successfully completed</div>
+                                                                    <div class="text-muted">12 hrs ago</div>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                        <!--end::Item-->
+                                                        <!--begin::Item-->
+                                                        <a href="#" class="navi-item">
+                                                            <div class="navi-link">
+                                                                <div class="navi-icon mr-2">
+                                                                    <i class="flaticon-safe-shield-protection text-primary"></i>
+                                                                </div>
+                                                                <div class="navi-text">
+                                                                    <div class="font-weight-bold">New order has been placed</div>
+                                                                    <div class="text-muted">15 hrs ago</div>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                        <!--end::Item-->
+                                                        <!--begin::Item-->
+                                                        <a href="#" class="navi-item">
+                                                            <div class="navi-link">
+                                                                <div class="navi-icon mr-2">
+                                                                    <i class="flaticon2-notification text-primary"></i>
+                                                                </div>
+                                                                <div class="navi-text">
+                                                                    <div class="font-weight-bold">Company meeting canceled</div>
+                                                                    <div class="text-muted">19 hrs ago</div>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                        <!--end::Item-->
+                                                        <!--begin::Item-->
+                                                        <a href="#" class="navi-item">
+                                                            <div class="navi-link">
+                                                                <div class="navi-icon mr-2">
+                                                                    <i class="flaticon2-fax text-success"></i>
+                                                                </div>
+                                                                <div class="navi-text">
+                                                                    <div class="font-weight-bold">New report has been received</div>
+                                                                    <div class="text-muted">23 hrs ago</div>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                        <!--end::Item-->
+                                                        <!--begin::Item-->
+                                                        <a href="#" class="navi-item">
+                                                            <div class="navi-link">
+                                                                <div class="navi-icon mr-2">
+                                                                    <i class="flaticon-download-1 text-danger"></i>
+                                                                </div>
+                                                                <div class="navi-text">
+                                                                    <div class="font-weight-bold">Finance report has been generated</div>
+                                                                    <div class="text-muted">25 hrs ago</div>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                        <!--end::Item-->
+                                                        <!--begin::Item-->
+                                                        <a href="#" class="navi-item">
+                                                            <div class="navi-link">
+                                                                <div class="navi-icon mr-2">
+                                                                    <i class="flaticon-security text-warning"></i>
+                                                                </div>
+                                                                <div class="navi-text">
+                                                                    <div class="font-weight-bold">New customer comment recieved</div>
+                                                                    <div class="text-muted">2 days ago</div>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                        <!--end::Item-->
+                                                        <!--begin::Item-->
+                                                        <a href="#" class="navi-item">
+                                                            <div class="navi-link">
+                                                                <div class="navi-icon mr-2">
+                                                                    <i class="flaticon2-analytics-1 text-success"></i>
+                                                                </div>
+                                                                <div class="navi-text">
+                                                                    <div class="font-weight-bold">New customer is registered</div>
+                                                                    <div class="text-muted">3 days ago</div>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                        <!--end::Item-->
+                                                    </div>
+                                                    <!--end::Nav-->
+                                                </div>
+                                                <!--end::Tabpane-->
+
+                                            </div>
+                                            <!--end::Content-->
+                                        </form>
+                                    </div>
+                                    <!--end::Dropdown-->
+                                </div>
+                                <!--end::Notifications-->
+                                <!--begin::Chat-->
+                                <div class="topbar-item mr-1">
+                                    <div class="btn btn-icon btn-hover-transparent-white btn-clean btn-lg" data-toggle="modal" data-target="#kt_chat_modal">
+                                        <span class="svg-icon svg-icon-xl">
+                                            <!--begin::Svg Icon | path:/metronic/theme/html/demo9/dist/assets/media/svg/icons/Communication/Group-chat.svg-->
+                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                    <rect x="0" y="0" width="24" height="24" />
+                                                    <path d="M16,15.6315789 L16,12 C16,10.3431458 14.6568542,9 13,9 L6.16183229,9 L6.16183229,5.52631579 C6.16183229,4.13107011 7.29290239,3 8.68814808,3 L20.4776218,3 C21.8728674,3 23.0039375,4.13107011 23.0039375,5.52631579 L23.0039375,13.1052632 L23.0206157,17.786793 C23.0215995,18.0629336 22.7985408,18.2875874 22.5224001,18.2885711 C22.3891754,18.2890457 22.2612702,18.2363324 22.1670655,18.1421277 L19.6565168,15.6315789 L16,15.6315789 Z" fill="#000000" />
+                                                    <path d="M1.98505595,18 L1.98505595,13 C1.98505595,11.8954305 2.88048645,11 3.98505595,11 L11.9850559,11 C13.0896254,11 13.9850559,11.8954305 13.9850559,13 L13.9850559,18 C13.9850559,19.1045695 13.0896254,20 11.9850559,20 L4.10078614,20 L2.85693427,21.1905292 C2.65744295,21.3814685 2.34093638,21.3745358 2.14999706,21.1750444 C2.06092565,21.0819836 2.01120804,20.958136 2.01120804,20.8293182 L2.01120804,18.32426 C1.99400175,18.2187196 1.98505595,18.1104045 1.98505595,18 Z M6.5,14 C6.22385763,14 6,14.2238576 6,14.5 C6,14.7761424 6.22385763,15 6.5,15 L11.5,15 C11.7761424,15 12,14.7761424 12,14.5 C12,14.2238576 11.7761424,14 11.5,14 L6.5,14 Z M9.5,16 C9.22385763,16 9,16.2238576 9,16.5 C9,16.7761424 9.22385763,17 9.5,17 L11.5,17 C11.7761424,17 12,16.7761424 12,16.5 C12,16.2238576 11.7761424,16 11.5,16 L9.5,16 Z" fill="#000000" opacity="0.3" />
+                                                </g>
+                                            </svg>
+                                            <!--end::Svg Icon-->
+                                        </span>
+                                    </div>
+                                </div>
+                                <!--end::Chat-->
+                                <!--begin::User-->
+                                <div class="topbar-item">
+                                    <div class="btn btn-icon btn-hover-transparent-white w-auto d-flex align-items-center btn-lg px-2" id="kt_quick_user_toggle">
+                                        <div class="d-flex flex-column text-right pr-3">
+                                            <span class="text-white opacity-50 font-weight-bold font-size-sm d-none d-md-inline">@CustomerFullName</span>
+                                            <span class="text-white font-weight-bolder font-size-sm d-none d-md-inline">@currentCustomer.Username</span>
+                                        </div>
+                                        <span class="symbol symbol-35">
+                                            <span class="symbol-label font-size-h5 font-weight-bold text-white bg-white-o-30">@CustomerFullName[0]</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <!--end::User-->
+                            </div>
+                            <!--end::Topbar-->
+                        </div>
+                        <!--end::Container-->
+                    </div>
+                    <!--end::Top-->
+                    <!--begin::Bottom-->
+                    <div class="header-bottom">
+                        <!--begin::Container-->
+                        <div class="container">
+                            <!--begin::Header Menu Wrapper-->
+                            <div class="header-menu-wrapper header-menu-wrapper-left" id="kt_header_menu_wrapper">
+                                <!--begin::Header Menu-->
+                                <div id="kt_header_menu" class="header-menu header-menu-left header-menu-mobile header-menu-layout-default">
+                                    <!--begin::Header Nav-->
+                                    @await Html.PartialAsync("Menu")
+                                    <!--end::Header Nav-->
+                                </div>
+                                <!--end::Header Menu-->
+                            </div>
+                            <!--end::Header Menu Wrapper-->
+                        </div>
+                        <!--end::Container-->
+                    </div>
+                    <!--end::Bottom-->
+                </div>
+                <!--end::Header-->
+                <!--begin::Content-->
+                @RenderBody()
+                <!--end::Content-->
+                <!--begin::Footer-->
+                <div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
+                    <!--begin::Container-->
+                    <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+                        <!--begin::Copyright-->
+                        <div class="text-dark order-2 order-md-1">
+                            <span class="text-muted font-weight-bold mr-2">2020©</span>
+                            <a href="/" target="_blank" class="text-dark-75 text-hover-primary">CHONVE.VN CRM</a>
+                        </div>
+                        <!--end::Copyright-->
+                        <!--begin::Nav-->
+                        <div class="nav nav-dark order-1 order-md-2">
+
+                        </div>
+                        <!--end::Nav-->
+                    </div>
+                    <!--end::Container-->
+                </div>
+                <!--end::Footer-->
+            </div>
+            <!--end::Wrapper-->
+        </div>
+        <!--end::Page-->
+    </div>
+    <!--end::Main-->
+    <!-- begin::User Panel-->
+    <div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
+        <!--begin::Header-->
+        <div class="offcanvas-header d-flex align-items-center justify-content-between pb-5">
+            <h3 class="font-weight-bold m-0">
+                Thông tin hồ sơ
+                <small class="text-muted font-size-sm ml-2"></small>
+            </h3>
+            <a href="@Url.Action("Info","Profile")" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_user_close">
+                <i class="ki ki-close icon-xs text-muted"></i>
+            </a>
+        </div>
+        <!--end::Header-->
+        <!--begin::Content-->
+        <div class="offcanvas-content pr-5 mr-n5">
+            <!--begin::Header-->
+            <div class="d-flex align-items-center mt-5">
+                <div class="symbol symbol-100 mr-5">
+                    <div class="symbol-label" style="background-image:url('')"></div>
+                    <i class="symbol-badge bg-success"></i>
+                </div>
+                <div class="d-flex flex-column">
+                    <a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">@CustomerFullName</a>
+                    <div class="text-muted mt-1">@currentCustomer.Username</div>
+                    <div class="navi mt-2">
+                        <a href="tel:@currentCustomer." class="navi-item">
+                            <span class="navi-link p-0 pb-2">
+                                <span class="navi-icon mr-1">
+                                    <span class="svg-icon svg-icon-lg svg-icon-primary">
+                                        <!--begin::Svg Icon | -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                <rect x="0" y="0" width="24" height="24" />
+                                                <path d="M12,22 C6.4771525,22 2,17.5228475 2,12 C2,6.4771525 6.4771525,2 12,2 C17.5228475,2 22,6.4771525 22,12 C22,17.5228475 17.5228475,22 12,22 Z M11.613922,13.2130341 C11.1688026,13.6581534 10.4887934,13.7685037 9.92575695,13.4869855 C9.36272054,13.2054673 8.68271128,13.3158176 8.23759191,13.760937 L6.72658218,15.2719467 C6.67169475,15.3268342 6.63034033,15.393747 6.60579393,15.4673862 C6.51847004,15.7293579 6.66005003,16.0125179 6.92202169,16.0998418 L8.27584113,16.5511149 C9.57592638,16.9844767 11.009274,16.6461092 11.9783003,15.6770829 L15.9775173,11.6778659 C16.867756,10.7876271 17.0884566,9.42760861 16.5254202,8.3015358 L15.8928491,7.03639343 C15.8688153,6.98832598 15.8371895,6.9444475 15.7991889,6.90644684 C15.6039267,6.71118469 15.2873442,6.71118469 15.0920821,6.90644684 L13.4995401,8.49898884 C13.0544207,8.94410821 12.9440704,9.62411747 13.2255886,10.1871539 C13.5071068,10.7501903 13.3967565,11.4301996 12.9516371,11.8753189 L11.613922,13.2130341 Z" fill="#000000" />
+                                            </g>
+                                        </svg><!--end::Svg Icon-->
+                                    </span>
+                                </span>
+                                <span class="navi-text font-weight-bolder text-warning text-hover-primary">@CustomerPhone</span>
+                            </span>
+                        </a>
+                        <a href="mailto:@currentCustomer.Email" class="navi-item">
+                            <span class="navi-link p-0 pb-2">
+                                <span class="navi-icon mr-1">
+                                    <span class="svg-icon svg-icon-lg svg-icon-primary">
+                                        <!--begin::Svg Icon |-->
+                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                <rect x="0" y="0" width="24" height="24" />
+                                                <path d="M21,12.0829584 C20.6747915,12.0283988 20.3407122,12 20,12 C16.6862915,12 14,14.6862915 14,18 C14,18.3407122 14.0283988,18.6747915 14.0829584,19 L5,19 C3.8954305,19 3,18.1045695 3,17 L3,8 C3,6.8954305 3.8954305,6 5,6 L19,6 C20.1045695,6 21,6.8954305 21,8 L21,12.0829584 Z M18.1444251,7.83964668 L12,11.1481833 L5.85557487,7.83964668 C5.4908718,7.6432681 5.03602525,7.77972206 4.83964668,8.14442513 C4.6432681,8.5091282 4.77972206,8.96397475 5.14442513,9.16035332 L11.6444251,12.6603533 C11.8664074,12.7798822 12.1335926,12.7798822 12.3555749,12.6603533 L18.8555749,9.16035332 C19.2202779,8.96397475 19.3567319,8.5091282 19.1603533,8.14442513 C18.9639747,7.77972206 18.5091282,7.6432681 18.1444251,7.83964668 Z" fill="#000000" />
+                                                <circle fill="#000000" opacity="0.3" cx="19.5" cy="17.5" r="2.5" />
+                                            </g>
+                                        </svg>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                </span>
+                                <span class="navi-text text-muted text-hover-primary">@currentCustomer.Email</span>
+                            </span>
+                        </a>
+
+                        <a href="/logout" class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5">Thoát</a>
+                    </div>
+                </div>
+            </div>
+            <!--end::Header-->
+            <!--begin::Separator-->
+            <div class="separator separator-dashed mt-8 mb-5"></div>
+            <!--end::Separator-->
+            <!--begin::Nav-->
+            <div class="navi navi-spacer-x-0 p-0">
+                <!--begin::Item-->
+                <a href="@Url.Action("Info","Profile")" class="navi-item">
+                    <div class="navi-link">
+                        <div class="symbol symbol-40 bg-light mr-3">
+                            <div class="symbol-label">
+                                <span class="svg-icon svg-icon-md svg-icon-success">
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                            <rect x="0" y="0" width="24" height="24" />
+                                            <path d="M13.2070325,4 C13.0721672,4.47683179 13,4.97998812 13,5.5 C13,8.53756612 15.4624339,11 18.5,11 C19.0200119,11 19.5231682,10.9278328 20,10.7929675 L20,17 C20,18.6568542 18.6568542,20 17,20 L7,20 C5.34314575,20 4,18.6568542 4,17 L4,7 C4,5.34314575 5.34314575,4 7,4 L13.2070325,4 Z" fill="#000000" />
+                                            <circle fill="#000000" opacity="0.3" cx="18.5" cy="5.5" r="2.5" />
+                                        </g>
+                                    </svg>
+                                    <!--end::Svg Icon-->
+                                </span>
+                            </div>
+                        </div>
+                        <div class="navi-text">
+                            <div class="font-weight-bold">Hồ sơ</div>
+                            <div class="text-muted">
+                                Thông tin hồ sơ, đổi mật khẩu
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <!--end:Item-->
+                <!--begin::Item-->
+                <a href="@Url.Action("Info","Profile")?tab=NotificationInfor" class="navi-item">
+                    <div class="navi-link">
+                        <div class="symbol symbol-40 bg-light mr-3">
+                            <div class="symbol-label">
+                                <span class="svg-icon svg-icon-md svg-icon-warning">
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                            <rect x="0" y="0" width="24" height="24" />
+                                            <path d="M21,12.0829584 C20.6747915,12.0283988 20.3407122,12 20,12 C16.6862915,12 14,14.6862915 14,18 C14,18.3407122 14.0283988,18.6747915 14.0829584,19 L5,19 C3.8954305,19 3,18.1045695 3,17 L3,8 C3,6.8954305 3.8954305,6 5,6 L19,6 C20.1045695,6 21,6.8954305 21,8 L21,12.0829584 Z M18.1444251,7.83964668 L12,11.1481833 L5.85557487,7.83964668 C5.4908718,7.6432681 5.03602525,7.77972206 4.83964668,8.14442513 C4.6432681,8.5091282 4.77972206,8.96397475 5.14442513,9.16035332 L11.6444251,12.6603533 C11.8664074,12.7798822 12.1335926,12.7798822 12.3555749,12.6603533 L18.8555749,9.16035332 C19.2202779,8.96397475 19.3567319,8.5091282 19.1603533,8.14442513 C18.9639747,7.77972206 18.5091282,7.6432681 18.1444251,7.83964668 Z" fill="#000000" />
+                                            <circle fill="#000000" opacity="0.3" cx="19.5" cy="17.5" r="2.5" />
+                                        </g>
+                                    </svg>
+                                    <!--end::Svg Icon-->
+                                </span>
+                            </div>
+                        </div>
+                        <div class="navi-text">
+                            <div class="font-weight-bold">Thông báo</div>
+                            <div class="text-muted">Thông báo, tin nhắn</div>
+                        </div>
+                    </div>
+                </a>
+                <!--end:Item-->
+                <!--begin::Item-->
+                <a href="@Url.Action("Info","Profile")?tab=LogInfor" class="navi-item">
+                    <div class="navi-link">
+                        <div class="symbol symbol-40 bg-light mr-3">
+                            <div class="symbol-label">
+                                <span class="svg-icon svg-icon-md svg-icon-danger">
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                            <rect x="0" y="0" width="24" height="24" />
+                                            <path d="M12,22 C7.02943725,22 3,17.9705627 3,13 C3,8.02943725 7.02943725,4 12,4 C16.9705627,4 21,8.02943725 21,13 C21,17.9705627 16.9705627,22 12,22 Z" fill="#000000" opacity="0.3" />
+                                            <path d="M11.9630156,7.5 L12.0475062,7.5 C12.3043819,7.5 12.5194647,7.69464724 12.5450248,7.95024814 L13,12.5 L16.2480695,14.3560397 C16.403857,14.4450611 16.5,14.6107328 16.5,14.7901613 L16.5,15 C16.5,15.2109164 16.3290185,15.3818979 16.1181021,15.3818979 C16.0841582,15.3818979 16.0503659,15.3773725 16.0176181,15.3684413 L11.3986612,14.1087258 C11.1672824,14.0456225 11.0132986,13.8271186 11.0316926,13.5879956 L11.4644883,7.96165175 C11.4845267,7.70115317 11.7017474,7.5 11.9630156,7.5 Z" fill="#000000" />
+                                        </g>
+                                    </svg>
+                                    <!--end::Svg Icon-->
+                                </span>
+                            </div>
+                        </div>
+                        <div class="navi-text">
+                            <div class="font-weight-bold">Nhật ký</div>
+                            <div class="text-muted">Nhật ký, hoạt động</div>
+                        </div>
+                    </div>
+                </a>
+                <!--end:Item-->
+
+            </div>
+            <!--end::Nav-->
+            <!--begin::Separator-->
+            <div class="separator separator-dashed my-7"></div>
+            <!--end::Separator-->
+            <!--begin::Notifications-->
+            <div>
+                <!--begin:Heading-->
+                <h5 class="mb-5">Hoạt động gần đây</h5>
+                <!--end:Heading-->
+                <!--begin::Item-->
+                <div class="d-flex align-items-center bg-light-warning rounded p-5 gutter-b">
+                    <span class="svg-icon svg-icon-warning mr-5">
+                        <span class="svg-icon svg-icon-lg">
+                            <!--begin::Svg Icon | path:/metronic/theme/html/demo9/dist/assets/media/svg/icons/Home/Library.svg-->
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <rect x="0" y="0" width="24" height="24" />
+                                    <path d="M10.9630156,7.5 L11.0475062,7.5 C11.3043819,7.5 11.5194647,7.69464724 11.5450248,7.95024814 L12,12.5 L15.2480695,14.3560397 C15.403857,14.4450611 15.5,14.6107328 15.5,14.7901613 L15.5,15 C15.5,15.2109164 15.3290185,15.3818979 15.1181021,15.3818979 C15.0841582,15.3818979 15.0503659,15.3773725 15.0176181,15.3684413 L10.3986612,14.1087258 C10.1672824,14.0456225 10.0132986,13.8271186 10.0316926,13.5879956 L10.4644883,7.96165175 C10.4845267,7.70115317 10.7017474,7.5 10.9630156,7.5 Z" fill="#000000" />
+                                    <path d="M7.38979581,2.8349582 C8.65216735,2.29743306 10.0413491,2 11.5,2 C17.2989899,2 22,6.70101013 22,12.5 C22,18.2989899 17.2989899,23 11.5,23 C5.70101013,23 1,18.2989899 1,12.5 C1,11.5151324 1.13559454,10.5619345 1.38913364,9.65805651 L3.31481075,10.1982117 C3.10672013,10.940064 3,11.7119264 3,12.5 C3,17.1944204 6.80557963,21 11.5,21 C16.1944204,21 20,17.1944204 20,12.5 C20,7.80557963 16.1944204,4 11.5,4 C10.54876,4 9.62236069,4.15592757 8.74872191,4.45446326 L9.93948308,5.87355717 C10.0088058,5.95617272 10.0495583,6.05898805 10.05566,6.16666224 C10.0712834,6.4423623 9.86044965,6.67852665 9.5847496,6.69415008 L4.71777931,6.96995273 C4.66931162,6.97269931 4.62070229,6.96837279 4.57348157,6.95710938 C4.30487471,6.89303938 4.13906482,6.62335149 4.20313482,6.35474463 L5.33163823,1.62361064 C5.35654118,1.51920756 5.41437908,1.4255891 5.49660017,1.35659741 C5.7081375,1.17909652 6.0235153,1.2066885 6.2010162,1.41822583 L7.38979581,2.8349582 Z" fill="#000000" opacity="0.3" />
+                                </g>
+                            </svg>
+                            <!--end::Svg Icon-->
+                        </span>
+                    </span>
+                    <div class="d-flex flex-column flex-grow-1 mr-2">
+                        <a href="#" class="font-weight-normal text-dark-75 text-hover-primary font-size-lg mb-1">Bạn đã đăng nhập lần cuối</a>
+                        <span class="text-muted font-size-sm">@dateTimeHelper.ConvertToUserTime(currentCustomer.LastLoginDateUtc.Value, DateTimeKind.Utc).toDateVNString(true)</span>
+                    </div>
+                </div>
+                <!--end::Item-->
+
+            </div>
+            <!--end::Notifications-->
+        </div>
+        <!--end::Content-->
+    </div>
+    <!-- end::User Panel-->
+    <!--begin::Chat Panel-->
+    <div class="modal modal-sticky modal-sticky-bottom-right" id="kt_chat_modal" role="dialog" data-backdrop="false">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <!--begin::Card-->
+                <div class="card card-custom">
+                    <!--begin::Header-->
+                    <div class="card-header align-items-center px-4 py-3">
+                        <div class="text-left flex-grow-1">
+                            <!--begin::Dropdown Menu-->
+                            <div class="dropdown dropdown-inline">
+                                <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="svg-icon svg-icon-lg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                <polygon points="0 0 24 0 24 24 0 24" />
+                                                <path d="M18,8 L16,8 C15.4477153,8 15,7.55228475 15,7 C15,6.44771525 15.4477153,6 16,6 L18,6 L18,4 C18,3.44771525 18.4477153,3 19,3 C19.5522847,3 20,3.44771525 20,4 L20,6 L22,6 C22.5522847,6 23,6.44771525 23,7 C23,7.55228475 22.5522847,8 22,8 L20,8 L20,10 C20,10.5522847 19.5522847,11 19,11 C18.4477153,11 18,10.5522847 18,10 L18,8 Z M9,11 C6.790861,11 5,9.209139 5,7 C5,4.790861 6.790861,3 9,3 C11.209139,3 13,4.790861 13,7 C13,9.209139 11.209139,11 9,11 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
+                                                <path d="M0.00065168429,20.1992055 C0.388258525,15.4265159 4.26191235,13 8.98334134,13 C13.7712164,13 17.7048837,15.2931929 17.9979143,20.2 C18.0095879,20.3954741 17.9979143,21 17.2466999,21 C13.541124,21 8.03472472,21 0.727502227,21 C0.476712155,21 -0.0204617505,20.45918 0.00065168429,20.1992055 Z" fill="#000000" fill-rule="nonzero" />
+                                            </g>
+                                        </svg>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                </button>
+                                <div class="dropdown-menu p-0 m-0 dropdown-menu-right dropdown-menu-md">
+                                    <!--begin::Navigation-->
+                                    <ul class="navi navi-hover py-5">
+                                        <li class="navi-item">
+                                            <a href="#" class="navi-link">
+                                                <span class="navi-icon">
+                                                    <i class="flaticon2-drop"></i>
+                                                </span>
+                                                <span class="navi-text">New Group</span>
+                                            </a>
+                                        </li>
+                                        <li class="navi-item">
+                                            <a href="#" class="navi-link">
+                                                <span class="navi-icon">
+                                                    <i class="flaticon2-list-3"></i>
+                                                </span>
+                                                <span class="navi-text">Contacts</span>
+                                            </a>
+                                        </li>
+                                        <li class="navi-item">
+                                            <a href="#" class="navi-link">
+                                                <span class="navi-icon">
+                                                    <i class="flaticon2-rocket-1"></i>
+                                                </span>
+                                                <span class="navi-text">Groups</span>
+                                                <span class="navi-link-badge">
+                                                    <span class="label label-light-primary label-inline font-weight-bold">new</span>
+                                                </span>
+                                            </a>
+                                        </li>
+                                        <li class="navi-item">
+                                            <a href="#" class="navi-link">
+                                                <span class="navi-icon">
+                                                    <i class="flaticon2-bell-2"></i>
+                                                </span>
+                                                <span class="navi-text">Calls</span>
+                                            </a>
+                                        </li>
+                                        <li class="navi-item">
+                                            <a href="#" class="navi-link">
+                                                <span class="navi-icon">
+                                                    <i class="flaticon2-gear"></i>
+                                                </span>
+                                                <span class="navi-text">Settings</span>
+                                            </a>
+                                        </li>
+                                        <li class="navi-separator my-3"></li>
+                                        <li class="navi-item">
+                                            <a href="#" class="navi-link">
+                                                <span class="navi-icon">
+                                                    <i class="flaticon2-magnifier-tool"></i>
+                                                </span>
+                                                <span class="navi-text">Help</span>
+                                            </a>
+                                        </li>
+                                        <li class="navi-item">
+                                            <a href="#" class="navi-link">
+                                                <span class="navi-icon">
+                                                    <i class="flaticon2-bell-2"></i>
+                                                </span>
+                                                <span class="navi-text">Privacy</span>
+                                                <span class="navi-link-badge">
+                                                    <span class="label label-light-danger label-rounded font-weight-bold">5</span>
+                                                </span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <!--end::Navigation-->
+                                </div>
+                            </div>
+                            <!--end::Dropdown Menu-->
+                        </div>
+                        <div class="text-center flex-grow-1">
+                            <div class="text-dark-75 font-weight-bold font-size-h5">Matt Pears</div>
+                            <div>
+                                <span class="label label-dot label-success"></span>
+                                <span class="font-weight-bold text-muted font-size-sm">Active</span>
+                            </div>
+                        </div>
+                        <div class="text-right flex-grow-1">
+                            <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-dismiss="modal">
+                                <i class="ki ki-close icon-1x"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!--end::Header-->
+                    <!--begin::Body-->
+                    <div class="card-body">
+                        <!--begin::Scroll-->
+                        <div class="scroll scroll-pull" data-height="375" data-mobile-height="300">
+                            <!--begin::Messages-->
+                            <div class="messages">
+                                <!--begin::Message In-->
+                                <div class="d-flex flex-column mb-5 align-items-start">
+                                    <div class="d-flex align-items-center">
+                                        <div class="symbol symbol-circle symbol-40 mr-3">
+                                            <img alt="Pic" src="/metronic/theme/html/dist/assets/media/users/300_12.jpg" />
+                                        </div>
+                                        <div>
+                                            <a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">Matt Pears</a>
+                                            <span class="text-muted font-size-sm">2 Hours</span>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 rounded p-5 bg-light-success text-dark-50 font-weight-bold font-size-lg text-left max-w-400px">How likely are you to recommend our company to your friends and family?</div>
+                                </div>
+                                <!--end::Message In-->
+                                <!--begin::Message Out-->
+                                <div class="d-flex flex-column mb-5 align-items-end">
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <span class="text-muted font-size-sm">3 minutes</span>
+                                            <a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">You</a>
+                                        </div>
+                                        <div class="symbol symbol-circle symbol-40 ml-3">
+                                            <img alt="Pic" src="/metronic/theme/html/dist/assets/media/users/300_21.jpg" />
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 rounded p-5 bg-light-primary text-dark-50 font-weight-bold font-size-lg text-right max-w-400px">Hey there, we’re just writing to let you know that you’ve been subscribed to a repository on GitHub.</div>
+                                </div>
+                                <!--end::Message Out-->
+                                <!--begin::Message In-->
+                                <div class="d-flex flex-column mb-5 align-items-start">
+                                    <div class="d-flex align-items-center">
+                                        <div class="symbol symbol-circle symbol-40 mr-3">
+                                            <img alt="Pic" src="/metronic/theme/html/dist/assets/media/users/300_21.jpg" />
+                                        </div>
+                                        <div>
+                                            <a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">Matt Pears</a>
+                                            <span class="text-muted font-size-sm">40 seconds</span>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 rounded p-5 bg-light-success text-dark-50 font-weight-bold font-size-lg text-left max-w-400px">Ok, Understood!</div>
+                                </div>
+                                <!--end::Message In-->
+                                <!--begin::Message Out-->
+                                <div class="d-flex flex-column mb-5 align-items-end">
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <span class="text-muted font-size-sm">Just now</span>
+                                            <a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">You</a>
+                                        </div>
+                                        <div class="symbol symbol-circle symbol-40 ml-3">
+                                            <img alt="Pic" src="/metronic/theme/html/dist/assets/media/users/300_21.jpg" />
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 rounded p-5 bg-light-primary text-dark-50 font-weight-bold font-size-lg text-right max-w-400px">You’ll receive notifications for all issues, pull requests!</div>
+                                </div>
+                                <!--end::Message Out-->
+                                <!--begin::Message In-->
+                                <div class="d-flex flex-column mb-5 align-items-start">
+                                    <div class="d-flex align-items-center">
+                                        <div class="symbol symbol-circle symbol-40 mr-3">
+                                            <img alt="Pic" src="/metronic/theme/html/dist/assets/media/users/300_12.jpg" />
+                                        </div>
+                                        <div>
+                                            <a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">Matt Pears</a>
+                                            <span class="text-muted font-size-sm">40 seconds</span>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 rounded p-5 bg-light-success text-dark-50 font-weight-bold font-size-lg text-left max-w-400px">
+                                        You can unwatch this repository immediately by clicking here:
+                                        <a href="#">https://github.com</a>
+                                    </div>
+                                </div>
+                                <!--end::Message In-->
+                                <!--begin::Message Out-->
+                                <div class="d-flex flex-column mb-5 align-items-end">
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <span class="text-muted font-size-sm">Just now</span>
+                                            <a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">You</a>
+                                        </div>
+                                        <div class="symbol symbol-circle symbol-40 ml-3">
+                                            <img alt="Pic" src="/metronic/theme/html/dist/assets/media/users/300_21.jpg" />
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 rounded p-5 bg-light-primary text-dark-50 font-weight-bold font-size-lg text-right max-w-400px">Discover what students who viewed Learn Figma - UI/UX Design. Essential Training also viewed</div>
+                                </div>
+                                <!--end::Message Out-->
+                                <!--begin::Message In-->
+                                <div class="d-flex flex-column mb-5 align-items-start">
+                                    <div class="d-flex align-items-center">
+                                        <div class="symbol symbol-circle symbol-40 mr-3">
+                                            <img alt="Pic" src="/metronic/theme/html/dist/assets/media/users/300_12.jpg" />
+                                        </div>
+                                        <div>
+                                            <a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">Matt Pears</a>
+                                            <span class="text-muted font-size-sm">40 seconds</span>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 rounded p-5 bg-light-success text-dark-50 font-weight-bold font-size-lg text-left max-w-400px">Most purchased Business courses during this sale!</div>
+                                </div>
+                                <!--end::Message In-->
+                                <!--begin::Message Out-->
+                                <div class="d-flex flex-column mb-5 align-items-end">
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <span class="text-muted font-size-sm">Just now</span>
+                                            <a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">You</a>
+                                        </div>
+                                        <div class="symbol symbol-circle symbol-40 ml-3">
+                                            <img alt="Pic" src="/metronic/theme/html/dist/assets/media/users/300_21.jpg" />
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 rounded p-5 bg-light-primary text-dark-50 font-weight-bold font-size-lg text-right max-w-400px">Company BBQ to celebrate the last quater achievements and goals. Food and drinks provided</div>
+                                </div>
+                                <!--end::Message Out-->
+                            </div>
+                            <!--end::Messages-->
+                        </div>
+                        <!--end::Scroll-->
+                    </div>
+                    <!--end::Body-->
+                    <!--begin::Footer-->
+                    <div class="card-footer align-items-center">
+                        <!--begin::Compose-->
+                        <textarea class="form-control border-0 p-0" rows="2" placeholder="Type a message"></textarea>
+                        <div class="d-flex align-items-center justify-content-between mt-5">
+                            <div class="mr-3">
+                                <a href="#" class="btn btn-clean btn-icon btn-md mr-1">
+                                    <i class="flaticon2-photograph icon-lg"></i>
+                                </a>
+                                <a href="#" class="btn btn-clean btn-icon btn-md">
+                                    <i class="flaticon2-photo-camera icon-lg"></i>
+                                </a>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-primary btn-md text-uppercase font-weight-bold chat-send py-2 px-6">Send</button>
+                            </div>
+                        </div>
+                        <!--begin::Compose-->
+                    </div>
+                    <!--end::Footer-->
+                </div>
+                <!--end::Card-->
+            </div>
+        </div>
+    </div>
+    <!--end::Chat Panel-->
+    <div id="partialViewLoading" style="display:none;">
+        <div class="spinner spinner-primary spinner-lg mr-15"></div>
+    </div>
+    <div class="modal fade" id="globalModalIframe" tabindex="-1" role="dialog" aria-labelledby="globalModalIframeLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false" style="display:none">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="globalModalIframeLabel"></h5>
+                    <button type="button" class="close" onclick="CloseModalManual();" id="globalModalIframeClose">x</button>
+                </div>
+                <div class="modal-body" id="globalModalIframeContent">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--begin::Scrolltop-->
+    <div id="kt_scrolltop" class="scrolltop">
+        <span class="svg-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <polygon points="0 0 24 0 24 24 0 24" />
+                    <rect fill="#000000" opacity="0.3" x="11" y="10" width="2" height="10" rx="1" />
+                    <path d="M6.70710678,12.7071068 C6.31658249,13.0976311 5.68341751,13.0976311 5.29289322,12.7071068 C4.90236893,12.3165825 4.90236893,11.6834175 5.29289322,11.2928932 L11.2928932,5.29289322 C11.6714722,4.91431428 12.2810586,4.90106866 12.6757246,5.26284586 L18.6757246,10.7628459 C19.0828436,11.1360383 19.1103465,11.7686056 18.7371541,12.1757246 C18.3639617,12.5828436 17.7313944,12.6103465 17.3242754,12.2371541 L12.0300757,7.38413782 L6.70710678,12.7071068 Z" fill="#000000" fill-rule="nonzero" />
+                </g>
+            </svg>
+            <!--end::Svg Icon-->
+        </span>
+    </div>
+    <!--end::Scrolltop-->
+    <!--begin::Sticky Toolbar-->
+    <ul class="sticky-toolbar nav flex-column pl-2 pr-2 pt-3 pb-3 mt-4">
+        <!--begin::Item-->
+        <li class="nav-item mb-2" id="kt_demo_panel_toggle" data-toggle="tooltip" title="Check out more demos" data-placement="right">
+            <a class="btn btn-sm btn-icon btn-bg-light btn-icon-success btn-hover-success" href="#">
+                <i class="flaticon2-drop"></i>
+            </a>
+        </li>
+        <!--end::Item-->
+        <!--begin::Item-->
+        <li class="nav-item mb-2" data-toggle="tooltip" title="Layout Builder" data-placement="left">
+            <a class="btn btn-sm btn-icon btn-bg-light btn-icon-primary btn-hover-primary" href="builder.html">
+                <i class="flaticon2-gear"></i>
+            </a>
+        </li>
+        <!--end::Item-->
+        <!--begin::Item-->
+        <li class="nav-item mb-2" data-toggle="tooltip" title="Documentation" data-placement="left">
+            <a class="btn btn-sm btn-icon btn-bg-light btn-icon-warning btn-hover-warning" href="#" target="_blank">
+                <i class="flaticon2-telegram-logo"></i>
+            </a>
+        </li>
+        <!--end::Item-->
+        <!--begin::Item-->
+        <li class="nav-item" id="kt_sticky_toolbar_chat_toggler" data-toggle="tooltip" title="Chat Example" data-placement="left">
+            <a class="btn btn-sm btn-icon btn-bg-light btn-icon-danger btn-hover-danger" href="#" data-toggle="modal" data-target="#kt_chat_modal">
+                <i class="flaticon2-chat-1"></i>
+            </a>
+        </li>
+        <!--end::Item-->
+    </ul>
+    <!--end::Sticky Toolbar-->
+    <!--begin::Global Config(global config for global JS scripts)-->
+    <script>
+        var KTAppSettings = { "breakpoints": { "sm": 576, "md": 768, "lg": 992, "xl": 1200, "xxl": 1200 }, "colors": { "theme": { "base": { "white": "#ffffff", "primary": "#0BB783", "secondary": "#E5EAEE", "success": "#1BC5BD", "info": "#8950FC", "warning": "#FFA800", "danger": "#F64E60", "light": "#F3F6F9", "dark": "#212121" }, "light": { "white": "#ffffff", "primary": "#D7F9EF", "secondary": "#ECF0F3", "success": "#C9F7F5", "info": "#EEE5FF", "warning": "#FFF4DE", "danger": "#FFE2E5", "light": "#F3F6F9", "dark": "#D6D6E0" }, "inverse": { "white": "#ffffff", "primary": "#ffffff", "secondary": "#212121", "success": "#ffffff", "info": "#ffffff", "warning": "#ffffff", "danger": "#ffffff", "light": "#464E5F", "dark": "#ffffff" } }, "gray": { "gray-100": "#F3F6F9", "gray-200": "#ECF0F3", "gray-300": "#E5EAEE", "gray-400": "#D6D6E0", "gray-500": "#B5B5C3", "gray-600": "#80808F", "gray-700": "#464E5F", "gray-800": "#1B283F", "gray-900": "#212121" } }, "font-family": "Poppins" };
+        //cau hinh toastr de hien thi notification
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-bottom-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "200",
+            "hideDuration": "500",
+            "timeOut": "2000",
+            "extendedTimeOut": "500",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+    </script>
+    <!--end::Global Config-->
+
+</body>
+<!--end::Body-->
+</html>
+

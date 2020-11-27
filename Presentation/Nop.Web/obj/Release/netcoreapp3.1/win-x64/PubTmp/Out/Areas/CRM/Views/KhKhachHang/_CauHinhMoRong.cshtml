@@ -1,0 +1,39 @@
+﻿@using Nop.Core.Domain.CRM;
+@model CauHinhMoRongModel
+
+<div class="form-group row cauHinhMoRong" data-cauHinhId="@Model.CauHinhId">
+    <label class="col-4 col-form-label">@Model.TenCauHinh</label>
+    <div class="col-8">
+        @switch (Model.LoaiDuLieu)
+        {
+            case (int)LoaiDuLieuEnum.String:
+                {
+                    <input asp-for="Value" id="cauHinhMoRong_@Model.CauHinhId" type="text" class="form-control" data-val="true" im-insert="true">
+                }
+                break;
+            case (int)LoaiDuLieuEnum.Int:
+                {
+                    <input asp-for="Value" id="cauHinhMoRong_@Model.CauHinhId" type="number" class="form-control" style="text-align: right;" data-val="true" im-insert="true">
+                }
+                break;
+            case (int)LoaiDuLieuEnum.DateTime:
+                {
+                    <input id="cauHinhMoRong_@Model.CauHinhId" class="form-control" autocomplete="off" name="@Html.NameForModel()" value="@(Model.Value)" />
+                    <script>
+                        $(document).ready(function () {
+                            $("#cauHinhMoRong_@Model.CauHinhId").datepicker({
+                                language: "vi",
+                                autoclose: true,
+                                todayHighlight: !0,
+
+                            });
+                            $("#@Html.IdForModel()").inputmask("99/99/9999", {
+                                placeholder: "__/__/____",
+                            });
+                        });
+                    </script>
+                }
+                break;
+        }
+    </div>
+</div>

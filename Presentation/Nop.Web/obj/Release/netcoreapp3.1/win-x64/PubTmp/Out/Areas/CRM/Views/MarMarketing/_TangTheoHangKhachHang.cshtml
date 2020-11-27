@@ -1,0 +1,53 @@
+﻿@model MarMaGiamGiaModel
+
+@*<div class="content d-flex flex-column flex-column-fluid">
+    <div class="container">
+        <label class="col-2 col-form-label">Nhóm khách hàng</label>
+        <div class="col-2">
+            <nop-select asp-for="ListHangKhachHangSelectedId" asp-items="Model.DDLHangKhachHang" />
+        </div>
+        <div class="col-2">
+            <div class="checkbox-inline">
+                <label class="checkbox">
+                    @Html.CheckBoxFor(m => m.Random)
+                    <span></span>
+                </label>
+                <span></span>Gửi ngẫu nhiên nếu số phiếu ít hơn số khách hàng
+            </div>
+        </div>
+        <div class="mb-10 border-top mt-10"></div>
+        <div class="pb-0 mb-3 pb-3">
+            <div class="row">
+                <div class="col-xl-4"></div>
+                <div class="col-xl-7">
+                    <div class="row">
+                        <div class="col-3"></div>
+                        <div class="col-9">
+                            <button id="btnSave" class="btn btn-light-primary font-weight-bold">Xác nhận</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#btnSave").click(function () {
+        $.ajax({
+            cache: false,
+            type: "POST",
+            url: "@(Url.Action("_TangTheoHangKhachHang", "MarMarketing"))",
+            data: postData,
+            success: function (data, textStatus, jqXHR) {
+                ShowSuccess(data.Message);
+                HideModalManual();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                display_valid_error(data.ObjectInfo);
+            }
+        });
+    })
+</script>*@
+
+<h6>duong viet namss</h6>

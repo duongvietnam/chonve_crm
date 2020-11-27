@@ -1,0 +1,62 @@
+﻿@model KhDanhBaDienThoaiModel
+
+  
+<div class="card card-custom card-shadowless rounded-top-0">
+    <div class="card-body p-0">
+        <div class="row justify-content-center py-8 px-8 py-lg-15 px-lg-10">
+            <div class="col-xl-12 col-xxl-10">
+                <input asp-for="Id" type="hidden" />
+<div class="form-group row">
+<label class="col-2 col-form-label">ID:</label>
+<div class="col-10">
+<nop-editor asp-for="ID" />
+<span asp-validation-for="ID"></span>
+</div>
+</div>
+<div class="form-group row">
+<label class="col-2 col-form-label">KHACH_HANG_ID:</label>
+<div class="col-10">
+<nop-editor asp-for="KHACH_HANG_ID" />
+<span asp-validation-for="KHACH_HANG_ID"></span>
+</div>
+</div>
+<div class="form-group row">
+<label class="col-2 col-form-label">SO_DIEN_THOAI:</label>
+<div class="col-10">
+<nop-editor asp-for="SO_DIEN_THOAI" />
+<span asp-validation-for="SO_DIEN_THOAI"></span>
+</div>
+</div>
+<div class="form-group row">
+<label class="col-2 col-form-label">NHOM_DANH_BA:</label>
+<div class="col-10">
+<nop-editor asp-for="NHOM_DANH_BA" />
+<span asp-validation-for="NHOM_DANH_BA"></span>
+</div>
+</div>
+<div class="form-group row">
+<label class="col-2 col-form-label">TRANG_THAI:</label>
+<div class="col-10">
+<nop-editor asp-for="TRANG_THAI" />
+<span asp-validation-for="TRANG_THAI"></span>
+</div>
+</div>
+<div class="form-group row">
+<label class="col-2 col-form-label">NGAY_TAO:</label>
+<div class="col-10">
+<nop-editor asp-for="NGAY_TAO" />
+<span asp-validation-for="NGAY_TAO"></span>
+</div>
+</div>
+<div class="form-group row">
+<label class="col-2 col-form-label">NGUOI_TAO:</label>
+<div class="col-10">
+<nop-editor asp-for="NGUOI_TAO" />
+<span asp-validation-for="NGUOI_TAO"></span>
+</div>
+</div>
+            </div>
+        </div>
+    </div>
+</div>
+

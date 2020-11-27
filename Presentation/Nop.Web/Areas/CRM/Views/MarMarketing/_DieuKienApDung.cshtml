@@ -1,0 +1,89 @@
+﻿@model DieuKienMarketing
+
+@{ var randomNumber = CommonHelper.GenerateRandomInteger(); }
+<div class="ListDieuKienApDung" data-idDieuKienApDung="@randomNumber" id="divDieuKien_@randomNumber">
+    <input asp-for="DieuKienId" type="hidden" id="Id_@randomNumber" />
+    <div class="row">
+        <div class="col-11">
+            <div class="form-group row">
+                <div class="col-4 row">
+                    <label class="col-4 col-form-label">Dịch vụ</label>
+                    <div class="col-8">
+                        <nop-select asp-for="DichVuId" asp-items="Model.DDLDichVu" id="DichVuId_@randomNumber" />
+                    </div>
+                </div>
+                <div class="col-4 row">
+                    <label class="col-4 col-form-label">Số lượng</label>
+                    <div class="col-8">
+                        @Html.EditorFor(m => m.SoLuong, "Int32", "SoLuong_" + randomNumber, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                    </div>
+                </div>
+                <div class="col-4 row">
+                    <label class="col-4 col-form-label">Đơn vị tính</label>
+                    <div class="col-8">
+                        <nop-select asp-for="DonViTinh" asp-items="Model.DDLDonViTinh" id="DonViTinh_@randomNumber" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4 row">
+                    <label class="col-4 col-form-label">Sale</label>
+                    <div class="col-8">
+                        @Html.EditorFor(m => m.Sale, "Money", "Sale_" + randomNumber, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                    </div>
+                </div>
+                <div class="col-4 row">
+                    <label class="col-4 col-form-label">Từ ngày</label>
+                    <div class="col-8">
+                        @Html.EditorFor(m => m.TuNgay, "Date", "TuNgay_" + randomNumber, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                    </div>
+                </div>
+                <div class="col-4 row">
+                    <label class="col-4 col-form-label">Đến ngày</label>
+                    <div class="col-8">
+                        @Html.EditorFor(m => m.DenNgay, "Date", "DenNgay_" + randomNumber, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4 row">
+                    <label class="col-4 col-form-label">Đơn giá</label>
+                    <div class="col-8">
+                        @Html.EditorFor(m => m.DonGia, "Money", "DonGia_" + randomNumber, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                    </div>
+                </div>
+                <div class="col-4 row">
+                    <label class="col-4 col-form-label">Từ giờ</label>
+                    <div class="col-8">
+                        @Html.EditorFor(m => m.TuGio, "TimeNullable", "TuGio_" + randomNumber, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                    </div>
+                </div>
+                <div class="col-4 row">
+                    <label class="col-4 col-form-label">Đến giờ</label>
+                    <div class="col-8">
+                        @Html.EditorFor(m => m.DenGio, "TimeNullable", "DenGio_" + randomNumber, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-1">
+            <div class="form-group row">
+                <div class="col-12 row">
+                    <label class="col-12 col-form-label" style="height:38px"></label>
+                </div>
+            </div>
+            <a href="javascript:xoaDieuKienApDung(@randomNumber)" class="btn btn-light-danger font-weight-bold btn-sm">
+                <span class="svg-icon svg-icon-primary svg-icon-2x">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <rect x="0" y="0" width="24" height="24" />
+                            <path d="M6,8 L18,8 L17.106535,19.6150447 C17.04642,20.3965405 16.3947578,21 15.6109533,21 L8.38904671,21 C7.60524225,21 6.95358004,20.3965405 6.89346498,19.6150447 L6,8 Z M8,10 L8.45438229,14.0894406 L15.5517885,14.0339036 L16,10 L8,10 Z" fill="#000000" fill-rule="nonzero" style="fill: rgb(205, 13, 13) !important;"></path>
+                            <path d="M14,4.5 L14,3.5 C14,3.22385763 13.7761424,3 13.5,3 L10.5,3 C10.2238576,3 10,3.22385763 10,3.5 L10,4.5 L5.5,4.5 C5.22385763,4.5 5,4.72385763 5,5 L5,5.5 C5,5.77614237 5.22385763,6 5.5,6 L18.5,6 C18.7761424,6 19,5.77614237 19,5.5 L19,5 C19,4.72385763 18.7761424,4.5 18.5,4.5 L14,4.5 Z" fill="#000000" opacity="0.3" />
+                        </g>
+                    </svg>
+                </span>
+            </a>
+        </div>
+    </div>
+    <div class="separator separator-dashed my-10" style="margin-top:0px!important"></div>
+</div>

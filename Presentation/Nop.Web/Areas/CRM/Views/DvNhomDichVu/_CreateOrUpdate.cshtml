@@ -1,0 +1,20 @@
+﻿@model DvNhomDichVuModel
+
+
+<div class="card card-custom card-shadowless rounded-top-0">
+    <div class="card-body p-0">
+        <div class="row justify-content-center py-8 px-8 py-lg-15 px-lg-10">
+            <div class="col-xl-12 col-xxl-10">
+                <input asp-for="Id" type="hidden" />
+                <div class="form-group row">
+                    <label class="col-2 col-form-label text-required">Tên</label>
+                    <div class="col-10">
+                        <nop-editor asp-for="TEN" />
+                        <span asp-validation-for="TEN"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

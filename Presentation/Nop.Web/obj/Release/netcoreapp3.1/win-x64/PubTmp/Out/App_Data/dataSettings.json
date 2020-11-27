@@ -1,0 +1,5 @@
+﻿{
+  "DataConnectionString": "Data Source=115.146.122.238,1438\\CVDEV;Initial Catalog=CRM2020;Integrated Security=False;Persist Security Info=False;User ID=cvcrm;Password=Crm@01012021@",
+  "DataProvider": "sqlserver",
+  "RawDataSettings": {}
+}

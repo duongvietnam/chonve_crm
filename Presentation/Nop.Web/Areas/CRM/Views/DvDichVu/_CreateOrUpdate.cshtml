@@ -1,0 +1,64 @@
+﻿@model DvDichVuModel
+
+
+<div class="card card-custom card-shadowless rounded-top-0">
+    <div class="card-body p-0">
+        <div class="row justify-content-center py-8 px-8 py-lg-15 px-lg-10">
+            <div class="col-xl-12 col-xxl-10">
+                <input asp-for="Id" type="hidden" />
+                <input asp-for="IS_COMBO" type="hidden" />
+                <div class="form-group row">
+                    <label class="col-2 col-form-label text-required">Tên</label>
+                    <div class="col-10">
+                        <nop-editor asp-for="TEN" />
+                        <span asp-validation-for="TEN"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-2 col-form-label">Giá bán lẻ</label>
+                    <div class="col-4">
+                        <nop-editor asp-for="GiaBanLe" />
+                        <span asp-validation-for="GiaBanLe"></span>
+                    </div>
+                    <label class="col-2 col-form-label">Giá bán buôn</label>
+                    <div class="col-4">
+                        <nop-editor asp-for="GiaBanBuon" />
+                        <span asp-validation-for="GiaBanBuon"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-2 col-form-label">Nhóm dịch vụ</label>
+                    <div class="col-4">
+                        <nop-select asp-for="NHOM_ID" asp-items="Model.DDLNhomDichVu" />
+                    </div>
+                    <label class="col-2 col-form-label">Loại dịch vụ</label>
+                    <div class="col-4">
+                        <nop-select asp-for="LOAI_ID" asp-items="Model.DDLLoaiDichVu" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-2 col-form-label">Điểm dịch vụ</label>
+                    <div class="col-4">
+                        <nop-editor asp-for="DIEM_DICH_VU" />
+                        <span asp-validation-for="DIEM_DICH_VU"></span>
+                    </div>
+                    <label class="col-2 col-form-label">Đơn vị tính</label>
+                    <div class="col-4">
+                        <nop-select asp-for="DON_VI_TINH" asp-items="Model.DDLDonViTinh" />
+                        <span asp-validation-for="DON_VI_TINH"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#GiaBanLe").change(function () {
+        var giaBanLe = $("#GiaBanLe").val();
+        var diemDichVu = $("#DIEM_DICH_VU").val();
+        if (diemDichVu == 0 && giaBanLe > 0) {
+            $("#DIEM_DICH_VU").val(giaBanLe / 1000);
+        }
+    })
+</script>

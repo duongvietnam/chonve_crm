@@ -1,0 +1,301 @@
+﻿<div class="card card-custom gutter-b card-stretch">
+    <!--begin::Header-->
+    <div class="card-header border-0 pt-5">
+        <div class="card-title font-weight-bolder">
+            <div class="card-label">
+                <h3 class="card-title align-items-start flex-column">
+                    <span class="font-weight-bolder text-dark">
+                        Thống kê tổng thành phần dịch vụ năm hiện tại
+                    </span>
+                    <span class="text-muted mt-3 font-weight-bold font-size-sm"></span>
+                </h3>
+                <div class="font-size-sm text-muted mt-2" id="DoanhThuDVtotal"></div>
+            </div>
+        </div>
+        <div class="card-toolbar">
+            <ul class="nav nav-pills nav-pills-sm nav-dark-75" role="tablist">
+                <li class="nav-item">
+                    <a data-revenue="True" data-volume="False" data-year="@DateTime.Now.Year" class="btn-chart-TKTPDV  nav-link py-0 px-4 active label-info" data-toggle="tab" href="#chart_11">
+                        <span id="rev-btn-click" class="nav-text font-size-sm">Doanh thu</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a data-revenue="False" data-volume="True" data-year="@DateTime.Now.Year"  class="btn-chart-TKTPDV  nav-link py-0 px-4 label-info" data-toggle="tab" href="#chart_11">
+                        <span class="nav-text font-size-sm">Số Lượt</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--end::Header-->
+    <!--begin::Body-->
+    <div class="card-body p-0 d-flex flex-column">
+        <!--begin::Chart-->
+        <div id="chart_11" class="d-flex justify-content-center" style="min-height: 263.7px;"></div>
+
+        <script>
+                $(document).ready(function () {
+
+                    const primary = '#6993FF';
+                    const success = '#1BC5BD';
+                    const info = '#8950FC';
+                    const warning = '#FFA800';
+                    const danger = '#F64E60';
+                    function SortBySoLuong(a, b) {
+                        var aSL = a.SoLuong;
+                        var bSL = b.SoLuong;
+                        return ((aSL > bSL) ? -1 : ((aSL < bSL) ? 1 : 0));
+                    }
+                    var _demo11 = function (labels, values, total, unit) {
+                        const apexChart = "#chart_11";
+                        $(apexChart).empty();
+
+                    var options = {
+                        series: values,
+                        chart: {
+                            width: 380,
+                            type: 'donut',
+                        },
+                        legend: {
+                            position: 'right',
+                            fontSize: '9px',
+                        },
+                        labels: labels,
+                        plotOptions: {
+                            pie: {
+                                donut: {
+                                    size: '65%',
+                                    background: 'transparent',
+                                    labels: {
+                                        show: true,
+                                        name: {
+                                            show: true,
+                                            fontSize: '18px',
+                                            fontFamily: 'Helvetica, Arial, sans-serif',
+                                            fontWeight: 600,
+                                            color: undefined,
+                                            offsetY: -10,
+                                            formatter: function (val) {
+                                                return val
+                                            }
+                                        },
+                                        value: {
+                                            show: true,
+                                            fontSize: '13px',
+                                            fontFamily: 'Helvetica, Arial, sans-serif',
+                                            fontWeight: 400,
+                                            color: undefined,
+                                            offsetY: 16,
+                                            formatter: function (val) {
+                                                return val + unit/*' Tỷ VNĐ'*/
+                                            }
+                                        },
+                                        total: {
+                                            show: true,
+                                            showAlways: false,
+                                            label: 'Tổng',
+                                            fontSize: '18px',
+                                            fontFamily: 'Helvetica, Arial, sans-serif',
+                                            fontWeight: 600,
+                                            color: '#373d3f',
+                                            formatter: function (w) {
+                                                return w.globals.seriesTotals.reduce((a, b) => {
+                                                    return total + unit
+                                                }, 0)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'top'
+                        }
+                    }
+                }],
+                        colors: [primary, success, warning, danger, info, '#69ff90', '#20339e', '#ff00c8', '#ecf64e', '#7688a9']
+            };
+
+            var chart = new ApexCharts(document.querySelector(apexChart), options);
+            chart.render();
+        }
+                    $(".btn-chart-TKTPDV").click(function () {
+                        var rev = $(this).data("revenue");
+                        var vol = $(this).data("volume");
+                        var ye = $(this).data("year");
+                     $.get("@Url.Action("GetDVChart", "GdGiaoDich")", { year: ye, month: 0, day: 0 }, function (data) {
+                         var total = 0;
+                         labels = [];
+                         values = [];
+                         unit = "";
+                         if (rev=="True" && vol=="False") {
+                             for (item of data) {
+                                 labels.push(item.TenDichVu);
+                                 values.push(Math.round((item.DoanhThu / 1000000000) * Math.pow(10, 2)) / Math.pow(10, 2));
+                                 total += item.DoanhThu/1000000;
+                                 unit = " Tỷ VNĐ";
+                             }
+                             total = Math.round((total / 1000) * Math.pow(10, 2)) / Math.pow(10, 2);
+                             $("#DoanhThuDVtotal").text(total + ' Tỷ VNĐ');
+                         }
+                         if (rev == "False" && vol =="True") {
+                             for (item of data) {
+                                 labels.push(item.TenDichVu);
+                                 values.push(item.SoLuong );
+                                 total += item.SoLuong;
+                                 unit = " Lượt"
+                             }
+                         }
+                         if (data && data.length>0) {
+                             data.sort(SortBySoLuong);
+                             $("#top1DVTen").text(data[0].TenDichVu);
+                             $("#top1DVSoLuong").text(data[0].SoLuong + ' L');
+                             $("#top2DVTen").text(data[1].TenDichVu);
+                             $("#top2DVSoLuong").text(data[1].SoLuong + ' L');
+                             $("#top3DVTen").text(data[2].TenDichVu);
+                             $("#top3DVSoLuong").text(data[2].SoLuong + ' L');
+                             $("#top4DVTen").text(data[3].TenDichVu);
+                             $("#top4DVSoLuong").text(data[3].SoLuong + ' L');
+                         }
+                         _demo11(labels, values, total, unit);
+                     });
+
+                    });
+                    $("#rev-btn-click").click();
+    });
+        </script>
+        <!--end::Chart-->
+        <!--begin::Items-->
+        <div class="flex-grow-1 card-spacer">
+            <div class="row row-paddingless mt-5 mb-10">
+                <!--begin::Item-->
+                <div class="col">
+                    <div class="d-flex align-items-center mr-2">
+                        <!--begin::Symbol-->
+                        <div class="symbol symbol-45 symbol-light-info mr-4 flex-shrink-0">
+                            <div class="symbol-label">
+                                <span class="svg-icon svg-icon-lg svg-icon-info">
+                                    <!--begin::Svg Icon | path:/metronic/theme/html/demo9/dist/assets/media/svg/icons/Shopping/Cart3.svg-->
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                            <rect x="0" y="0" width="24" height="24" />
+                                            <path d="M12,4.56204994 L7.76822128,9.6401844 C7.4146572,10.0644613 6.7840925,10.1217854 6.3598156,9.76822128 C5.9355387,9.4146572 5.87821464,8.7840925 6.23177872,8.3598156 L11.2317787,2.3598156 C11.6315738,1.88006147 12.3684262,1.88006147 12.7682213,2.3598156 L17.7682213,8.3598156 C18.1217854,8.7840925 18.0644613,9.4146572 17.6401844,9.76822128 C17.2159075,10.1217854 16.5853428,10.0644613 16.2317787,9.6401844 L12,4.56204994 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
+                                            <path d="M3.5,9 L20.5,9 C21.0522847,9 21.5,9.44771525 21.5,10 C21.5,10.132026 21.4738562,10.2627452 21.4230769,10.3846154 L17.7692308,19.1538462 C17.3034221,20.271787 16.2111026,21 15,21 L9,21 C7.78889745,21 6.6965779,20.271787 6.23076923,19.1538462 L2.57692308,10.3846154 C2.36450587,9.87481408 2.60558331,9.28934029 3.11538462,9.07692308 C3.23725479,9.02614384 3.36797398,9 3.5,9 Z M12,17 C13.1045695,17 14,16.1045695 14,15 C14,13.8954305 13.1045695,13 12,13 C10.8954305,13 10,13.8954305 10,15 C10,16.1045695 10.8954305,17 12,17 Z" fill="#000000" />
+                                        </g>
+                                    </svg>
+                                    <!--end::Svg Icon-->
+                                </span>
+                            </div>
+                        </div>
+                        <!--end::Symbol-->
+                        <!--begin::Title-->
+                        <div>
+                            <div id="top1DVSoLuong" class="font-size-h4 text-dark-75 font-weight-bolder"></div>
+                            <div id="top1DVTen" class="font-size-sm text-muted font-weight-bold mt-1"></div>
+                        </div>
+                        <!--end::Title-->
+                    </div>
+                </div>
+                <!--end::Item-->
+                <!--begin::Item-->
+                <div class="col">
+                    <div class="d-flex align-items-center mr-2">
+                        <!--begin::Symbol-->
+                        <div class="symbol symbol-45 symbol-light-danger mr-4 flex-shrink-0">
+                            <div class="symbol-label">
+                                <span class="svg-icon svg-icon-lg svg-icon-danger">
+                                    <!--begin::Svg Icon | path:/metronic/theme/html/demo9/dist/assets/media/svg/icons/Home/Library.svg-->
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                            <rect x="0" y="0" width="24" height="24" />
+                                            <path d="M5,3 L6,3 C6.55228475,3 7,3.44771525 7,4 L7,20 C7,20.5522847 6.55228475,21 6,21 L5,21 C4.44771525,21 4,20.5522847 4,20 L4,4 C4,3.44771525 4.44771525,3 5,3 Z M10,3 L11,3 C11.5522847,3 12,3.44771525 12,4 L12,20 C12,20.5522847 11.5522847,21 11,21 L10,21 C9.44771525,21 9,20.5522847 9,20 L9,4 C9,3.44771525 9.44771525,3 10,3 Z" fill="#000000" />
+                                            <rect fill="#000000" opacity="0.3" transform="translate(17.825568, 11.945519) rotate(-19.000000) translate(-17.825568, -11.945519)" x="16.3255682" y="2.94551858" width="3" height="18" rx="1" />
+                                        </g>
+                                    </svg>
+                                    <!--end::Svg Icon-->
+                                </span>
+                            </div>
+                        </div>
+                        <!--end::Symbol-->
+                        <!--begin::Title-->
+                        <div>
+                            <div id="top2DVSoLuong" class="font-size-h4 text-dark-75 font-weight-bolder"></div>
+                            <div id="top2DVTen" class="font-size-sm text-muted font-weight-bold mt-1"></div>
+                        </div>
+                        <!--end::Title-->
+                    </div>
+                </div>
+                <!--end::Widget Item-->
+            </div>
+            <div class="row row-paddingless">
+                <!--begin::Item-->
+                <div class="col">
+                    <div class="d-flex align-items-center mr-2">
+                        <!--begin::Symbol-->
+                        <div class="symbol symbol-45 symbol-light-success mr-4 flex-shrink-0">
+                            <div class="symbol-label">
+                                <span class="svg-icon svg-icon-lg svg-icon-success">
+                                    <!--begin::Svg Icon | path:/metronic/theme/html/demo9/dist/assets/media/svg/icons/Shopping/Cart3.svg-->
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                            <rect x="0" y="0" width="24" height="24" />
+                                            <path d="M12,4.56204994 L7.76822128,9.6401844 C7.4146572,10.0644613 6.7840925,10.1217854 6.3598156,9.76822128 C5.9355387,9.4146572 5.87821464,8.7840925 6.23177872,8.3598156 L11.2317787,2.3598156 C11.6315738,1.88006147 12.3684262,1.88006147 12.7682213,2.3598156 L17.7682213,8.3598156 C18.1217854,8.7840925 18.0644613,9.4146572 17.6401844,9.76822128 C17.2159075,10.1217854 16.5853428,10.0644613 16.2317787,9.6401844 L12,4.56204994 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
+                                            <path d="M3.5,9 L20.5,9 C21.0522847,9 21.5,9.44771525 21.5,10 C21.5,10.132026 21.4738562,10.2627452 21.4230769,10.3846154 L17.7692308,19.1538462 C17.3034221,20.271787 16.2111026,21 15,21 L9,21 C7.78889745,21 6.6965779,20.271787 6.23076923,19.1538462 L2.57692308,10.3846154 C2.36450587,9.87481408 2.60558331,9.28934029 3.11538462,9.07692308 C3.23725479,9.02614384 3.36797398,9 3.5,9 Z M12,17 C13.1045695,17 14,16.1045695 14,15 C14,13.8954305 13.1045695,13 12,13 C10.8954305,13 10,13.8954305 10,15 C10,16.1045695 10.8954305,17 12,17 Z" fill="#000000" />
+                                        </g>
+                                    </svg>
+                                    <!--end::Svg Icon-->
+                                </span>
+                            </div>
+                        </div>
+                        <!--end::Symbol-->
+                        <!--begin::Title-->
+                        <div>
+                            <div id="top3DVSoLuong" class="font-size-h4 text-dark-75 font-weight-bolder"></div>
+                            <div id="top3DVTen" class="font-size-sm text-muted font-weight-bold mt-1"></div>
+                        </div>
+                        <!--end::Title-->
+                    </div>
+                </div>
+                <!--end::Item-->
+                <!--begin::Item-->
+                <div class="col">
+                    <div class="d-flex align-items-center mr-2">
+                        <!--begin::Symbol-->
+                        <div class="symbol symbol-45 symbol-light-primary mr-4 flex-shrink-0">
+                            <div class="symbol-label">
+                                <span class="svg-icon svg-icon-lg svg-icon-primary">
+                                    <!--begin::Svg Icon | path:/metronic/theme/html/demo9/dist/assets/media/svg/icons/Shopping/Barcode-read.svg-->
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                            <rect x="0" y="0" width="24" height="24" />
+                                            <rect fill="#000000" opacity="0.3" x="4" y="4" width="8" height="16" />
+                                            <path d="M6,18 L9,18 C9.66666667,18.1143819 10,18.4477153 10,19 C10,19.5522847 9.66666667,19.8856181 9,20 L4,20 L4,15 C4,14.3333333 4.33333333,14 5,14 C5.66666667,14 6,14.3333333 6,15 L6,18 Z M18,18 L18,15 C18.1143819,14.3333333 18.4477153,14 19,14 C19.5522847,14 19.8856181,14.3333333 20,15 L20,20 L15,20 C14.3333333,20 14,19.6666667 14,19 C14,18.3333333 14.3333333,18 15,18 L18,18 Z M18,6 L15,6 C14.3333333,5.88561808 14,5.55228475 14,5 C14,4.44771525 14.3333333,4.11438192 15,4 L20,4 L20,9 C20,9.66666667 19.6666667,10 19,10 C18.3333333,10 18,9.66666667 18,9 L18,6 Z M6,6 L6,9 C5.88561808,9.66666667 5.55228475,10 5,10 C4.44771525,10 4.11438192,9.66666667 4,9 L4,4 L9,4 C9.66666667,4 10,4.33333333 10,5 C10,5.66666667 9.66666667,6 9,6 L6,6 Z" fill="#000000" fill-rule="nonzero" />
+                                        </g>
+                                    </svg>
+                                    <!--end::Svg Icon-->
+                                </span>
+                            </div>
+                        </div>
+                        <!--end::Symbol-->
+                        <!--begin::Title-->
+                        <div>
+                            <div id="top4DVSoLuong" class="font-size-h4 text-dark-75 font-weight-bolder"></div>
+                            <div id="top4DVTen" class="font-size-sm text-muted font-weight-bold mt-1"></div>
+                        </div>
+                        <!--end::Title-->
+                    </div>
+                </div>
+                <!--end::Item-->
+            </div>
+        </div>
+        <!--end::Items-->
+    </div>
+    <!--end::Body-->
+</div>
+

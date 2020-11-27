@@ -1,0 +1,99 @@
+﻿@model MarMaGiamGiaModel
+
+<div class="card card-custom card-shadowless rounded-top-0">
+    <div class="card-body p-0">
+        <div class="row justify-content-center py-8 px-8 py-lg-15 px-lg-10">
+            <div class="col-xl-12 col-xxl-10">
+                <input asp-for="Id" type="hidden" />
+                <div class="card">
+                    <h5 class="card-header" style="font-weight: bold; padding:20px;">Thông tin mã giảm giá</h5>
+                    <div class="collapse show">
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <div class="row col-6">
+                                    <label class="col-12 col-form-label">Số tiền giảm</label>
+                                    <div class="col-5">
+                                        <nop-editor asp-for="SaleTheoSoTien" />
+                                        <span asp-validation-for="SaleTheoSoTien"></span>
+                                    </div>
+                                    <label class="col-2 col-form-label" style="text-align:center; color:rgb(237, 12, 26)">hoặc</label>
+                                    <div class="col-5">
+                                        <nop-editor asp-for="SaleTheoPhanTram" asp-dvtc="%"/>
+                                        <span asp-validation-for="SaleTheoPhanTram"></span>
+                                    </div>
+                                    <label class="col-form-label" id="soTienDuocGiam" style="color:#1013bb; padding-left:12.5px;"></label>
+                                    <label class="col-form-label" id="canhBaoTiLeVuot" style="color:red; padding-left:12.5px;">Tỉ lệ không được vượt quá 100%</label>
+                                </div>
+                                <div class="row col-6">
+                                    <div class="col-6">
+                                        <label class="col-form-label">Số lượng phiếu</label>
+                                        <nop-editor asp-for="SoPhieuTao" asp-dvtc="(phiếu)"/>
+                                        <span asp-validation-for="SoPhieuTao"></span>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="col-form-label">Có thể kết hợp</label>
+                                        <nop-select asp-for="CO_THE_KET_HOP" asp-items="@Model.DDLDuocKetHop" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top:10px;">
+                    <h5 class="card-header" style="font-weight: bold; padding:20px;">Điều kiện áp dụng</h5>
+                    <div class="collapse show">
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <label class="col-2 col-form-label">Từ ngày</label>
+                                <div class="col-4">
+                                    <nop-editor asp-for="TuNgay" />
+                                </div>
+                                <label class="col-2 col-form-label">Đến ngày</label>
+                                <div class="col-4">
+                                    <nop-editor asp-for="DenNgay" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-2 col-form-label">Số tiền tối thiểu</label>
+                                <div class="col-4">
+                                    <nop-editor asp-for="DonGia" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#canhBaoTiLeVuot").hide();
+
+        $("#SaleTheoSoTien").on('keyup', function () {
+            $("#canhBaoTiLeVuot").hide();
+            var soTienGiam = $("#SaleTheoSoTien").val();
+            if (soTienGiam > 0) {
+                $("#SaleTheoPhanTram").val(0);
+                $("#soTienDuocGiam").html("Số tiền được giảm là: " + soTienGiam + " VNĐ");
+            }
+        });
+
+        $("#SaleTheoPhanTram").on('keyup', function () {
+            $("#canhBaoTiLeVuot").hide();
+            var soTienGiam = $("#SaleTheoPhanTram").val();
+            if (soTienGiam > 0) {
+                if (soTienGiam > 100) {
+                    $("#canhBaoTiLeVuot").show();
+                    $("#soTienDuocGiam").hide();
+                } else {
+                    $("#soTienDuocGiam").show();
+                    $("#SaleTheoSoTien").val(0);
+                    $("#soTienDuocGiam").html("Số tiền được giảm là: " + soTienGiam + " %");
+                }
+            }
+        });
+    })
+</script>

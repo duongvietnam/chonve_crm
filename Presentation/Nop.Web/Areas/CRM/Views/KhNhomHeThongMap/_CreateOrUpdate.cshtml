@@ -1,0 +1,34 @@
+﻿@model KhNhomHeThongMapModel
+
+  
+<div class="card card-custom card-shadowless rounded-top-0">
+    <div class="card-body p-0">
+        <div class="row justify-content-center py-8 px-8 py-lg-15 px-lg-10">
+            <div class="col-xl-12 col-xxl-10">
+                <input asp-for="Id" type="hidden" />
+<div class="form-group row">
+<label class="col-2 col-form-label">ID:</label>
+<div class="col-10">
+<nop-editor asp-for="ID" />
+<span asp-validation-for="ID"></span>
+</div>
+</div>
+<div class="form-group row">
+<label class="col-2 col-form-label">NHOM_KHACH_HANG_ID:</label>
+<div class="col-10">
+<nop-editor asp-for="NHOM_KHACH_HANG_ID" />
+<span asp-validation-for="NHOM_KHACH_HANG_ID"></span>
+</div>
+</div>
+<div class="form-group row">
+<label class="col-2 col-form-label">NHOM_KHACH_HANG_HE_THONG:</label>
+<div class="col-10">
+<nop-editor asp-for="NHOM_KHACH_HANG_HE_THONG" />
+<span asp-validation-for="NHOM_KHACH_HANG_HE_THONG"></span>
+</div>
+</div>
+            </div>
+        </div>
+    </div>
+</div>
+

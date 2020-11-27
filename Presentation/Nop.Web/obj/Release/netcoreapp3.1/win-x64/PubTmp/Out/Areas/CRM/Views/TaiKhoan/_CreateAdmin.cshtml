@@ -1,0 +1,706 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model CustomerModel
+
+@using Newtonsoft.Json
+@if (Model.CountryEnabled && Model.StateProvinceEnabled)
+{
+    <script>
+        $(document).ready(function() {
+            $("#@Html.IdFor(model => model.CountryId)").change(function() {
+                var selectedItem = $(this).val();
+                var ddlStates = $("#@Html.IdFor(model => model.StateProvinceId)");
+
+                var postData = {
+                    countryId: selectedItem,
+                    addSelectStateItem: "true"
+                };
+
+                $.ajax({
+                    cache: false,
+                    type: "GET",
+                    url: "@(Url.Action("GetStatesByCountryId", "Country"))",
+                    data: postData,
+                    success: function (data, textStatus, jqXHR) {
+                        ddlStates.html('');
+                        $.each(data, function(id, option) {
+                            ddlStates.append($('<option></option>').val(option.id).html(option.name));
+                        });
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        $("#statesAlert").click();
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+<!--begin::Row-->
+<div class="row">
+    <div class="col-xl-2"></div>
+    <div class="col-xl-7">
+        <div class="my-2">
+            <div class="panel-body">
+                <div class="text-center mb-3">
+                    @if (Model.Id > 0)
+                    {
+                        <span id="compBasicNote" class="text-primary d-none" >Hoàn Tất Quá Trình Thêm Thông Tin Cơ Bản Của Doanh Nghiệp !! </span>
+                    }
+                    else
+                    {
+                        <span class="text-warning">Tạo tài khoản admin cho doanh nghiệp để hoàn thành thủ tục </span>
+                    }
+                </div>
+
+                @if (Model.UsernamesEnabled)
+                {
+                    <div class="form-group row">
+                        <label class="col-form-label col-3 text-lg-right text-left">Username</label>
+                        <div class="col-9">
+                            <div class="input-group input-group-lg input-group-solid">
+                                @Html.TextBoxFor(m => m.Username, new { @class = "form-control form-control-lg form-control-solid", @type = "text" })
+                            </div>
+                            <span asp-validation-for="Username"></span>
+                        </div>
+                    </div>
+                }
+
+                <!--begin::Group-->
+                <div class="form-group row">
+                    <label class="col-form-label col-3 text-lg-right text-left text-required">Địa Chỉ Email</label>
+                    <div class="col-9">
+                        <div class="input-group input-group-lg input-group-solid">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="la la-at"></i>
+                                </span>
+                            </div>
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control form-control-lg form-control-solid", @type = "text", @placeholder = "Nhập Địa Chỉ Email" })
+                        </div>
+                        <span asp-validation-for="Email"></span>
+                    </div>
+                </div>
+                <!--end::Group-->
+
+                <div class="form-group row">
+                    <label class="col-form-label col-3 text-lg-right text-left text-required">Mật Khẩu</label>
+                    <div class="col-9">
+                        <div class="input-group input-group-lg input-group-solid">
+                            @Html.TextBoxFor(m => m.Password, new { @class = "form-control form-control-lg form-control-solid", @type = "password", @placeholder = "Nhập Mật Khẩu" })
+                            <div class="input-group-btn">
+                                @if (Model.Id > 0)
+                                {
+                                    <button id="changePWBtn" type="submit" name="changepassword" class="btn btn-info">
+                                        @T("Admin.Customers.Customers.Fields.Password.Change")
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                        <span asp-validation-for="Password"></span>
+                    </div>
+                </div>
+
+                @if (Model.Id > 0) { }
+                else
+                {
+                    <!--begin::Footer-->
+                    <div class="pb-0 mb-3 pb-3">
+                        <div class="row">
+                            <div class="col-xl-4"></div>
+                            <div class="col-xl-7">
+                                <div class="row">
+                                    <div class="col-3"></div>
+                                    <div class="col-9">
+                                        <button type="button" id="btnL" class="btn btn-light-primary font-weight-bold">Tạo Tài Khoản</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Footer-->
+                }
+
+                <div class="row">
+                    <label class="col-form-label col-3 text-lg-right text-left"></label>
+                    <div class="col-9">
+                        <h6 class="text-dark font-weight-bold mb-10 border-top pt-15 text-center">Thông tin bổ sung</h6>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-form-label col-3 text-lg-right text-left">Nhập Họ</label>
+                    <div class="col-9">
+                        <div class="input-group input-group-lg input-group-solid">
+                            @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control form-control-lg form-control-solid", @type = "text" })
+                        </div>
+                        <span asp-validation-for="FirstName"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-3 text-lg-right text-left">Nhập Tên</label>
+                    <div class="col-9">
+                        <div class="input-group input-group-lg input-group-solid">
+                            @Html.TextBoxFor(m => m.LastName, new { @class = "form-control form-control-lg form-control-solid", @type = "text" })
+                        </div>
+                        <span asp-validation-for="LastName"></span>
+                    </div>
+                </div>
+                @if (Model.GenderEnabled)
+                {
+                    <div class="form-group row">
+                        <label class="col-3 col-form-label text-lg-right">Giới Tính</label>
+                        <div class="col-9 col-form-label">
+                            <div class="radio-inline">
+                                <label class="radio">
+                                    @Html.RadioButton("Gender", "M", (Model.Gender == "M"), new { id = "Gender_Male" })
+                                    <span></span>Nam
+                                </label>
+                                <label class="radio">
+                                    @Html.RadioButton("Gender", "F", (Model.Gender == "F"), new { id = "Gender_Female" })
+                                    <span></span>Nữ
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (Model.DateOfBirthEnabled)
+                {
+                    <div class="form-group row">
+                        <label class="col-form-label text-right col-lg-3 col-sm-12">Ngày Sinh</label>
+                        <div class="col-lg-4 col-md-9 col-sm-12">
+                            @Html.TextBoxFor(m => m.DateOfBirth, new { @id = "kt_datetimepicker_5", @class = "form-control form-control-solid datepicker", @placeholder = "Chọn Ngày Sinh" })
+                            <span asp-validation-for="DateOfBirth"></span>
+                        </div>
+                    </div>
+                }
+                @if (Model.CompanyEnabled)
+                {
+                    <div class="form-group row">
+                        <label class="col-form-label col-3 text-lg-right text-left">Tên Doanh Nghiệp</label>
+                        <div class="col-9">
+                            <div class="input-group input-group-lg input-group-solid">
+                                @Html.TextBoxFor(m => m.Company, new { @class = "form-control form-control-lg form-control-solid", @type = "text" })
+                            </div>
+                            <span asp-validation-for="Company"></span>
+                        </div>
+                    </div>
+                }
+                @if (Model.StreetAddressEnabled)
+                {
+                    <div class="form-group row">
+                        <label class="col-form-label col-3 text-lg-right text-left">StreetAddress</label>
+                        <div class="col-9">
+                            <div class="input-group input-group-lg input-group-solid">
+                                @Html.TextBoxFor(m => m.StreetAddress, new { @class = "form-control form-control-lg form-control-solid", @type = "text" })
+                            </div>
+                            <span asp-validation-for="StreetAddress"></span>
+                        </div>
+                    </div>
+                }
+                @if (Model.StreetAddress2Enabled)
+                {
+                    <div class="form-group row">
+                        <label class="col-form-label col-3 text-lg-right text-left">StreetAddress</label>
+                        <div class="col-9">
+                            <div class="input-group input-group-lg input-group-solid">
+                                @Html.TextBoxFor(m => m.StreetAddress, new { @class = "form-control form-control-lg form-control-solid", @type = "text" })
+                            </div>
+                            <span asp-validation-for="StreetAddress"></span>
+                        </div>
+                    </div>
+                }
+                @if (Model.ZipPostalCodeEnabled)
+                {
+                    <div class="form-group row">
+                        <label class="col-form-label col-3 text-lg-right text-left">ZipPostalCode</label>
+                        <div class="col-9">
+                            <div class="input-group input-group-lg input-group-solid">
+                                @Html.TextBoxFor(m => m.ZipPostalCode, new { @class = "form-control form-control-lg form-control-solid", @type = "text" })
+                            </div>
+                            <span asp-validation-for="ZipPostalCode"></span>
+                        </div>
+                    </div>
+                }
+                @if (Model.CityEnabled)
+                {
+                    <div class="form-group row">
+                        <label class="col-form-label col-3 text-lg-right text-left">City</label>
+                        <div class="col-9">
+                            <div class="input-group input-group-lg input-group-solid">
+                                @Html.TextBoxFor(m => m.City, new { @class = "form-control form-control-lg form-control-solid", @type = "text" })
+                            </div>
+                            <span asp-validation-for="City"></span>
+                        </div>
+                    </div>
+                }
+                @if (Model.CountyEnabled)
+                {
+                    <div class="form-group row">
+                        <label class="col-form-label col-3 text-lg-right text-left">County</label>
+                        <div class="col-9">
+                            <div class="input-group input-group-lg input-group-solid">
+                                @Html.TextBoxFor(m => m.County, new { @class = "form-control form-control-lg form-control-solid", @type = "text" })
+                            </div>
+                            <span asp-validation-for="County"></span>
+                        </div>
+                    </div>
+                }
+                @if (Model.CountryEnabled)
+                {
+                    <div class="form-group row">
+                        <label class="col-form-label col-3 text-lg-right text-left">CountryId</label>
+                        <div class="col-9">
+                            <div class="input-group input-group-lg input-group-solid">
+                                @Html.TextBoxFor(m => m.CountryId, new { @class = "form-control form-control-lg form-control-solid", @type = "text" })
+                            </div>
+                            <span asp-validation-for="CountryId"></span>
+                        </div>
+                    </div>
+                }
+                @if (Model.CountryEnabled && Model.StateProvinceEnabled)
+                {
+                    <div class="form-group row">
+                        <label class="col-form-label col-3 text-lg-right text-left">StateProvinceId</label>
+                        <div class="col-9">
+                            <div class="input-group input-group-lg input-group-solid">
+                                @Html.TextBoxFor(m => m.StateProvinceId, new { @class = "form-control form-control-lg form-control-solid", @type = "text" })
+                            </div>
+                            <span asp-validation-for="StateProvinceId"></span>
+                        </div>
+                    </div>
+                }
+                @if (Model.PhoneEnabled)
+                {
+                    <div class="form-group row">
+                        <label class="col-form-label col-3 text-lg-right text-left">Số Điện Thoại</label>
+                        <div class="col-9">
+                            <div class="input-group input-group-lg input-group-solid">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="la la-phone"></i>
+                                    </span>
+                                </div>
+                                @Html.TextBoxFor(m => m.Phone, new { @class = "form-control form-control-lg form-control-solid", @type = "text" })
+                            </div>
+                            <span asp-validation-for="Phone"></span>
+                        </div>
+                    </div>
+                }
+                @if (Model.FaxEnabled)
+                {
+                    <div class="form-group row">
+                        <label class="col-form-label col-3 text-lg-right text-left">Fax</label>
+                        <div class="col-9">
+                            <div class="input-group input-group-lg input-group-solid">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="la la-phone"></i>
+                                    </span>
+                                </div>
+                                @Html.TextBoxFor(m => m.Fax, new { @class = "form-control form-control-lg form-control-solid", @type = "text" })
+                            </div>
+                            <span asp-validation-for="Fax"></span>
+                        </div>
+                    </div>
+                }
+                @if (Model.CustomerAttributes.Count > 0)
+                {
+                    @await Html.PartialAsync("_CustomerAttributes", Model.CustomerAttributes)
+                }
+                <div class="form-group row">
+                    <label class="col-3 col-form-label text-lg-right">Được Miễn Thuế</label>
+                    <div class="col-9 col-form-label">
+                        <div class="checkbox-inline">
+                            <label class="checkbox">
+                                @Html.CheckBoxFor(m => m.IsTaxExempt)
+                                <span></span>
+                            </label>
+                        </div>
+                        <span asp-validation-for="IsTaxExempt"></span>
+                    </div>
+                </div>
+                @if (Model.DisplayVatNumber)
+                {
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <nop-label asp-for="VatNumber" />
+                        </div>
+                        <div class="col-md-9">
+                            <nop-editor asp-for="VatNumber" />
+                            <div class="margin-t-5">
+                                (@string.Format(T("Admin.Customers.Customers.Fields.VatNumberStatus").Text, Model.VatNumberStatusNote))
+                                <button type="submit" name="markVatNumberAsValid" class="btn btn-primary">
+                                    @T("Admin.Customers.Customers.Fields.VatNumber.MarkAsValid")
+                                </button>
+                                <button type="submit" name="markVatNumberAsInvalid" class="btn bg-red">
+                                    @T("Admin.Customers.Customers.Fields.VatNumber.MarkAsInvalid")
+                                </button>
+                            </div>
+                            <span asp-validation-for="VatNumber"></span>
+                        </div>
+                    </div>
+                }
+                @if (Model.AllowCustomersToSetTimeZone)
+                {
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <nop-label asp-for="TimeZoneId" />
+                        </div>
+                        <div class="col-md-9">
+                            <nop-select asp-for="TimeZoneId" asp-items="Model.AvailableTimeZones" />
+                            <span asp-validation-for="TimeZoneId"></span>
+                        </div>
+                    </div>
+                }
+                @if (Model.AvailableNewsletterSubscriptionStores != null && Model.AvailableNewsletterSubscriptionStores.Count > 0)
+                {
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-3 text-lg-right text-left">Nhận Tin Mới Từ Doanh Nghiệp</label>
+                        <div class="col-9">
+                            <div class="input-group input-group-required">
+                                <nop-select asp-for="SelectedNewsletterSubscriptionStoreIds" asp-items="Model.AvailableNewsletterSubscriptionStores" asp-multiple="true" />
+                                <div class="input-group-btn"></div>
+                            </div>
+                            <script>
+                $(document).ready(function() {
+                    var newsletterSubscriptionStoreIdsInput = $('#@Html.IdFor(model => model.SelectedNewsletterSubscriptionStoreIds)').data("kendoMultiSelect");
+                    newsletterSubscriptionStoreIdsInput.setOptions({
+                        newsletterSubscriptionStoreIdsInput: false,
+                        filter: "contains"
+                    });
+                });
+                            </script>
+                        </div>
+                    </div>
+                }
+                <div class="form-group row">
+                    <label class="col-form-label col-3 text-lg-right text-left">Vai Trò Tài Khoản</label>
+                    <div class="col-9">
+                        <div class="input-group input-group-required">
+                            <nop-select asp-for="SelectedCustomerRoleIds" asp-items="Model.AvailableCustomerRoles" asp-multiple="true" />
+                            <div class="input-group-btn">
+                                <nop-required />
+                            </div>
+                        </div>
+                        <script>
+                $(document).ready(function() {
+                    var customerRolesIdsInput = $('#@Html.IdFor(model => model.SelectedCustomerRoleIds)').data("kendoMultiSelect");
+                    customerRolesIdsInput.setOptions({
+                        customerRolesIdsInput: false,
+                        filter: "contains"
+                    });
+
+                    @if (Model.AvailableCustomerRoles.Count == 0)
+                    {
+                        <text>
+                            customerRolesIdsInput.setOptions({
+                                enable: false,
+                                placeholder: '@T("Admin.Customers.Customers.Fields.CustomerRoles.NoRoles")'
+                            });
+                            customerRolesIdsInput._placeholder();
+                            customerRolesIdsInput._enable();
+                        </text>
+                    }
+                });
+                        </script>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-3 text-lg-right text-left">Người Quản Lý Của Nhà Cung Cấp</label>
+                    <div class="col-9">
+                        <nop-select asp-for="VendorId" asp-items="Model.AvailableVendors" />
+                        <span asp-validation-for="VendorId"></span>
+                        <em>@T("Admin.Customers.Customers.VendorShouldBeInVendorsRole")</em>
+                    </div>
+                </div>
+                @if (Model.AffiliateId > 0)
+                {
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <nop-label asp-for="AffiliateId" />
+                        </div>
+                        <div class="col-md-9">
+                            <a asp-controller="Affiliate" asp-action="Edit" asp-route-id="@Model.AffiliateId">@Model.AffiliateName - @T("Admin.Common.View")</a>
+                            <button type="submit" name="remove-affiliate" class="btn bg-red">
+                                @T("Admin.Customers.Customers.Fields.Affiliate.Remove")
+                            </button>
+                        </div>
+                    </div>
+                }
+                <div class="form-group row">
+                    <label class="col-3 col-form-label text-lg-right">Hoạt Động</label>
+                    <div class="col-9 col-form-label">
+                        <div class="checkbox-inline">
+                            <label class="checkbox">
+                                @Html.CheckBoxFor(m => m.Active)
+                                <span></span>
+                            </label>
+                        </div>
+                        <span asp-validation-for="Active"></span>
+                    </div>
+                </div>
+                @if (Model.Id > 0 && Model.CustomerAssociatedExternalAuthRecordsSearchModel.AssociatedExternalAuthRecords.Count > 0)
+                {
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <nop-label asp-for="CustomerAssociatedExternalAuthRecordsSearchModel.AssociatedExternalAuthRecords" />
+                        </div>
+                        <div class="col-md-9">
+                            @await Html.PartialAsync("Table", new DataTablesModel
+                            {
+                                Name = "externalauthrecords-grid",
+                                Paging = false,
+                                ServerSide = false,
+                                Length = Model.CustomerAssociatedExternalAuthRecordsSearchModel.PageSize,
+                                LengthMenu = Model.CustomerAssociatedExternalAuthRecordsSearchModel.AvailablePageSizes,
+                                ColumnCollection = new List<ColumnProperty>
+                                {
+                                    new ColumnProperty(nameof(CustomerAssociatedExternalAuthModel.AuthMethodName))
+                                    {
+                                        Title = T("Admin.Customers.Customers.AssociatedExternalAuth.Fields.AuthMethodName").Text,
+                                        Width = "100"
+                                    },
+                                    new ColumnProperty(nameof(CustomerAssociatedExternalAuthModel.Email))
+                                    {
+                                        Title = T("Admin.Customers.Customers.AssociatedExternalAuth.Fields.Email").Text,
+                                        Width = "100"
+                                    },
+                                    new ColumnProperty(nameof(CustomerAssociatedExternalAuthModel.ExternalIdentifier))
+                                    {
+                                        Title = T("Admin.Customers.Customers.AssociatedExternalAuth.Fields.ExternalIdentifier").Text,
+                                        Width = "300"
+                                    }
+                                },
+                                Data = JsonConvert.SerializeObject(Model.CustomerAssociatedExternalAuthRecordsSearchModel.AssociatedExternalAuthRecords.Select(externalAuthRecord => new
+                                {
+                                    AuthMethodName = JavaScriptEncoder.Default.Encode(externalAuthRecord.AuthMethodName),
+                                    Email = JavaScriptEncoder.Default.Encode(externalAuthRecord.Email),
+                                    ExternalIdentifier = JavaScriptEncoder.Default.Encode(externalAuthRecord.ExternalIdentifier)
+                                }).ToList())
+                            })
+                        </div>
+                    </div>
+                }
+                <div class="form-group row">
+                    <label class="col-form-label col-3 text-lg-right text-left">Nhận Xét Của Quản Trị Viên</label>
+                    <div class="col-9">
+                        <div class="input-group input-group-lg input-group-solid">
+                            @Html.TextAreaFor(m => m.AdminComment, new { @class = "form-control form-control-lg form-control-solid", @type = "text" })
+                        </div>
+                        <span asp-validation-for="AdminComment"></span>
+                    </div>
+                </div>
+
+                @if (Model.Id > 0)
+                {
+                    <!--begin::Footer-->
+                    <div class="card-footer pb-0 mb-10 border-bottom pb-10">
+                        <div class="row">
+                            <div class="col-xl-4"></div>
+                            <div class="col-xl-7">
+                                <div class="row">
+                                    <div class="col-3"></div>
+                                    <div class="col-9">
+                                        <button type="button" id="btnUpdateAdmin" class="btn btn-light-primary font-weight-bold">Lưu Thông Tin</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Footer-->
+                }
+                @if (Model.DisplayRegisteredInStore)
+                {
+                    <div class="form-group row">
+                        <label class="col-form-label col-3 text-lg-right text-left">Được đăng ký bởi doanh nghiệp :</label>
+                        <div class="col-9">
+                            <div class="input-group input-group-lg input-group-solid">
+                                @Html.TextBoxFor(m => m.RegisteredInStore, new { @class = "form-control form-control-lg form-control-solid", @type = "text", @disabled = "" })
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (Model.Id > 0)
+                {
+                    <div class="form-group row">
+                        <label class="col-form-label col-3 text-lg-right text-left">Địa chỉ IP lần đăng nhập gần nhất :</label>
+                        <div class="col-9">
+                            <div class="input-group input-group-lg input-group-solid">
+                                @Html.TextBoxFor(m => m.LastIpAddress, new { @class = "form-control form-control-lg form-control-solid", @type = "text", @disabled = "" })
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (Model.Id > 0)
+                {
+                    <div class="form-group row">
+                        <label class="col-form-label col-3 text-lg-right text-left">Được đăng ký vào ngày :</label>
+                        <div class="col-9">
+                            <div class="input-group input-group-lg input-group-solid">
+                                @Html.TextBoxFor(m => m.CreatedOn, new { @class = "form-control form-control-lg form-control-solid", @type = "text", @disabled = "" })
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (Model.Id > 0)
+                {
+                    <div class="form-group row">
+                        <label class="col-form-label col-3 text-lg-right text-left">Ngày hoạt động gần nhất :</label>
+                        <div class="col-9">
+                            <div class="input-group input-group-lg input-group-solid">
+                                @Html.TextBoxFor(m => m.LastActivityDate, new { @class = "form-control form-control-lg form-control-solid", @type = "text", @disabled = "" })
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (Model.Id > 0 && !string.IsNullOrEmpty(Model.LastVisitedPage))
+                {
+                    <div class="form-group row">
+                        <label class="col-form-label col-3 text-lg-right text-left">Ngày truy cập trang gần nhất :</label>
+                        <div class="col-9">
+                            <div class="input-group input-group-lg input-group-solid">
+                                @Html.TextBoxFor(m => m.LastVisitedPage, new { @class = "form-control form-control-lg form-control-solid", @type = "text", @disabled = "" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-3">
+                            <nop-label asp-for="LastVisitedPage" />
+                        </div>
+                        <div class="col-md-9">
+                            <div class="form-text-row">@Model.LastVisitedPage</div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<nop-alert asp-alert-id="statesAlert" asp-alert-message="@T("Admin.Common.Alert.States.Failed")" />
+<script>
+    $(document).ready(function () {
+        if ($("#lsTab").data("fromcreate") == "True") {
+            $("#compBasicNote").addClass("d-block");
+        }
+        //CHANGE PASSWORD
+        $('#changePWBtn').click(function () {
+            var postData = {
+                fromAjax: true,
+                Id:@Model.Id,
+                Email: $("#@Html.IdFor(m=>m.Email)").val(),
+                Password: $("#@Html.IdFor(m=>m.Password)").val()
+            }
+            addAntiForgeryToken(postData);
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url: "@Url.Action("ChangePassword", "TaiKhoan")",
+                data: postData,
+                success: function (data, textStatus, jqXHR) {
+                    if (data.IsSuccess) {
+                        ShowSuccess(data.Message);
+                    } else {
+                        console.log(data);
+                        display_valid_error(data.ObjectInfo);
+                    }
+                },
+                complete: function (jqXHR, textStatus) {
+                }
+            });
+        });
+        $('.datepicker').datepicker({
+            format: 'mm/dd/yyyy',
+            //startDate: '-3d'
+        });
+        //CREATE ADMIN
+         $("#btnL").click(function (e) {
+            var postData = {
+                Username:$("#@Html.IdFor(m=>m.Email)").val(),
+                Email: $("#@Html.IdFor(m=>m.Email)").val(),
+                Password: $("#@Html.IdFor(m=>m.Password)").val(),
+                FirstName: $("#@Html.IdFor(m=>m.FirstName)").val(),
+                LastName: $("#@Html.IdFor(m=>m.LastName)").val(),
+                Gender: $("input[name='@Html.NameFor(m=>m.Gender)']:checked").val(),
+                DateOfBirth: $("#@Html.IdFor(m=>m.DateOfBirth)").val(),
+                Company: $("#@Html.IdFor(m=>m.Company)").val(),
+                IsTaxExempt: $("#@Html.IdFor(m=>m.IsTaxExempt)").val(),
+                SelectedNewsletterSubscriptionStoreIds: $("#@Html.IdFor(m=>m.SelectedNewsletterSubscriptionStoreIds)").val(),
+                SelectedCustomerRoleIds: $("#@Html.IdFor(m=>m.SelectedCustomerRoleIds)").val(),
+                VendorId: $("#@Html.IdFor(m=>m.VendorId)").val(),
+                Active: $("#@Html.IdFor(m=>m.Active)").val(),
+                AdminComment: $("#@Html.IdFor(m=>m.AdminComment)").val(),
+                fromAjax: true,
+                idStore: @ViewBag.idStore,
+            }
+            //console.log(postData);
+            addAntiForgeryToken(postData);
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url: "@Url.Action("Create", "TaiKhoan")",
+                data: postData,
+                success: function (data, textStatus, jqXHR) {
+                    if (data.IsSuccess) {
+                        ShowSuccess(data.Message);
+                        $('#accountTab').click();
+                    } else {
+                        console.log(data);
+                        display_valid_error(data.ObjectInfo);
+                    }
+                },
+                complete: function (jqXHR, textStatus) {
+                }
+            });
+         });
+        //UPDATE ADMIN
+        $("#btnUpdateAdmin").click(function (e) {
+            //alert("a");
+            var postData = {
+                Id:@Model.Id,
+                Username:$("#@Html.IdFor(m=>m.Email)").val(),
+                Email: $("#@Html.IdFor(m=>m.Email)").val(),
+                Password: $("#@Html.IdFor(m=>m.Password)").val(),
+                FirstName: $("#@Html.IdFor(m=>m.FirstName)").val(),
+                LastName: $("#@Html.IdFor(m=>m.LastName)").val(),
+                Gender: $("input[name='@Html.NameFor(m=>m.Gender)']:checked").val(),
+                DateOfBirth: $("#@Html.IdFor(m=>m.DateOfBirth)").val(),
+                Company: $("#@Html.IdFor(m=>m.Company)").val(),
+                IsTaxExempt: $("#@Html.IdFor(m=>m.IsTaxExempt)").val(),
+                SelectedNewsletterSubscriptionStoreIds: $("#@Html.IdFor(m=>m.SelectedNewsletterSubscriptionStoreIds)").val(),
+                SelectedCustomerRoleIds: $("#@Html.IdFor(m=>m.SelectedCustomerRoleIds)").val(),
+                VendorId: $("#@Html.IdFor(m=>m.VendorId)").val(),
+                Active: $("#@Html.IdFor(m=>m.Active)").val(),
+                AdminComment: $("#@Html.IdFor(m=>m.AdminComment)").val(),
+                fromAjax: true,
+                idStore: @ViewBag.idStore,
+            }
+            console.log(postData);
+            addAntiForgeryToken(postData);
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url: "@Url.Action("Update", "TaiKhoan")",
+                data: postData,
+                success: function (data, textStatus, jqXHR) {
+                    if (data.IsSuccess) {
+                        ShowSuccess(data.Message);
+                    } else {
+                        //display errors if returned
+                        debugger
+                        console.log(data);
+                        display_valid_error(data.ObjectInfo);
+                    }
+                },
+                complete: function (jqXHR, textStatus) {
+                }
+            });
+            //e.preventDefault();
+        });
+    });
+</script>

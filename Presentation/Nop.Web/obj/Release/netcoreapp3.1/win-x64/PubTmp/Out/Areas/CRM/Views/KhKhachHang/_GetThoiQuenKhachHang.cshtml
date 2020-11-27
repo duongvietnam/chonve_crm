@@ -1,0 +1,149 @@
+﻿@model KhPhanTichKhachHangSearchModel
+
+<nop-antiforgery-token />
+<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+    <div class="d-flex flex-column-fluid">
+        <div class="container">
+            <div class="card card-custom mb-10">
+                <div class="card-header flex-wrap border-0 pb-0">
+                    <div class="card-title">
+                        <h3 class="card-label">
+                            Tìm kiếm khách hàng
+                            <span class="d-block text-muted pt-2 font-size-sm">Lọc khách hàng theo tên khách hàng, nhóm khách hàng</span>
+                        </h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-lg-12 col-xl-12">
+                            <div class="row align-items-center mb-5">
+                                <div class="col-md-6 my-2 my-md-0">
+                                    <div class="row align-items-center">
+                                        <div class="col-4">
+                                            <label class="mr-3 mb-0 d-none d-md-block">Tên khách hàng</label>
+                                        </div>
+                                        <div class="col-8">
+                                            @Html.TextBoxFor(m => m.KeySearch, new { @class = "form-control", @placeholder = "Tên khách hàng..." })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 my-2 my-md-0">
+                                    <div class="row align-items-center">
+                                        <div class="col-4">
+                                            <label class="mr-3 mb-0 d-none d-md-block">Chọn dịch vụ</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <nop-select asp-for="DichVu" asp-items="@Model.DDLDichVu" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-xl-12 mt-5 mt-lg-0 text-center">
+                            <button type="button" id="search-thoiQuenKhachHang" class="btn btn-light-primary px-6 font-weight-bold">
+                                <i class="flaticon2-search-1 text-muted"></i>Search
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex flex-column-fluid">
+    <div class="container">
+        <div class="kt-portlet__body">
+            @await Html.PartialAsync("Table", new DataTablesModel
+            {
+                Name = "items-thoiQuenKhachHang",
+                UrlRead = new DataUrl("_GetThoiQuenKhachHang", "KhKhachHang", null),
+                SearchButtonId = "search-thoiQuenKhachHang",
+                Length = Model.PageSize,
+                LengthMenu = Model.AvailablePageSizes,
+                Filters = new List<FilterParameter>
+                {
+                    new FilterParameter(nameof(Model.KeySearch)),
+                    new FilterParameter(nameof(Model.DichVu))
+                },
+                ColumnCollection = new List<ColumnProperty>
+                {
+                    new ColumnProperty(nameof(KhKhachHangModel.TEN))
+                    {
+                        Title = "Tên",
+                    },
+                    new ColumnProperty(nameof(KhKhachHangModel.SoDienThoai))
+                    {
+                        Title = "Điện thoại",
+                    },
+                    new ColumnProperty("")
+                    {
+                        Title = "Top dịch vụ sử dụng",
+                        Render= new RenderCustom("RenderTopDichVu"),
+                    },
+                    new ColumnProperty("")
+                    {
+                        Title = "Top dịch vụ sử dụng 30 ngày",
+                        Render= new RenderCustom("RenderTopDichVu30days"),
+                    },
+                    new ColumnProperty("")
+                    {
+                        Title = "Top dịch vụ sử dụng 60 ngày",
+                        Render= new RenderCustom("RenderTopDichVu60days"),
+                    },
+                    new ColumnProperty("")
+                    {
+                        Title = "Top dịch vụ sử dụng 90 ngày",
+                        Render= new RenderCustom("RenderTopDichVu90days"),
+                    },
+                    new ColumnProperty(nameof(KhKhachHangModel.Id))
+                    {
+                        Title = "Chi tiết",
+                        Width = "120",
+                        ClassName =  NopColumnClassDefaults.Button,
+                        Render = new RenderButtonView(new DataUrl("TradeDetail"))
+                    }
+                }
+            })
+        </div>
+    </div>
+</div>
+
+<script>
+    function RenderTopDichVu(data, type, row, meta) {
+        var _html = "";
+        $.each(row.TopGiaoDich, function (i) {
+            _html += "<div class='text-primary font-weight-bold'>" + row.TopGiaoDich[i].TopGiaoDich.TenDichVu + " : " + row.TopGiaoDich[i].TopGiaoDich.SoLan + " lần </div>";
+        });
+
+        return _html;
+    }
+
+    function RenderTopDichVu30days(data, type, row, meta) {
+        var _html = "";
+        $.each(row.TopGiaoDich30days, function (i) {
+            _html += "<div class='text-primary font-weight-bold'>" + row.TopGiaoDich[i].TopGiaoDich30days.TenDichVu + " : " + row.TopGiaoDich[i].TopGiaoDich30days.SoLan + " lần </div>";
+        });
+
+        return _html;
+    }
+
+    function RenderTopDichVu60days(data, type, row, meta) {
+        var _html = "";
+        $.each(row.TopGiaoDich60days, function (i) {
+            _html += "<div class='text-primary font-weight-bold'>" + row.TopGiaoDich[i].TopGiaoDich60days.TenDichVu + " : " + row.TopGiaoDich[i].TopGiaoDich60days.SoLan + " lần </div>";
+        });
+
+        return _html;
+    }
+
+    function RenderTopDichVu90days(data, type, row, meta) {
+        var _html = "";
+        $.each(row.TopGiaoDich90days, function (i) {
+            _html += "<div class='text-primary font-weight-bold'>" + row.TopGiaoDich[i].TopGiaoDich90days.TenDichVu + " : " + row.TopGiaoDich[i].TopGiaoDich90days.SoLan + " lần </div>";
+        });
+
+        return _html;
+    }
+</script>
+

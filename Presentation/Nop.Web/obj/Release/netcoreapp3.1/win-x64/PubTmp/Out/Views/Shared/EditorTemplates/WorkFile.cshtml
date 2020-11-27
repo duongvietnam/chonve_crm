@@ -1,0 +1,137 @@
+﻿@model int
+@inject IWorkfilesService WorkfilesService
+@inject WorkfilesSettings workfilesSetting
+@using Nop.Core;
+@using Nop.Services.HeThong;
+@using Nop.Core.Domain.Common;
+@using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
+
+@{
+    //Model: dau vao la 1 chuoi id cac file Id, dc ngan cach boi dau ","
+
+    //register CSS and JS
+    //Html.AddCssFileParts("/Themes/AppWork/Content/assets/vendor/libs/dropzone/dropzone.css");
+    //Html.AddScriptParts("/Themes/AppWork/Content/assets/vendor/libs/dropzone/dropzone.js");
+
+    //other variables
+    var randomNumber = CommonHelper.GenerateRandomInteger();
+    var clientId = "workfiles" + randomNumber;
+    var workfileitem = new WorkfilesModel();
+    string panelStyle = "";
+    string itemsStyle = "display:none";
+    int _id = Model;
+    if (_id > 0)
+    {
+        workfileitem = WorkfilesService.GetWorkfilesById(_id).ToModel<WorkfilesModel>();
+        panelStyle = "display:none";
+        itemsStyle = "";
+    }
+
+}
+    
+    <div class="dropzone dropzone-multi" id="kt_dropzone_@(clientId)">
+        <input type="hidden" asp-for="@Model" value="@_id" />
+        <div class="dropzone-panel" style="@panelStyle">
+            <a class="dropzone-select btn btn-label-brand btn-bold btn-sm dz-clickable"><i class="flaticon-attachment"></i>Đính kèm file</a>
+        </div>
+        <div class="dropzone-items">
+            <div class="dropzone-item" style="@itemsStyle">
+                <div class="dropzone-file">
+                    <div class="dropzone-filename" title="@workfileitem.TenDayDu">
+                        <a href="@workfileitem.Guid.ToUrlDownload()"><span data-dz-name>@workfileitem.TenDayDu</span></a> <strong>(<span data-dz-size>@workfileitem.ContentLengthText</span>)</strong>
+                    </div>
+                    <div class="dropzone-error" data-dz-errormessage></div>
+                </div>
+                <div class="dropzone-progress">
+                    <div class="progress">
+                        <div class="progress-bar kt-bg-brand" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="@(_id>0?"100":"0")" data-dz-uploadprogress ></div>
+                    </div>
+                </div>
+                <div class="dropzone-toolbar">
+                    <span class="dropzone-delete" data-dz-remove><i class="flaticon2-cross"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="dz-default dz-message"><span>Kéo file vào đây để tải lên</span></div>
+    </div>
+<style>
+    .dropzone.dropzone-multi .dropzone-item{
+        margin-top:0;
+    }
+</style>
+<script>
+    var KTDropzone@(clientId) = {
+    init: function() {
+            var e = "#kt_dropzone_@(clientId)",
+                    o = $(e + " .dropzone-item"), btnpanel= $(e + " .dropzone-panel");
+            o.id = "";
+            var n = o.parent(".dropzone-items").html();
+             @if(_id==0)
+            {
+                <text>
+            o.remove();
+            </text>
+            }
+            $(e + " .progress").css("opacity", "0")
+            o.find(".dropzone-delete").click(function () {
+                var _id = $(e + " input").val();
+                @if(_id==0)
+            {
+                <text>
+                DeleteWorkFile(_id);
+            </text>
+            }
+                btnpanel.show();
+                o.remove();
+                $(e + " input").val(0);
+            });
+
+
+
+                var t = new Dropzone(e, {
+                    url: "/Workfiles/SaveDropzoneJsUploadedFiles",
+                    parallelUploads: 20,
+                    maxFiles: 1, //one file
+                    maxFilesize: @(workfilesSetting.DungLuongToiDa), //5M
+                    previewTemplate: n,
+                    previewsContainer: e + " .dropzone-items",
+                    clickable: e + " .dropzone-select",
+                    acceptedFiles: "image/*,application/pdf,.psd,.doc,.docx,.xls,.xlsx,.ppt,.pptx",
+                    dictFileTooBig: "Kích thước file({{filesize}}MiB) đang lớn hơn kích thước file cho phép ({{maxFilesize}}MiB)",
+                    dictCancelUpload:  "Dừng tải",//"Cancel upload",
+                    dictCancelUploadConfirmation: "Bạn có chắc chắn dừng tải file lên không ?",
+                    dictRemoveFile: "Xóa",
+                });
+                t.on("addedfile", function(o) {
+                    $(document).find(e + " .dropzone-item").css("display", "");
+                    btnpanel.hide();
+                }), t.on("totaluploadprogress", function(o) {
+                    $(e + " .progress-bar").css("width", o + "%")
+                }), t.on("sending", function(o) {
+                    $(e + " .progress-bar").css("opacity", "1")
+                }), t.on("complete", function (e) {
+                    setTimeout(function() {
+                        $("#kt_dropzone_@(clientId) .dz-complete .progress-bar, #kt_dropzone_@(clientId) .dz-complete .progress").css("opacity", "0")
+                    }, 300)
+                }), t.on("success", function (event, data) {
+                    if (data.length > 0) {
+                        $(e + " input").val(data[0].Id);
+
+                    }
+                }), t.on("removedfile", function (file) {
+                    var _id = $(e + " input").val();
+                    @if(_id==0)
+                    {
+                        <text>
+                            DeleteWorkFile(_id);
+                        </text>
+                    }
+                    btnpanel.show();
+                    $(e + " input").val(0);
+                })
+    }
+};
+$(document).ready(function() {
+    KTDropzone@(clientId).init()
+});
+</script>

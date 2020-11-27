@@ -1,0 +1,92 @@
+﻿<div class="card card-custom card-stretch gutter-b">
+    <!--begin::Header-->
+    <div class="card-header border-0">
+        <h3 class="card-title font-weight-bolder text-dark">Thống kê nhóm khách hàng</h3>
+        <div class="card-toolbar d-none">
+            <div class="dropdown dropdown-inline">
+                <a href="#" class="btn btn-light btn-sm font-size-sm font-weight-bolder dropdown-toggle text-dark-75" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Create</a>
+                <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+                    <!--begin::Navigation-->
+                    <ul class="navi navi-hover">
+                        <li class="navi-header pb-1">
+                            <span class="text-primary text-uppercase font-weight-bold font-size-sm">Add new:</span>
+                        </li>
+                        <li class="navi-item">
+                            <a href="#" class="navi-link">
+                                <span class="navi-icon">
+                                    <i class="flaticon2-shopping-cart-1"></i>
+                                </span>
+                                <span class="navi-text">Order</span>
+                            </a>
+                        </li>
+                        <li class="navi-item">
+                            <a href="#" class="navi-link">
+                                <span class="navi-icon">
+                                    <i class="flaticon2-calendar-8"></i>
+                                </span>
+                                <span class="navi-text">Event</span>
+                            </a>
+                        </li>
+                        <li class="navi-item">
+                            <a href="#" class="navi-link">
+                                <span class="navi-icon">
+                                    <i class="flaticon2-graph-1"></i>
+                                </span>
+                                <span class="navi-text">Report</span>
+                            </a>
+                        </li>
+                        <li class="navi-item">
+                            <a href="#" class="navi-link">
+                                <span class="navi-icon">
+                                    <i class="flaticon2-rocket-1"></i>
+                                </span>
+                                <span class="navi-text">Post</span>
+                            </a>
+                        </li>
+                        <li class="navi-item">
+                            <a href="#" class="navi-link">
+                                <span class="navi-icon">
+                                    <i class="flaticon2-writing"></i>
+                                </span>
+                                <span class="navi-text">File</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <!--end::Navigation-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end::Header-->
+    <!--begin::Body-->
+    <div id="listNhomKH" class="card-body pt-2">
+    </div>
+    <!--end::Body-->
+</div>
+<script>
+    $(document).ready(function () {
+        $.get("@Url.Action("GetNumberKHByNhomKH", "KhNhomKhachHangMap")", {}, function (data) {
+            //console.log(data);
+            html = ``;
+            listColorClass = ["bg-warning", "bg-success", "bg-danger", "bg-primary", "bg-info", "", "", ""];
+            listTextColorClass = ["text-warning", "text-success", "text-danger", "text-primary", "text-info", "", "", ""];
+            clindex = 0;
+            for (item of data) {
+
+                html += `<div class="d-flex align-items-center mb-10">
+                            <span class="bullet bullet-bar ${listColorClass[clindex]} align-self-stretch"></span>
+                            <label class="flex-shrink-0 m-0 mx-4">
+                                <span><i class="icon-2x flaticon2-group ${listTextColorClass[clindex]}"></i></span>
+                            </label>
+                            <div class="d-flex flex-column flex-grow-1">
+                                <a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-lg mb-1">${item.Nhan}</a>
+                                <span class="text-success font-weight-bold">${item.SoLuong}<span class="text-muted font-weight-bold"> Khách hàng</span></span>
+                                <span class="text-success font-weight-bold">${Math.round((item.GiaTri / 1000000000) * Math.pow(10, 2)) / Math.pow(10, 2)}<span class="text-muted font-weight-bold"> Tỷ VNĐ</span></span>
+                            </div>
+                        </div>`;
+                clindex++;
+            }
+            $("#listNhomKH").append(html);
+        });
+    });
+</script>

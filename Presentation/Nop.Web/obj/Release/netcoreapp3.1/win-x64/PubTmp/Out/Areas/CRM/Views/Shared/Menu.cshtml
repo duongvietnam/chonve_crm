@@ -1,0 +1,26 @@
+﻿@using Nop.Services.Security
+@using Nop.Web.Framework.Menu
+
+<ul class="menu-nav ">
+    @{
+        //load sitemap
+        var siteMap = new XmlSiteMap();
+        siteMap.LoadFrom("~/Areas/CRM/sitemap.config", areaName: AreaNames.CRM);
+
+        //standard (default) items
+        var rootNode = siteMap.RootNode;
+
+        //display menu items
+        foreach (var item in rootNode.ChildNodes.Where(x => x.Visible))
+        {
+            @await Html.PartialAsync("_MenuItem", item)
+        }
+    }
+</ul>
+<script>
+    $(document).ready(function () {
+
+    });
+</script>
+
+

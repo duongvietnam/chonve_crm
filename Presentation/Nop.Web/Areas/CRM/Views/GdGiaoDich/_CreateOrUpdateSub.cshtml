@@ -1,0 +1,43 @@
+﻿@model GiaoDichSubModel
+
+@{
+    var randomNumber = CommonHelper.GenerateRandomInteger();
+}
+<div class="ListSub" data-idGioDichSub="@randomNumber" id="divGiaoDichSub_@randomNumber">
+    <div class="row">
+        <div class="form-group col-3">
+            <label class="col-form-label">Dịch vụ</label>
+            <nop-select asp-for="DichVuId" asp-items="Model.DDLDichVu" id="DichVuId_@randomNumber" class="selectListDichVu" data-dvId="@randomNumber" />
+        </div>
+        <div class="form-group col-3">
+            <label class="col-form-label">Số lượng</label>
+            <input asp-for="SoLuong" id="SoLuong_@randomNumber" type="number" class="form-control" style="text-align: right;" data-val="true" im-insert="true">
+        </div>
+        <div class="form-group col-2">
+            <label class="col-form-label">Đơn vị tính</label>
+            <div>
+                <strong style="color:#02bc77" id="ThanhTien_@randomNumber">Chiếc</strong>
+            </div>
+        </div>
+        <div class="form-group col-2">
+            <label class="col-form-label">Thành tiền</label>
+            <div>
+                <strong style="color:#02bc77" id="ThanhTien_@randomNumber">2.000.000 đ</strong>
+            </div>
+        </div>
+        <div class="col-2">
+            <a href="javascript:xoaGiaoDichSub(@randomNumber)" class="btn btn-light-danger font-weight-bold mr-2 btn-sm" style="margin-top:10px;">
+                <span class="svg-icon svg-icon-primary svg-icon-2x">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <rect x="0" y="0" width="24" height="24" />
+                            <path d="M6,8 L18,8 L17.106535,19.6150447 C17.04642,20.3965405 16.3947578,21 15.6109533,21 L8.38904671,21 C7.60524225,21 6.95358004,20.3965405 6.89346498,19.6150447 L6,8 Z M8,10 L8.45438229,14.0894406 L15.5517885,14.0339036 L16,10 L8,10 Z" fill="#000000" fill-rule="nonzero" style="fill: rgb(205, 13, 13) !important;"></path>
+                            <path d="M14,4.5 L14,3.5 C14,3.22385763 13.7761424,3 13.5,3 L10.5,3 C10.2238576,3 10,3.22385763 10,3.5 L10,4.5 L5.5,4.5 C5.22385763,4.5 5,4.72385763 5,5 L5,5.5 C5,5.77614237 5.22385763,6 5.5,6 L18.5,6 C18.7761424,6 19,5.77614237 19,5.5 L19,5 C19,4.72385763 18.7761424,4.5 18.5,4.5 L14,4.5 Z" fill="#000000" opacity="0.3" />
+                        </g>
+                    </svg>
+                </span>
+                Xoá
+            </a>
+        </div>
+    </div>
+</div>

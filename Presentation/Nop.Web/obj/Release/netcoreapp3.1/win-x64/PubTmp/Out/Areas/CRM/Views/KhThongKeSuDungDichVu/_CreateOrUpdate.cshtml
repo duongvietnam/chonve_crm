@@ -1,0 +1,55 @@
+﻿@model KhThongKeSuDungDichVuModel
+
+  
+<div class="card card-custom card-shadowless rounded-top-0">
+    <div class="card-body p-0">
+        <div class="row justify-content-center py-8 px-8 py-lg-15 px-lg-10">
+            <div class="col-xl-12 col-xxl-10">
+                <input asp-for="Id" type="hidden" />
+<div class="form-group row">
+<label class="col-2 col-form-label">KHACH_HANG_ID:</label>
+<div class="col-10">
+<nop-editor asp-for="KHACH_HANG_ID" />
+<span asp-validation-for="KHACH_HANG_ID"></span>
+</div>
+</div>
+<div class="form-group row">
+<label class="col-2 col-form-label">TOP_DICH_VU:</label>
+<div class="col-10">
+<nop-editor asp-for="TOP_DICH_VU" />
+<span asp-validation-for="TOP_DICH_VU"></span>
+</div>
+</div>
+<div class="form-group row">
+<label class="col-2 col-form-label">TOP_DICH_VU_30DAYS:</label>
+<div class="col-10">
+<nop-editor asp-for="TOP_DICH_VU_30DAYS" />
+<span asp-validation-for="TOP_DICH_VU_30DAYS"></span>
+</div>
+</div>
+<div class="form-group row">
+<label class="col-2 col-form-label">TOP_DICH_VU_60DAYS:</label>
+<div class="col-10">
+<nop-editor asp-for="TOP_DICH_VU_60DAYS" />
+<span asp-validation-for="TOP_DICH_VU_60DAYS"></span>
+</div>
+</div>
+<div class="form-group row">
+<label class="col-2 col-form-label">TOP_DICH_VU_90DAYS:</label>
+<div class="col-10">
+<nop-editor asp-for="TOP_DICH_VU_90DAYS" />
+<span asp-validation-for="TOP_DICH_VU_90DAYS"></span>
+</div>
+</div>
+<div class="form-group row">
+<label class="col-2 col-form-label">TOP_DICH_VU_LE_TET:</label>
+<div class="col-10">
+<nop-editor asp-for="TOP_DICH_VU_LE_TET" />
+<span asp-validation-for="TOP_DICH_VU_LE_TET"></span>
+</div>
+</div>
+            </div>
+        </div>
+    </div>
+</div>
+

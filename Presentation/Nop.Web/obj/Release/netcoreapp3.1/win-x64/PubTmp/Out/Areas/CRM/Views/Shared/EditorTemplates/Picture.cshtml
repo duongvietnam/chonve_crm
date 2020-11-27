@@ -1,0 +1,26 @@
+﻿@model int
+
+@{
+
+    var random = CommonHelper.GenerateRandomInteger();
+    var clientId = "picture" + random;
+
+}
+<div class="kt-avatar kt-avatar--outline" id="@(clientId + "value")">
+    <input type="hidden" asp-for="@Model" />
+    <div class="kt-avatar__holder" style="background-image: url(/Workfiles/ViewImage?Id=@Model)"></div>
+    <label class="kt-avatar__upload" data-toggle="kt-tooltip" title="" data-original-title="Thay đổi ảnh">
+        <i class="fa fa-pen"></i>
+        <input type="file" id="@(clientId + "value_avatar")" name="@(clientId + "value_avatar")" accept=".png, .jpg, .jpeg">
+    </label>
+    <span class="kt-avatar__cancel" data-toggle="kt-tooltip" title="" data-original-title="Xóa ảnh">
+        <i class="fa fa-times"></i>
+    </span>
+</div>
+
+<script>
+    $(document).ready(function() {
+        new KTAvatar("@(clientId + "value")");
+  
+    });
+</script>

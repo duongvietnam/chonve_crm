@@ -1,0 +1,102 @@
+﻿@model List<GiaoDichModel>
+
+
+@foreach (var giaodich in Model)
+{
+<div class="timeline-item">
+    <div class="timeline-media">
+        <i class="icon-lg fas fa-dollar-sign text-warning"></i>
+    </div>
+    <div class="timeline-content pb-2 pt-2">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="mr-2">
+                <a href="#" class="text-dark-75 text-hover-primary font-weight-bold">Giao dịch đã thực hiện.</a>
+                <span class="text-muted ml-2">@giaodich.NgayGiaoDich</span>
+                <span class="label label-light-danger font-weight-bolder label-inline ml-2">@giaodich.EnumTrangThaiGiaoDichValue</span>
+            </div>
+            <div class="dropdown ml-2 d-none" data-toggle="tooltip" title="Quick actions" data-placement="left">
+                <a href="#" class="btn btn-hover-light-primary btn-sm btn-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="ki ki-more-hor icon-md"></i>
+                </a>
+                <div class="dropdown-menu p-0 m-0 dropdown-menu-md dropdown-menu-right">
+                    <!--begin::Navigation-->
+                    <ul class="navi navi-hover">
+                        <li class="navi-header font-weight-bold py-4">
+                            <span class="font-size-lg">Choose Label:</span>
+                            <i class="flaticon2-information icon-md text-muted" data-toggle="tooltip" data-placement="right" title="Click to learn more..."></i>
+                        </li>
+                        <li class="navi-separator mb-3 opacity-70"></li>
+                        <li class="navi-item">
+                            <a href="#" class="navi-link">
+                                <span class="navi-text">
+                                    <span class="label label-xl label-inline label-light-success">Customer</span>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="navi-item">
+                            <a href="#" class="navi-link">
+                                <span class="navi-text">
+                                    <span class="label label-xl label-inline label-light-danger">Partner</span>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="navi-item">
+                            <a href="#" class="navi-link">
+                                <span class="navi-text">
+                                    <span class="label label-xl label-inline label-light-warning">Suplier</span>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="navi-item">
+                            <a href="#" class="navi-link">
+                                <span class="navi-text">
+                                    <span class="label label-xl label-inline label-light-primary">Member</span>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="navi-item">
+                            <a href="#" class="navi-link">
+                                <span class="navi-text">
+                                    <span class="label label-xl label-inline label-light-dark">Staff</span>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="navi-separator mt-3 opacity-70"></li>
+                        <li class="navi-footer py-4">
+                            <a class="btn btn-clean font-weight-bold btn-sm" href="#">
+                                <i class="ki ki-plus icon-sm"></i>Add new
+                            </a>
+                        </li>
+                    </ul>
+                    <!--end::Navigation-->
+                </div>
+            </div>
+        </div>
+    <div class="row">
+        <div class="col-2 d-none">
+            <div class="symbol symbol-50 symbol-light mr-1">
+                <span class="symbol-label">
+                    <img src="https://preview.keenthemes.com/metronic/theme/html/demo9/dist/assets/media/svg/misc/006-plurk.svg" class="h-50 align-self-center" alt="">
+                </span>
+            </div>
+        </div>
+        <div class="col-3">
+            Dịch vụ<span class="text-dark-75 font-weight-bolder d-block font-size-lg">@giaodich.DichVu</span>
+        </div>
+        <div class="col-3">
+            Thanh toán<span class="text-dark-75 font-weight-bolder d-block font-size-lg">
+                @giaodich.ThanhTien
+            </span>
+        </div>
+        <div class="col-3">
+            Thanh toán bằng<span class="text-dark-75 font-weight-bolder d-block font-size-lg">@giaodich.EnumHinhThucThanhToanValue</span>
+        </div>
+        <div class="col-2">
+            Giảm<span class="text-dark-75 font-weight-bolder d-block font-size-lg">@(giaodich.SoTienGiam??"0") ₫</span>
+        </div>
+    </div>
+
+    </div>
+</div>
+}
+

@@ -1,0 +1,54 @@
+﻿@model CustomerModel
+@{
+
+}
+<nop-antiforgery-token />
+<div class="card card-custom">
+    <!--begin::Header-->
+    <div class="card-header py-3">
+        <div class="card-title align-items-start flex-column">
+            <h3 class="card-label font-weight-bolder text-dark">Nhật ký hoạt động</h3>
+            <span class="text-muted font-weight-bold font-size-sm mt-1">Thông tin chi tiết nhật ký hoạt động</span>
+        </div>
+        <div class="card-toolbar">
+
+        </div>
+    </div>
+    <!--end::Header-->
+    <!--begin::Body-->
+    <div class="card-body">
+        @await Html.PartialAsync("Table", new DataTablesModel
+    {
+        Name = "activitylog-grid",
+        UrlRead = new DataUrl("ListActivityLog", "Profile", new RouteValueDictionary { [nameof(Model.CustomerActivityLogSearchModel.CustomerId)] = Model.CustomerActivityLogSearchModel.CustomerId }),
+        Length = Model.CustomerActivityLogSearchModel.PageSize,
+        LengthMenu = Model.CustomerActivityLogSearchModel.AvailablePageSizes,
+        ColumnCollection = new List<ColumnProperty>
+        {
+            new ColumnProperty(nameof(CustomerActivityLogModel.CreatedOn))
+            {
+                Title = "Ngày",
+                ClassName =  NopColumnClassDefaults.CenterAll,
+                Width="120",
+                Render = new RenderDate(EnumRenderDateFormat.CUT_TIME)
+            },
+            new ColumnProperty(nameof(CustomerActivityLogModel.IpAddress))
+            {
+                Title = "IP truy xuất",
+                Width = "100"
+            },
+            new ColumnProperty(nameof(CustomerActivityLogModel.ActivityLogTypeName))
+            {
+                Title = "Loại hoạt động",
+                Width = "200"
+            },            
+            new ColumnProperty(nameof(CustomerActivityLogModel.Comment))
+            {
+                Title = "Ghi chú"
+            }
+
+        }
+    })
+    </div>
+    <!--end::Body-->
+</div>

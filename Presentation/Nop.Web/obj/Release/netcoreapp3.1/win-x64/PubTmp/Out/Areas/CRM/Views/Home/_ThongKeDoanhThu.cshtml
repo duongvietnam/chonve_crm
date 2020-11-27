@@ -1,0 +1,223 @@
+﻿
+<div class="card card-custom gutter-b card-stretch">
+    <!--begin::Header-->
+    <div class="card-header border-0 pt-5">
+        <div class="card-title font-weight-bolder">
+            <div class="card-label">
+                <h3 class="card-title align-items-start flex-column">
+                    <span class="font-weight-bolder text-dark">
+                        Thống kê tổng doanh thu
+                        <span id="spanBtnTime" class="label label-info label-inline mr-2">Tất cả các năm</span>
+                    </span>
+                    <span class="text-muted mt-3 font-weight-bold font-size-sm"></span>
+                    <span class="switch switch-icon ">
+                        <label id="selectHour" class="d-none">
+                            <input id="secheckHour" type="checkbox" name="select">
+                            <span></span>
+                        </label>
+                    </span>
+                </h3>
+                <div id="totalVal" class="font-size-sm text-muted mt-2"></div>
+            </div>
+        </div>
+        <div class="card-toolbar">
+            <ul class="nav nav-pills nav-pills-sm nav-dark-75" role="tablist">
+                <li class="nav-item">
+                    <div class="form-group">
+                        <button data-year="0" data-month="0" data-day="0" id="btnChart" class="btn btn-success d-none">Quay lại</button>
+                    </div>
+                </li>
+                <li class="nav-item">
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--end::Header-->
+    <!--begin::Body-->
+    <div class="card-body p-0 d-flex flex-column">
+        <!--begin::Chart-->
+        <div id="kt_charts_widget_4_chart" style="min-height: 365px; ">
+                <script>
+        $(document).ready(function () {
+            var _chartTKDT = function (labels, values, total) {
+                const apexChart = "#kt_charts_widget_4_chart";
+                $(apexChart).empty();
+                //console.log(labels);
+                //console.log(values);
+                var options = {
+                    series: [{
+                        name: 'Doanh Thu',
+                        data: values /*[2.3, 3.1, 4.0, 10.1, 4.0, 3.6, 3.2, 2.3, 1.4, 0.8, 0.5, 0.2]*/
+                    }],
+                    chart: {
+                        height: 500,
+                        type: 'bar',
+                        events: {
+                            click: function (event, chartContext, config) {
+                                indx = config.dataPointIndex;
+                                if (indx >= 0) {
+                                    thisLabel = chartContext.opts.xaxis.categories[indx];
+                                    chartClick(thisLabel);
+                                }
+                                // The last parameter config contains additional information like `seriesIndex` and `dataPointIndex` for cartesian charts
+                            }
+                        }
+                    },
+                    plotOptions: {
+                        bar: {
+                            dataLabels: {
+                                position: 'top', // top, center, bottom
+                            },
+                            //distributed: true
+                        }
+                    },
+                    dataLabels: {
+                        enabled: true,
+                        formatter: function (val) {
+                            return val /*"₫" + val + " Triệu"*/;
+                        },
+                        offsetY: -20,
+                        style: {
+                            fontSize: '12px',
+                            colors: ["#FFA500"]
+                        }
+                    },
+
+                    xaxis: {
+                        categories: labels /*["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]*/,
+                        position: 'bottom',
+                        axisBorder: {
+                            show: false
+                        },
+                        axisTicks: {
+                            show: false
+                        },
+                        crosshairs: {
+                            fill: {
+                                type: 'gradient',
+                                gradient: {
+                                    colorFrom: '#D8E3F0',
+                                    colorTo: '#BED1E6',
+                                    stops: [0, 100],
+                                    opacityFrom: 0.4,
+                                    opacityTo: 0.5,
+                                }
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                        }
+                    },
+                    yaxis: {
+                        axisBorder: {
+                            show: false
+                        },
+                        axisTicks: {
+                            show: false,
+                        },
+                        labels: {
+                            show: false,
+                            formatter: function (val) {
+                                return "₫" + val + " Triệu";
+                            }
+                        }
+
+                    },
+                    title: {
+                        text: '',
+                        floating: true,
+                        offsetY: 330,
+                        align: 'center',
+                        style: {
+                            color: '#444'
+                        }
+                    }
+                };
+
+                var chart = new ApexCharts(document.querySelector(apexChart), options);
+                chart.render();
+
+            }
+            chartClick = function (label) {
+                    if ($('#btnChart').data("year") == 0) {
+                        $('#btnChart').data("year", label);
+                        $('#spanBtnTime').text("Năm " + label);
+                    } else {
+                        if ($('#btnChart').data("month") == 0) {
+                            $('#btnChart').data("month", label);
+                            $('#spanBtnTime').text("Tháng " + label);
+                        } else {
+                            if ($('#btnChart').data("day") == 0) {
+                                $('#btnChart').data("day", label);
+                                $('#spanBtnTime').text("Ngày " + label);
+                            }
+                        }
+                    }
+                    ye = $('#btnChart').data("year");
+                    mo = $('#btnChart').data("month");
+                da = $('#btnChart').data("day");
+                if (mo > 0 && da <= 0) $('#selectHour').removeClass("d-none");
+                else $('#selectHour').addClass("d-none");
+                getChartTKDT(ye, mo, da);
+                $('#btnChart').removeClass("d-none");
+            };
+            var getChartTKDT = function (year, month, day) {
+                $('#kt_charts_widget_4_chart').empty();
+                $.get("@Url.Action("GetGDChart", "GdGiaoDich")", { year: year, month: month, day: day }, function (data) {
+                    var data_x = [];
+                    var data_y = [];
+                    var total = 0;
+                    for (item of data) {
+                        data_x.push(item.Time);
+                        data_y.push(item.Amount / 1000000);
+                        total += item.Amount;
+                    }
+                    $('#totalVal').text(Math.round((total / 1000000000) * Math.pow(10, 2)) / Math.pow(10, 2) + " Tỷ VNĐ");
+                    _chartTKDT(data_x, data_y, total);
+                });
+            }
+            getChartTKDT(0, 0, 0);
+            $('#secheckHour').click(function () {
+                if ($('#btnChart').data("day") < 0) {
+                    $('#btnChart').data("day", 0);
+                }
+                else {
+                    $('#btnChart').data("day", -1);
+                }
+                ye = $('#btnChart').data("year");
+                mo = $('#btnChart').data("month");
+                da = $('#btnChart').data("day");
+                getChartTKDT(ye, mo, da);
+            });
+            $('#btnChart').click(function () {
+                if ($('#btnChart').data("day") > 0) {
+                    $('#btnChart').data("day", 0);
+                    $('#spanBtnTime').text("Tháng " + $('#btnChart').data("month"));
+                    $('#selectHour').removeClass("d-none");
+                } else {
+                    if ($('#btnChart').data("month") != 0) {
+                        $('#btnChart').data("month", 0);
+                        $('#btnChart').data("day", 0);
+                        $('#selectHour').addClass("d-none");
+                        $('#secheckHour').prop('checked', false);
+                        $('#spanBtnTime').text("Năm " + $('#btnChart').data("year"));
+                    } else {
+                        if ($('#btnChart').data("year") != 0) {
+                            $('#btnChart').data("year", 0);
+                            $('#spanBtnTime').text("Tất cả các năm");
+                            $('#btnChart').addClass("d-none");
+                        }
+                    }
+                }
+                ye = $('#btnChart').data("year");
+                mo = $('#btnChart').data("month");
+                da = $('#btnChart').data("day");
+                getChartTKDT(ye, mo, da);
+            });
+        });
+                </script>
+            </div>
+        <!--end::Chart-->
+    </div>
+    <!--end::Body-->
+</div>

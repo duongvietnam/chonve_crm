@@ -1,0 +1,110 @@
+﻿@model MarEventMarketingModel
+@{
+    //page title
+    ViewBag.Title = "Thống kê doanh thu sự kiện Marketing";
+    //active menu item (system name)
+    Html.SetActiveMenuItemSystemName("Marketing.SuKien");
+}
+
+<div class="content d-flex flex-column flex-column-fluid" style="padding-top:0px!important">
+    <div class="container">
+        <div class="subheader py-2 py-lg-4 subheader-transparent" id="kt_subheader">
+            <div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+                <div class="d-flex align-items-center flex-wrap mr-2">
+                    <h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">
+                        @ViewBag.Title
+                    </h5>
+                </div>
+
+                <div class="d-flex align-items-center">
+                    <a href="../List" class="btn btn-default font-weight-bold btn-sm px-3 font-size-base">
+                        <i class="la la-long-arrow-left"></i>
+                        Trở lại danh sách
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-custom alert-white alert-shadow fade show gutter-b" role="alert">
+            <div class="alert-icon">
+                <span class="svg-icon svg-icon-primary svg-icon-2x">
+                    <!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2020-08-03-114926/theme/html/demo9/dist/../src/media/svg/icons/Shopping/Chart-bar2.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <rect x="0" y="0" width="24" height="24" />
+                            <rect fill="#000000" opacity="0.3" x="17" y="4" width="3" height="13" rx="1.5" />
+                            <rect fill="#000000" opacity="0.3" x="12" y="9" width="3" height="8" rx="1.5" />
+                            <path d="M5,19 L20,19 C20.5522847,19 21,19.4477153 21,20 C21,20.5522847 20.5522847,21 20,21 L4,21 C3.44771525,21 3,20.5522847 3,20 L3,4 C3,3.44771525 3.44771525,3 4,3 C4.55228475,3 5,3.44771525 5,4 L5,19 Z" fill="#000000" fill-rule="nonzero" />
+                            <rect fill="#000000" opacity="0.3" x="7" y="11" width="3" height="6" rx="1.5" />
+                        </g>
+                    </svg><!--end::Svg Icon-->
+                </span>
+            </div>
+            <div class="alert-text">
+                <h3 class="card-label">@Model.TEN  -<small class="flex-grow-1 font-weight-bold text-dark-50 py-2 py-lg-2 mr-5 ml-2">@Model.TenMarketing</small></h3>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="card col-6">
+                <h5 class="card-header">
+                    Doanh thu hàng ngày
+                </h5>
+                <div class="card-body">
+                    <nop-antiforgery-token />
+                    <input asp-for="doanhThuSearchModel.MarEventId" type="hidden" />
+                    <div class="d-flex flex-column-fluid">
+                        <div class="container">
+                            <div class="kt-portlet__body">
+                                @await Html.PartialAsync("Table", new DataTablesModel
+                                {
+                                    Name = "items-MarDoanhThuMarketing",
+                                    UrlRead = new DataUrl("List", "MarDoanhThuMarketing", null),
+                                    Length = Model.doanhThuSearchModel.PageSize,
+                                    LengthMenu = Model.doanhThuSearchModel.AvailablePageSizes,
+                                    Filters = new List<FilterParameter>
+                                                                                                             {
+                                     new FilterParameter(nameof(Model.doanhThuSearchModel.KeySearch)),
+                                     new FilterParameter(name: nameof(Model.doanhThuSearchModel.MarEventId), value: Model.doanhThuSearchModel.MarEventId)
+                                 },
+                                    ColumnCollection = new List<ColumnProperty>
+                                                                            {
+                                     new ColumnProperty(nameof(MarDoanhThuMarketingModel.NgaySuKien))
+                                     {
+                                        Title = "Ngày sự kiện",
+                                     },
+                                     new ColumnProperty(nameof(MarDoanhThuMarketingModel.LUOT_KHACH))
+                                     {
+                                        Title = "Lượt khách",
+                                        ClassName = "dataTable-textAlign"
+                                     },
+                                     new ColumnProperty(nameof(MarDoanhThuMarketingModel.DoanhThuString))
+                                     {
+                                        Title = "Doanh thu",
+                                        ClassName = "dataTable-textAlign"
+                                     }
+                                    }
+                                })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card col-6">
+                <h5 class="card-header">
+                    Biểu đồ doanh thu
+                </h5>
+                <div class="card-body">
+                    @await Html.PartialAsync("_ChartDoanhThuMar", Model)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .dataTable-textAlign{
+        text-align: right;
+        padding-right: 30px;
+    }
+</style>

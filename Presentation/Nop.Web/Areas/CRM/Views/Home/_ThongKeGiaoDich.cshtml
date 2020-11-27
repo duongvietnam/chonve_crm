@@ -1,0 +1,169 @@
+﻿<div class="card card-custom gutter-b card-stretch">
+    <!--begin::Header-->
+    <div class="card-header border-0 pt-5">
+        <div class="card-title font-weight-bolder">
+            <div class="card-label">
+                <h3 class="card-title align-items-start flex-column">
+                    <span class="font-weight-bolder text-dark">
+                        Thống kê tổng thành phần khối lượng giao dịch
+                    </span>
+                    <span class="text-muted mt-3 font-weight-bold font-size-sm"></span>
+                </h3>
+                <div class="font-size-sm text-muted mt-2" id="DoanhThuDVtotal"></div>
+            </div>
+        </div>
+        <div class="card-toolbar">
+            <ul class="nav nav-pills nav-pills-sm nav-dark-75" role="tablist">
+                <li class="nav-item">
+                    <a data-month="1" data-day="0" data-hour="0" class=" btn-chart-NT nav-link py-2 px-4 active" data-toggle="tab" href="#kt_charts_widget_2_chart_tab_1">
+                        <span class="nav-text font-size-sm">Theo 12 tháng</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a data-month="0" data-day="1" data-hour="0" class=" btn-chart-NT nav-link py-2 px-4" data-toggle="tab" href="#kt_charts_widget_2_chart_tab_1">
+                        <span class="nav-text font-size-sm">Theo 7 ngày trong tuần</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a data-month="0" data-day="0" data-hour="1" class=" btn-chart-NT nav-link py-2 px-4" data-toggle="tab" href="#kt_charts_widget_2_chart_tab_1">
+                        <span class="nav-text font-size-sm">Theo 24 giờ</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--end::Header-->
+    <!--begin::Body-->
+    <div class="card-body p-0 d-flex flex-column">
+        <!--begin::Chart-->
+        <div id="chart_NgayThang" class="d-flex justify-content-center" style="min-height: 263.7px;"></div>
+
+        <script>
+                $(document).ready(function () {
+
+                    const primary = '#6993FF';
+                    const success = '#1BC5BD';
+                    const info = '#8950FC';
+                    const warning = '#FFA800';
+                    const danger = '#F64E60';
+                    function SortBySoLuong(a, b) {
+                        var aSL = a.SoLuong;
+                        var bSL = b.SoLuong;
+                        return ((aSL > bSL) ? -1 : ((aSL < bSL) ? 1 : 0));
+                    }
+                    var _chart_NgayThang = function (series, categories) {
+                        //console.log(series);
+                        //console.log(categories);
+                        const apexChart = "#chart_NgayThang";
+                        var options = {
+                            series: series,
+                            chart: {
+                                type: 'bar',
+                                height: 350,
+                                stacked: true,
+                                toolbar: {
+                                    show: true
+                                },
+                                zoom: {
+                                    enabled: true
+                                }
+                            },
+                            responsive: [{
+                                breakpoint: 480,
+                                options: {
+                                    legend: {
+                                        position: 'bottom',
+                                        offsetX: -10,
+                                        offsetY: 0
+                                    }
+                                }
+                            }],
+                            plotOptions: {
+                                bar: {
+                                    horizontal: false,
+                                },
+                            },
+                            xaxis: {
+                                type: 'category',
+                                categories: categories
+                            },
+                            legend: {
+                                position: 'right',
+                                offsetY: 40
+                            },
+                            fill: {
+                                opacity: 1
+                            }
+                        };
+
+            var chart = new ApexCharts(document.querySelector(apexChart), options);
+            chart.render();
+                    }
+                    var pushCate = function (startNumCate, endNumCate, prefix = "",suffix = "") {
+                        categories = [];
+                        for (var i = startNumCate; i <= endNumCate; i++) {
+                            categories.push(prefix + i.toString() + suffix);
+                        }
+                        return categories;
+                    }
+                    var get_chart = function (thang = true, ngay = false, gio = false) {
+                        $.get("@Url.Action("GetGDNTChart", "GdGiaoDich")", { stepYear: 10, month: thang, day: ngay, hour: gio}, function (data) {
+                        //console.log(data);
+                         var total = 0;
+                         series = [];
+                            categories = [];
+                            maxlength = 0;
+                            if (thang) {
+                                categories=pushCate(1, 12, "Th", "");
+                                maxlength = 12;
+                            }
+                            if (ngay) {
+                                categories = pushCate(2, 7, "Thứ ", "");
+                                categories.push("Chủ Nhật");
+                                maxlength = 7;
+                            }
+                            if (gio) {
+                                categories =pushCate(0, 23, "", "h");
+                                maxlength = 24;
+                            }
+                         for (var item of data) {
+                             var newSeries = {
+                                 name: item.Label,
+                                 data: []
+                             };
+                             var arr = item.GiaoDichChildren;
+                             for (var i = 0; i < maxlength /*arr[arr.length - 1].Time*/; i++) {
+                                 newSeries.data.push(0);
+                             }
+                             for (var gd of item.GiaoDichChildren) {
+                                 if (gio) {
+                                     newSeries.data[gd.Time] = gd.Quantity;
+                                 } else {
+                                     newSeries.data[gd.Time - 1] = gd.Quantity;
+                                 }
+                             }
+
+                             series.push(newSeries);
+                         }
+                         _chart_NgayThang(series, categories);
+                    });
+                    }
+                    $('.btn-chart-NT').click(function () {
+                        $('#chart_NgayThang').empty();
+                        $('.btn-chart-NT').removeClass("active");
+                        $(this).addClass("active");
+                        month = $(this).data("month") == 0 ? false : true;
+                        day = $(this).data("day") == 0 ? false : true;
+                        hour = $(this).data("hour") == 0 ? false : true;
+                        get_chart(month, day, hour);
+                    });
+                    get_chart(true, false, false);
+
+
+    });
+        </script>
+        <!--end::Chart-->
+    </div>
+    <!--end::Body-->
+</div>
+

@@ -1,0 +1,126 @@
+﻿@*@model LoginModel*@
+@using Nop.Web.Areas.CRM.Models.CRM
+@model KhKhachHangModel
+@inject Nop.Core.IStoreContext storeContext
+@{
+    Layout = "_RegisterCRMLayout";
+    ViewData["Title"] = "Đăng ký thành viên";
+
+    var tencty = storeContext.CurrentStore.CompanyName;
+}
+<nop-antiforgery-token />
+<!--begin::Content body-->
+<div class="d-flex flex-column-fluid flex-center mt-30 mt-lg-0">
+    <!--begin::Signup-->
+    <div class="login-form login-signup-on">
+        <div class="text-center mb-10 mb-lg-20">
+            <h3 id="msgH3" class="font-size-h1">Đăng ký thành viên</h3>
+            <p id="msgP" class="text-muted font-weight-bold">Quý khách điền đầy đủ thông tin dưới đây để trở thành thành viên của <span>@tencty</span></p>
+        </div>
+        <!--begin::Form-->
+        <form class="form" novalidate="novalidate" id="kt_login_signup_form" asp-route="RegisterCRMKH" asp-route-returnurl="@Context.Request.Query["ReturnUrl"]">
+            <div class="form-group">
+                <span class="text-danger float-right font-size-sm ">*bắt buộc</span>
+                <input class="text-required form-control form-control-solid h-auto py-5 px-6" type="text" placeholder="Tên" asp-for="TEN" autocomplete="off" />
+                <span class="text-danger" asp-validation-for="TEN"></span>
+            </div>
+            <div class="form-group">
+                <span class="text-danger float-right font-size-sm">*bắt buộc</span>
+                <input class="text-required form-control form-control-solid h-auto py-5 px-6 " type="text" placeholder="Số điện thoại" asp-for="SoDienThoai" autocomplete="off" />
+                <span class="text-danger" asp-validation-for="SoDienThoai"></span>
+            </div>
+            <div class="form-group">
+                <div class="input-group date">
+                    <input class="text-required form-control form-control-solid h-auto py-5 px-6 " readonly="readonly" placeholder="Ngày sinh" type="text" asp-for="NGAY_SINH" autocomplete="off" id="kt_datepicker_4_3" />
+                    <div class="input-group-append h-auto">
+                        <span class="input-group-text">
+                            <i class="la la-calendar"></i>
+                        </span>
+                    </div>
+                </div>
+                <span class="text-danger" asp-validation-for="NGAY_SINH"></span>
+            </div>
+            <div class="form-group">
+                <nop-select class="text-required form-control form-control-solid h-auto py-5 px-6 " asp-for="GIOI_TINH" asp-items="@Model.DDLGioiTinh" />
+                <span class="text-danger" asp-validation-for="GIOI_TINH"></span>
+            </div>
+            <div class="form-group">
+                <input class="form-control form-control-solid h-auto py-5 px-6" type="email" placeholder="Email" asp-for="EMAIL" autocomplete="off" />
+                <span class="text-danger" asp-validation-for="EMAIL"></span>
+            </div>
+            <div class="form-group">
+                <input class="form-control form-control-solid h-auto py-5 px-6" type="text" placeholder="Facebook" asp-for="FACEBOOK" autocomplete="off" />
+                <span class="text-danger" asp-validation-for="FACEBOOK"></span>
+            </div>
+            <div class="form-group">
+                <input class="form-control form-control-solid h-auto py-5 px-6" type="text" placeholder="Zalo" asp-for="ZALO" autocomplete="off" />
+                <span class="text-danger" asp-validation-for="ZALO"></span>
+            </div>
+            <div class="form-group d-flex flex-wrap flex-center">
+                <button type="button" id="kt_login_signup_submit" class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4">Xác nhận</button>
+                @*<button type="button" id="kt_login_signup_cancel" class="btn btn-light-primary font-weight-bold px-9 py-4 my-3 mx-4">Cancel</button>*@
+            </div>
+        </form>
+        <!--end::Form-->
+    </div>
+    <!--end::Signup-->
+</div>
+<!--end::Content body-->
+<!--begin::Content footer for mobile-->
+<div class="d-flex d-lg-none flex-column-auto flex-column flex-sm-row justify-content-between align-items-center mt-5 p-5">
+    <div class="text-dark-50 font-weight-bold order-2 order-sm-1 my-2">© 2020 Chonve.vn</div>
+    <div class="d-flex order-1 order-sm-2 my-2">
+        <a href="#" class="text-dark-75 text-hover-primary">Privacy</a>
+        <a href="#" class="text-dark-75 text-hover-primary ml-4">Legal</a>
+        <a href="#" class="text-dark-75 text-hover-primary ml-4">Contact</a>
+    </div>
+</div>
+<!--end::Content footer for mobile-->
+@*<svg xmlns="http://www.w3.org/2000/svg" width="713" height="713" viewBox="0 0 23 23"><path d="M1 1h7v7h-7zM11 1h1v1h1v1h1v3h-1v1h-1v-2h1v-1h-1v-1h-1zM13 1h1v1h-1zM15 1h7v7h-7zM2 2v5h5v-5zM9 2h1v1h-1zM16 2v5h5v-5zM3 3h3v3h-3zM17 3h3v3h-3zM10 4h2v1h-1v2h-1v-1h-1v-1h1zM9 7h1v1h-1zM11 7h1v1h-1zM13 7h1v1h-1zM1 9h1v1h1v1h-2zM3 9h1v1h-1zM5 9h1v1h-1zM7 9h1v1h-1zM10 9h2v1h-2zM13 9h1v1h-1zM17 9h1v1h-1zM20 9h1v1h1v2h-1v1h-1v-1h-1v1h-2v2h-2v-1h-1v-1h-1v1h-1v1h-1v-1h-1v-2h1v1h1v-1h-1v-1h1v-1h1v2h1v-2h1v1h1v-1h1v2h1v-1h2zM4 10h1v1h-1zM6 10h1v1h1v1h-3v-1h1zM8 10h1v1h-1zM3 11h1v1h-1zM9 11h1v1h-1zM4 12h1v1h-1zM8 12h1v2h-3v-1h2zM15 12v1h1v-1zM1 13h1v1h-1zM9 14h1v1h-1zM18 14h1v1h-1zM20 14h2v4h-1v1h-1v1h-1v-2h1v-2h-1v-1h1zM1 15h7v7h-7zM10 15h1v1h1v2h-1v1h-1v-1h-1v-1h1zM13 15h1v1h-1zM17 15h1v1h-1zM2 16v5h5v-5zM15 16h2v1h-1v1h-1zM3 17h3v3h-3zM13 17h1v1h-1zM17 17h1v3h-1v-1h-1v-1h1zM12 18h1v2h1v-2h1v1h1v1h-1v1h4v1h-5v-1h-1v1h-4v-1h3v-1h-1v-1h1zM9 19h1v1h-1zM21 19h1v1h-1zM20 20h1v1h1v1h-2z" /></svg>*@
+<script>
+    $(document).ready(function () {
+        $('.datepicker').datepicker({
+            format: 'mm/dd/yyyy',
+            //startDate: '-3d'
+        });
+        $("button").click(function () {
+            $("#NGAY_SINH").type = 'date';
+            console.log($("#NGAY_SINH").type);
+             var _data = {
+            TEN: $("#TEN").val(),
+            NGAY_SINH: $("#NGAY_SINH").val(),
+            GIOI_TINH: $("#GIOI_TINH").val(),
+            FACEBOOK: $("#FACEBOOK").val(),
+            EMAIL: $("#EMAIL").val(),
+            ZALO: $("#ZALO").val(),
+            SoDienThoai: $("#SoDienThoai").val()
+        };
+        addAntiForgeryToken(_data);
+        $.ajax({
+            type: "POST",
+            url: "@Context.Request.Query["ReturnUrl"]",
+            data: _data,
+            success: function (data, textStatus, jqXHR) {
+                if (data.IsSuccess) {
+                    ShowSuccess(data.Message);
+                    swal.fire({
+                        text: "Bạn đã đăng ký thành viên thành công",
+                        icon: "success",
+                        buttonsStyling: false,
+                        confirmButtonText: "Xác nhận",
+                        customClass: {
+                            confirmButton: "btn font-weight-bold btn-light-primary"
+                        }
+                    })
+                    $("#kt_login_signup_form").addClass("d-none");
+                    $("#msgH3").text("Đăng ký thành công");
+                    $("#msgP").text("Trân trọng cảm ơn quý khách đã tin tưởng !");
+                } else {
+                    console.log(data);
+                    display_valid_error(data.ObjectInfo);
+                }
+            }
+        });
+        });
+    });
+</script>

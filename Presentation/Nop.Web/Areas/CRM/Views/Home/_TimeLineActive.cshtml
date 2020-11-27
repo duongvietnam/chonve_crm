@@ -1,0 +1,101 @@
+﻿<div class="card card-custom gutter-b card-stretch">
+    <!--begin::Header-->
+    <div class="card-header align-items-center border-0 mt-4">
+        <h3 class="card-title align-items-start flex-column">
+            <span class="font-weight-bolder text-dark">Giao dịch gần nhất</span>
+            <span class="text-muted mt-3 font-weight-bold font-size-sm"></span>
+        </h3>
+        <div class="card-toolbar">
+            <div class="dropdown dropdown-inline">
+                <a href="#" class="btn btn-clean btn-hover-light-primary btn-sm btn-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="ki ki-bold-more-hor"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-md dropdown-menu-right">
+                    <!--begin::Navigation-->
+                    <ul class="navi navi-hover">
+                        <li class="navi-header font-weight-bold py-4">
+                            <span class="font-size-lg">Choose Label:</span>
+                            <i class="flaticon2-information icon-md text-muted" data-toggle="tooltip" data-placement="right" title="Click to learn more..."></i>
+                        </li>
+                        <li class="navi-separator mb-3 opacity-70"></li>
+                        <li class="navi-item">
+                            <a href="#" class="navi-link">
+                                <span class="navi-text">
+                                    <span class="label label-xl label-inline label-light-success">Customer</span>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="navi-item">
+                            <a href="#" class="navi-link">
+                                <span class="navi-text">
+                                    <span class="label label-xl label-inline label-light-danger">Partner</span>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="navi-item">
+                            <a href="#" class="navi-link">
+                                <span class="navi-text">
+                                    <span class="label label-xl label-inline label-light-warning">Suplier</span>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="navi-item">
+                            <a href="#" class="navi-link">
+                                <span class="navi-text">
+                                    <span class="label label-xl label-inline label-light-primary">Member</span>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="navi-item">
+                            <a href="#" class="navi-link">
+                                <span class="navi-text">
+                                    <span class="label label-xl label-inline label-light-dark">Staff</span>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="navi-separator mt-3 opacity-70"></li>
+                        <li class="navi-footer py-4">
+                            <a class="btn btn-clean font-weight-bold btn-sm" href="#">
+                                <i class="ki ki-plus icon-sm"></i>Add new
+                            </a>
+                        </li>
+                    </ul>
+                    <!--end::Navigation-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end::Header-->
+    <!--begin::Body-->
+    <div class="card-body pt-4">
+        <!--begin::Timeline-->
+        <div id="timeLineGD" class="timeline timeline-6 mt-3">
+        </div>
+        <!--end::Timeline-->
+    </div>
+    <!--end: Card Body-->
+</div>
+<script>
+    $(document).ready(function () {
+        $.get("@Url.Action("GetTopNewGiaoDichs", "GdGiaoDich")", {}, function (data) {
+            //console.log(data);
+            html = ``;
+            listColorClass = ["text-warning", "text-success", "text-danger", "text-primary", "text-info", "", "", ""]
+            clindex = 0;
+            for (item of data) {
+
+                html += `<div class="timeline-item align-items-start">
+                <div class="timeline-label font-weight-bolder text-dark-75 font-size-lg">${item.DateTime}</div>
+                <div class="timeline-badge">
+                    <i class="fa fa-genderless ${listColorClass[clindex]} icon-xl"></i>
+                </div>
+                <div class="timeline-content font-weight-bold font-size-lg text-dark-75 pl-3">
+                    Khách hàng <a target="_blank" href="KhKhachHang/Details/${item.IdKH}" class="text-primary text-capitalize font-weight-bolder">${item.NameKH}</a> giao dịch <a target="_blank" href="KhKhachHang/TradeDetail/${item.IdKH}" class="text-primary font-weight-bolder">${item.TotalAmount}₫</a>.
+                </div>
+            </div>`;
+                clindex++;
+            }
+            $("#timeLineGD").append(html);
+        });
+    });
+</script>

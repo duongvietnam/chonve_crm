@@ -1,0 +1,133 @@
+﻿@model KhKhachHangModel
+
+<div class="card card-custom card-shadowless rounded-top-0">
+    <div class="card-body p-0">
+        <div class="row justify-content-center py-8 px-8 py-lg-15 px-lg-10">
+            <div class="col-xl-12 col-xxl-10">
+                <input asp-for="Id" type="hidden" />
+                <h4 class="text-dark font-weight-bold mb-10">Thông tin người dùng:</h4>
+                <div class="form-group row">
+                    <label class="col-2 col-form-label text-required">Tên</label>
+                    <div class="col-10">
+                        <nop-editor asp-for="TEN" />
+                        <span asp-validation-for="TEN"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-2 col-form-label">Ngày sinh</label>
+                    <div class="col-4">
+                        <nop-editor asp-for="NGAY_SINH" />
+                        <span asp-validation-for="NGAY_SINH"></span>
+                    </div>
+                    <label class="col-2 col-form-label">Giới tính</label>
+                    <div class="col-4">
+                        <nop-select asp-for="GIOI_TINH" asp-items="Model.DDLGioiTinh" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-2 col-form-label">Loại khách hàng</label>
+                    <div class="col-4">
+                        <nop-select asp-for="LOAI_KHACH_HANG" asp-items="Model.DDLLoaiKhachHang" />
+                    </div>
+                    <label class="col-2 col-form-label">Facebook</label>
+                    <div class="col-4">
+                        <nop-editor asp-for="FACEBOOK" />
+                        <span asp-validation-for="FACEBOOK"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-2 col-form-label">Email</label>
+                    <div class="col-4">
+                        <nop-editor asp-for="EMAIL" />
+                        <span asp-validation-for="EMAIL"></span>
+                    </div>
+                    <label class="col-2 col-form-label">Zalo</label>
+                    <div class="col-4">
+                        <nop-editor asp-for="ZALO" />
+                        <span asp-validation-for="ZALO"></span>
+                    </div>
+                </div>
+                <div class="separator separator-dashed my-10"></div>
+                <h4 class="text-dark font-weight-bold mb-10">
+                    Thông tin danh bạ điện thoại:
+                    <a id="btnThemSDT" class="btn btn-primary btn-sm mr-2" style="float:right">Thêm số điện thoại</a>
+                </h4>
+                <div class="danhBaDienThoai"></div>
+                @if (Model.Id > 0)
+                {
+                    foreach (var sdt in Model.DanhBaDienThoai)
+                    {
+                            @await Html.PartialAsync("_SoDienThoai", sdt)
+                    }
+                }
+                <div class="separator separator-dashed my-10"></div>
+                <h4 class="text-dark font-weight-bold mb-10">Thông tin cấu hình mở rộng:</h4>
+                <div class="row">
+                   @foreach (var cauHinh in Model.ListCauHinhMoRong)
+                    {
+                        <div class="col-6">
+                            @await Html.PartialAsync("_CauHinhMoRong", cauHinh)
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        if (!(@Model.Id > 0)) {
+            LoadThemSoDienThoai();
+        }
+    });
+
+    function LoadThemSoDienThoai() {
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/CRM/KhKhachHang/_SoDienThoai",
+            success: function (data) {
+                $(".danhBaDienThoai").append(data);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                ShowError(errorThrown);
+            }
+        });
+    }
+
+    $("#btnThemSDT").click(function () {
+        LoadThemSoDienThoai();
+    })
+
+    function xoaSoDienThoai(sdtId) {
+        var Id = $("#Id_" + sdtId).val();
+        if (Id > 0) {
+            if (confirm('@T("Common.AreYouSure")')) {
+                var postData = {
+                    id: Id
+                };
+                addAntiForgeryToken(postData);
+                $.ajax({
+                    cache: false,
+                    url: "@Url.Action("Delete", "KhDanhBaDienThoai")",
+                    data: postData,
+                    dataType: "json",
+                    type: "POST",
+                    success: function (data, textStatus, jqXHR) {
+                        if (data.IsSuccess) {
+                            ShowSuccess(data.Message);
+                        } else {
+                            display_valid_error(data.ObjectInfo);
+                        }
+                    },
+                    complete: function (jqXHR, textStatus) {
+                        $("#divDanhBa_" + sdtId).remove();
+                    }
+                });
+            }
+        } else {
+            $("#divDanhBa_" + sdtId).remove();
+        }
+    }
+</script>

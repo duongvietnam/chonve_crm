@@ -1,0 +1,106 @@
+﻿@model GdGiaoDichModel
+
+<div class="card card-custom card-shadowless rounded-top-0">
+    <div class="card-body p-0">
+        <div class="row justify-content-center py-8 px-8 py-lg-15 px-lg-10">
+            <div class="col-xl-12 col-xxl-10">
+                <input asp-for="Id" type="hidden" />
+                <h4 class="text-dark font-weight-bold mb-10">Thông tin giao dịch:</h4>
+                <div class="form-group row">
+                    <label class="col-2 col-form-label">Trạng thái giao dịch</label>
+                    <div class="col-4">
+                        <nop-editor asp-for="TRANG_THAI" />
+                        <span asp-validation-for="TRANG_THAI"></span>
+                    </div>
+                    <label class="col-2 col-form-label">Ngày giao dịch</label>
+                    <div class="col-4">
+                        <nop-editor asp-for="NGAY_GIAO_DICH" />
+                        <span asp-validation-for="NGAY_GIAO_DICH"></span>
+                    </div>
+                </div>
+                <div class="separator separator-dashed my-10"></div>
+                <h4 class="text-dark font-weight-bold mb-10">
+                    Thông tin dịch vụ:
+                    <a id="btnThemDichVu" class="btn btn-primary btn-sm mr-2" style="float:right">Thêm dịch vụ</a>
+                </h4>
+                <div id="dichVuGiaoDich"></div>
+                <div class="separator separator-dashed my-10"></div>
+                <h4 class="text-dark font-weight-bold mb-10">Thông tin thanh toán:</h4>
+                <div class="form-group row">
+                    <label class="col-2 col-form-label">Hình thức thanh toán</label>
+                    <div class="col-4">
+                        <nop-editor asp-for="HINH_THUC_THANH_TOAN" />
+                    </div>
+                    <label class="col-2 col-form-label">Sự kiện</label>
+                    <div class="col-4">
+                        <nop-editor asp-for="EVENT_ID" />
+                        <span asp-validation-for="EVENT_ID"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-6"></div>
+                    <label class="col-2 col-form-label">Thành tiền</label>
+                    <div class="col-4">
+                        <nop-editor asp-for="THANH_TIEN" />
+                        <span asp-validation-for="THANH_TIEN"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-2 col-form-label">Ghi chú</label>
+                    <div class="col-10">
+                        <nop-editor asp-for="GHI_CHU" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        if (!(@Model.Id > 0)) {
+            LoadThemDichVu();
+        }
+    });
+
+    function LoadThemDichVu() {
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/CRM/GdGiaoDich/_CreateOrUpdateSub",
+            success: function (data) {
+                $("#dichVuGiaoDich").append(data);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                ShowError(errorThrown);
+            }
+        })
+    };
+
+    $("#btnThemDichVu").click(function () {
+        LoadThemDichVu();
+    });
+
+    $(".selectListDichVu").change(function () {
+        var id = $(this).attr("data-dvId");
+        console.log(id);
+    })
+
+    $('body').on('change', '.ddlDichVuCombo', function () {
+        var data_id = $(this).attr("data-dichVuId");
+        var _data = {
+            dichVuId: $("#DichVuId_" + data_id).val(),
+            soLuong: $("#SoLuong_" + data_id).val()
+        };
+        addAntiForgeryToken(_data);
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("_LoadFormData", "GdGiaoDich")",
+            data: _data,
+            success: function (data) {
+                $("#DonViTinh_" + data_id).text(data.DonViTinh);
+                $("#ThanhTien_" + data_id).text(data.ThanhTienSub);
+            }
+        })
+    });
+</script>

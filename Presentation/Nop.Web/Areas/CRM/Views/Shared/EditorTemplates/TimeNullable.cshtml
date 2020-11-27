@@ -1,0 +1,21 @@
+﻿@model DateTime
+<div class="input-group timepicker">
+    <input class="form-control" id="@Html.IdForModel()" placeholder="Chọn thời gian" type="text" />
+    <div class="input-group-append">
+        <span class="input-group-text">
+            <i class="la la-clock-o"></i>
+        </span>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#@Html.IdForModel()").timepicker({
+            minuteStep: 1,
+            defaultTime: "@Model.ToString("HH:mm:ss")",
+            showSeconds: !0,
+            showMeridian: !1,
+            snapToStep: !0,
+
+});
+    });
+</script>

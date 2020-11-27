@@ -1,0 +1,42 @@
+﻿@model decimal
+
+@{
+    var fnoncomplete = "";
+    if (ViewData.ContainsKey("fnoncomplete") && ViewData["fnoncomplete"] != null)
+    {
+        fnoncomplete = ViewData["fnoncomplete"].ToString();
+    }
+
+    var donViTinh = " ";
+    if (ViewData.ContainsKey("donViTinh") && ViewData["donViTinh"] != null)
+    {
+        donViTinh += ViewData["donViTinh"].ToString();
+    }
+}
+<input asp-for="@Model" type="text" class="form-control" style="max-width:220px!important;" />
+
+<script>
+    $(document).ready(function() {
+        $("#@Html.IdForModel()").inputmask({
+            min: 0,
+            suffix: "@Html.Raw(donViTinh)",
+            groupSeparator: ".",
+            autoGroup: !0,
+            alias: "numeric",
+            placeholder: "0",
+            autoUnmask: !0,
+            removeMaskOnSubmit: !0,
+            digits: 0,
+            digitsOptional: !1,
+            clearMaskOnLostFocus: !1,
+            allowMinus: 'false',
+            numericInput: !0,
+            @if(!string.IsNullOrEmpty(fnoncomplete))
+            {
+                <text>
+                    "oncomplete": function () { @fnoncomplete; }
+                </text>
+            }
+        });
+    });
+</script>

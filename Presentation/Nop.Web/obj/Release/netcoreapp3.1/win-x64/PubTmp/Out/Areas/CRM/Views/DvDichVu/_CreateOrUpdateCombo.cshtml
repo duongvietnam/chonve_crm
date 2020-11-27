@@ -1,0 +1,110 @@
+﻿@model DvDichVuModel
+
+
+<div class="card card-custom card-shadowless rounded-top-0">
+    <div class="card-body p-0">
+        <div class="row justify-content-center py-8 px-8 py-lg-15 px-lg-10">
+            <div class="col-xl-12 col-xxl-10">
+                <input asp-for="Id" type="hidden" />
+                <input asp-for="IS_COMBO" type="hidden" />
+                <div class="form-group row">
+                    <label class="col-2 col-form-label text-required">Tên</label>
+                    <div class="col-10">
+                        <nop-editor asp-for="TEN" />
+                        <span asp-validation-for="TEN"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-2 col-form-label">Giá</label>
+                    <div class="col-4">
+                        <nop-editor asp-for="GiaBanLe" />
+                    </div>
+                    <label class="col-2 col-form-label">Điểm dịch vụ</label>
+                    <div class="col-4">
+                        <nop-editor asp-for="DIEM_DICH_VU" />
+                    </div>
+                </div>
+
+                <div class="separator separator-dashed my-10"></div>
+                <h4 class="text-dark font-weight-bold mb-10">
+                    Thông tin dịch vụ:
+                    <a id="btnThemDichVu" class="btn btn-primary btn-sm mr-2" style="float:right">Thêm dịch vụ</a>
+                </h4>
+                <span class="field-validation-error" data-valmsg-for="comBoDichVuModels" data-valmsg-replace="true" id="validateListCombo">Chọn tối thiểu 2 dịch vụ cho 1 combo</span>
+                <div class="dichVuCombo"></div>
+               @if (Model.Id > 0)
+                {
+                    foreach (var combo in Model.comBoDichVuModels)
+                    {
+                        @await Html.PartialAsync("_ListDichVuCombo", combo)
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        if (!(@Model.Id > 0)) {
+            LoadThemDichVuCombo();
+        }
+    });
+
+    function LoadThemDichVuCombo() {
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/CRM/DvDichVu/_ListDichVuCombo",
+            success: function (data) {
+                $(".dichVuCombo").append(data);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                ShowError(errorThrown);
+            }
+        });
+    }
+
+    $("#btnThemDichVu").click(function () {
+        LoadThemDichVuCombo();
+    })
+
+    $("#GiaBanLe").change(function () {
+        var giaBanLe = $("#GiaBanLe").val();
+        var diemDichVu = $("#DIEM_DICH_VU").val();
+        if (diemDichVu == 0 && giaBanLe > 0) {
+            $("#DIEM_DICH_VU").val(giaBanLe / 1000);
+        }
+    })
+
+    function xoaDichVuCombo(dichVu) {
+        var Id = $("#DichVuComboId_" + dichVu).val();
+        if (Id > 0) {
+            if (confirm('@T("Common.AreYouSure")')) {
+                var postData = {
+                    id: Id
+                };
+                addAntiForgeryToken(postData);
+                $.ajax({
+                    cache: false,
+                    url: "@Url.Action("Delete", "DvDichVuCombo")",
+                    data: postData,
+                    dataType: "json",
+                    type: "POST",
+                    success: function (data, textStatus, jqXHR) {
+                        if (data.IsSuccess) {
+                            ShowSuccess(data.Message);
+                        } else {
+                            display_valid_error(data.ObjectInfo);
+                        }
+                    },
+                    complete: function (jqXHR, textStatus) {
+                        $("#divCombo_" + dichVu).remove();
+                    }
+                });
+            }
+        } else {
+            $("#divCombo_" + dichVu).remove();
+        }
+    }
+</script>

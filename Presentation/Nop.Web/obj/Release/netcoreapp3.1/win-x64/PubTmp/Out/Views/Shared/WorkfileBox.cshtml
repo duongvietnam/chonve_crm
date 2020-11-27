@@ -1,0 +1,103 @@
+﻿@model int
+@inject IWorkfilesService WorkfilesService
+@inject WorkfilesSettings workfilesSetting
+@using Nop.Core;
+@using Nop.Services.HeThong;
+@using Nop.Core.Domain.Common;
+@using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
+
+@{
+
+}
+@if (Model > 0)
+{
+    var workfileitem = WorkfilesService.GetWorkfilesById(Model).ToModel<WorkfilesModel>();
+    if (workfileitem != null)
+    {
+    <div style="width:100%" title="@workfileitem.TenDayDu">
+        @switch (workfileitem.mimeTypeGroup)
+        {
+            case MimeTypeGroup.Image:
+                {
+                    <text>
+                        <a href="@workfileitem.Id.ToUrlImage()" target="_blank">
+                            <img src="@workfileitem.Id.ToUrlImage()" style="width:100%" />
+                        </a>
+                    </text>
+                    break;
+                }
+            case MimeTypeGroup.Text:
+            case MimeTypeGroup.Application:
+                {
+                    switch (workfileitem.DuoiFile.ToLower())
+                    {
+                        case ".doc":
+                        case ".docx":
+                            {
+                                <text>
+                                    <a href="@workfileitem.Guid.ToUrlDownload()">
+                                        <div class="tb-icon__preview ">
+                                            <i class="fa fa-file-word"></i>
+                                        </div>
+                                        <div class="tb-icon-text__preview">@workfileitem.TenDayDu (<span style="font-style:italic;color:chocolate">@workfileitem.ContentLengthText</span>)</div>
+                                </text>
+                                break;
+                            }
+                        case ".pdf":
+                            {
+                                <text>
+                                    <a href="@workfileitem.Guid.ToUrlDownload()">
+                                        <div class="tb-icon__preview ">
+                                            <i class="fa fa-file-pdf"></i>
+                                        </div>
+                                        <div class="tb-icon-text__preview">@workfileitem.TenDayDu (<span style="font-style:italic;color:chocolate">@workfileitem.ContentLengthText</span>)</div>
+                                </text>
+                                break;
+                            }
+                        case ".xls":
+                        case ".xlsx":
+                            {
+                                <text>
+                                    <a href="@workfileitem.Guid.ToUrlDownload()">
+                                        <div class="tb-icon__preview ">
+                                            <i class="fa fa-file-excel"></i>
+                                        </div>
+                                        <div class="tb-icon-text__preview">@workfileitem.TenDayDu (<span style="font-style:italic;color:chocolate">@workfileitem.ContentLengthText</span>)</div>
+                                </text>
+                                break;
+                            }
+                        default:
+                            {
+                                <text>
+                                                                        <a href="@workfileitem.Guid.ToUrlDownload()">
+                                                                            <div class="tb-icon__preview ">
+                                                                                <i class="fa fa-file-archive"></i>
+                                                                            </div>
+                                                                            <div class="tb-icon-text__preview">@workfileitem.TenDayDu (<span style="font-style:italic;color:chocolate">@workfileitem.ContentLengthText</span>)</div>
+                                                                        </a>
+                                </text>
+                                break;
+                            }
+                    }
+
+                    break;
+                }
+
+
+        }
+
+    </div>
+    }
+    else
+    {
+        <div class="dropzone-file">
+            <div style="color:red">Không tìm thấy file</div>
+        </div>
+    }
+}
+else
+{
+    <div class="dropzone-file">
+        <div style="color:brown">Không có</div>
+    </div>
+}

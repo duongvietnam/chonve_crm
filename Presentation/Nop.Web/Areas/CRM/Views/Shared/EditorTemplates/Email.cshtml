@@ -1,0 +1,23 @@
+﻿@model String
+<div class="input-group">
+    <div class="input-group-prepend"><span class="input-group-text"><i class="la la-at"></i></span></div>
+    <input asp-for="@Model" type="text" class="form-control" aria-describedby="basic-addon1" aria-invalid="false">
+</div>
+<script>
+    $(document).ready(function () {
+        $("#@Html.IdForModel()").inputmask({
+            mask: "*{1,40}[.*{1,40}][.*{1,40}][.*{1,40}]@@*{1,40}[.*{2,6}][.*{1,2}]",
+            greedy: !1,
+            onBeforePaste: function (t, a) {
+                return (t = t.toLowerCase()).replace("mailto:", "")
+            },
+            definitions: {
+                "*": {
+                    validator: "[0-9A-Za-z!#$%&'*+/=?^_`{|}~-]",
+                    cardinality: 1,
+                    casing: "lower"
+                }
+            }
+        });
+    });
+</script>

@@ -1,0 +1,104 @@
+﻿@model MarEventMarketingModel
+
+    <!--begin::Charts Widget 4-->
+<div class="card card-custom gutter-b card-stretch">
+    <!--begin::Header-->
+    <div class="card-header border-0 pt-5">
+        <div class="card-title font-weight-bolder">
+            <div class="card-label">
+                <div id="totalVal" class="font-size-sm text-muted mt-2"></div>
+            </div>
+        </div>
+    </div>
+    <!--end::Header-->
+    <!--begin::Body-->
+    <div class="card-body p-0 d-flex flex-column">
+        <!--begin::Chart-->
+        <div id="kt_mixed_widget_17_chart" class="card-rounded-bottom" data-color="primary" @*style="height: 200px"*@>
+            <div id="kt_charts_widget_4_chart" style="min-height: 365px; ">
+
+                <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+                <canvas id="myChart" width="500" height="500"></canvas>
+                <script>
+                    $(document).ready(function () {
+                        var getChart = function () {
+                            var marEventId = @Model.Id;
+                            $('#myChart').remove();
+                            var html = `<canvas id="myChart" width="500" height="500"></canvas>`;
+                            $('#kt_charts_widget_4_chart').append(html);
+                            $.get("@Url.Action("GetDoanhThuChart", "MarEventMarketing")", function (data) {
+                                var data_x=[];
+                                var data_y = [];
+                                var total = 0;
+                                for (item of data) {
+                                    data_x.push(item.Time);
+                                    data_y.push(item.Amount / 1000);
+                                    total += item.Amount;
+                                }
+                                $('#totalVal').text(total/1000000 +" Triệu VNĐ");
+                                var typeChart = 'bar'
+                                if (data_x.length >= 12) typeChart = 'line';
+                                console.log(data_x);
+                                console.log(data_y);
+                                var chart = document.getElementById('myChart');
+                                var ctx = chart.getContext('2d');
+                                var myChart = new Chart(ctx, {
+                                    type: typeChart,
+                                    data: {
+                                        labels: data_x /*['Jan', 'Feb', 'Mar', 'Apirl', 'May', 'June']*/,
+                                        datasets: [{
+                                            label: '# Số Tiền Doanh Thu(Đơn vị : Nghìn VNĐ)',
+                                            data: data_y /*[120, 110, 100, 90, 80, 3]*/,
+                                            backgroundColor: [
+                                                'rgba(255, 99, 132, 0.2)',
+                                                'rgba(54, 162, 235, 0.2)',
+                                                'rgba(255, 206, 86, 0.2)',
+                                                'rgba(75, 192, 192, 0.2)',
+                                                'rgba(153, 102, 255, 0.2)',
+                                                'rgba(255, 159, 64, 0.2)',
+                                                'rgba(176, 99, 71, 0.2)',
+                                                'rgba(176, 255, 84, 0.2)',
+                                                'rgba(255, 0, 0, 0.2)',
+                                                'rgba(0, 182, 25, 0.2)',,
+                                                'rgba(213, 62, 255, 0.2)',
+                                            ],
+                                            borderColor: [
+                                                'rgba(255, 99, 132, 1)',
+                                                'rgba(54, 162, 235, 1)',
+                                                'rgba(255, 206, 86, 1)',
+                                                'rgba(75, 192, 192, 1)',
+                                                'rgba(153, 102, 255, 1)',
+                                                'rgba(255, 159, 64, 1)',
+                                                'rgba(176, 99, 71, 1)',
+                                                'rgba(176, 255, 84, 1)',
+                                                'rgba((255, 0, 0, 1)',
+                                                'rgba((0, 182, 25, 1)',,
+                                                'rgba(213, 153, 255, 1)'
+                                            ],
+                                            borderWidth: 1
+                                        }]
+                                    },
+                                    options: {
+                                        maintainAspectRatio: false,
+                                        events: ['click', 'mousemove'],
+                                        scales: {
+                                            yAxes: [{
+                                                ticks: {
+                                                    beginAtZero: true
+                                                }
+                                            }]
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                        getChart(0, 0, 0);
+                    });
+                </script>
+            </div>
+        </div>
+        <!--end::Chart-->
+    </div>
+    <!--end::Body-->
+</div>
+<!--end::Charts Widget 4-->

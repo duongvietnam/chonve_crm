@@ -1,0 +1,221 @@
+﻿<div class="card card-custom gutter-b card-stretch">
+    <!--begin::Header-->
+    <div class="card-header border-0 pt-5">
+        <div class="card-title font-weight-bolder">
+            <div class="card-label">
+                <span class="font-weight-bolder text-dark">
+                    Báo cáo doanh thu ngày hiện tại
+                </span>
+                <span class="text-muted mt-3 font-weight-bold font-size-sm"></span>
+                <div class="font-size-sm text-muted mt-2" id="DoanhThuDVtotal"></div>
+            </div>
+        </div>
+        <div class="card-toolbar d-none">
+        </div>
+    </div>
+    <!--end::Header-->
+    <!--begin::Body-->
+    <div class="card-body p-0 d-flex flex-column">
+        <!--begin::Chart-->
+        <div id="baocaongay" style="min-height: 365px;"></div>
+
+        <script>
+            $(document).ready(function () {
+
+                // Shared Colors Definition
+                const primary = '#6993FF';
+                const success = '#1BC5BD';
+                const info = '#8950FC';
+                const warning = '#FFA800';
+                const danger = '#F64E60';
+
+                var _baocaoNgayChart = function (series,categories ) {
+                    const apexChart = "#baocaongay";
+                    var options = {
+                        colors: [primary, warning, success],
+                        series: series,
+                        chart: {
+                            height: 350,
+                            type: 'line',
+                            stacked: true,
+                            toolbar: {
+                                show: false
+                                },
+                        },
+                        dataLabels: {
+                            enabled: true
+                        },
+                        stroke: {
+                            width: [1, 0,0]
+                        },
+                        title: {
+                            text: 'Báo cáo cùng kỳ ngày',
+                            align: 'left',
+                            offsetX: 110
+                        },
+                        xaxis: {
+                            categories: categories ,
+                        },
+                        yaxis: [
+                            {
+                                axisTicks: {
+                                    show: true,
+                                },
+                                axisBorder: {
+                                    show: true,
+                                    color: primary
+                                },
+                                labels: {
+                                    style: {
+                                        colors: primary,
+                                    }
+                                },
+                                title: {
+                                    text: "Doanh Thu",
+                                    style: {
+                                        color: primary,
+                                    }
+                                },
+                                tooltip: {
+                                    enabled: true
+                                }
+                            },
+                            {
+                                seriesName: 'Tăng trưởng hôm qua - hôm nay',
+                                opposite: true,
+                                axisTicks: {
+                                    show: true,
+                                },
+                                axisBorder: {
+                                    show: true,
+                                    color: warning
+                                },
+                                labels: {
+                                    style: {
+                                        colors: warning,
+                                    },
+                                },
+                                title: {
+                                    text: "Tăng trưởng hôm qua - hôm nay",
+                                    style: {
+                                        color: warning,
+                                    }
+                                }
+                            },
+                            {
+                                seriesName: 'Tăng trưởng ngày này tuần trước',
+                                opposite: true,
+                                axisTicks: {
+                                    show: true,
+                                },
+                                axisBorder: {
+                                    show: true,
+                                    color: success
+                                },
+                                labels: {
+                                    style: {
+                                        colors: success,
+                                    },
+                                },
+                                title: {
+                                    text: "Tăng trưởng ngày này tuần trước",
+                                    style: {
+                                        color: success,
+                                    }
+                                }
+                            }
+                        ],
+                        tooltip: {
+                            fixed: {
+                                enabled: true,
+                                position: 'right', // topRight, topLeft, bottomRight, bottomLeft
+                                offsetY: 30,
+                                offsetX: 60
+                            },
+                            y: [
+                                {
+                                formatter: function (val) {
+                                    return val + " Triệu VNĐ"
+                                    }
+                                },
+                                {
+                                    formatter: function (val) {
+                                        return val > 0 ? "↑ " + val + "% So với hôm qua" : val == 0 ? "→" + val + "% So với ngày này hôm qua" : "↓ " + val + "% So với ngày hôm qua"
+                                    }
+                                },
+                                {
+                                    formatter: function (val) {
+                                        return val > 0 ? "↑ " + val + "% So với ngày này tuần trước" : val == 0 ? "→" + val + "% So với ngày này tuần trước" : "↓ " + val + "% So với ngày này tuần trước"
+                                    }
+                                }
+                            ]
+
+                        },
+                        legend: {
+                            show: false,
+                            horizontalAlign: 'left',
+                            offsetX: 40
+                        }
+                    };
+
+                    var chart = new ApexCharts(document.querySelector(apexChart), options);
+                    chart.render();
+                }
+                var pushCate = function (startNumCate, endNumCate, prefix = "",suffix = "") {
+                        categories = [];
+                        for (var i = startNumCate; i <= endNumCate; i++) {
+                            categories.push(prefix + i.toString() + suffix);
+                        }
+                        return categories;
+                }
+                var get_chart = function (nam , thang, ngay,tuan) {
+                    $.get("@Url.Action("GetBaoCaoDoanhThuCungKyChart", "GdGiaoDich")", { year: nam, month: thang, day: ngay, week: tuan}, function (data) {
+                        series = [];
+                        categories = ["Ngày hôm qua", "Ngày hôm nay", ""];
+                        maxlength = 3;
+                        var newSeries = {
+                                 name: 'Doanh Thu',
+                                type: 'column',
+                                data: []
+                             };
+                        for (var i = 0; i < maxlength; i++) {
+                                 newSeries.data.push(0);
+                        }
+                        for (var gd of data) {
+                            newSeries.data[gd.Id - 1] = Math.round((gd.GiaTri / 1000000) * Math.pow(10, 2)) / Math.pow(10, 2);
+                            if (gd.Id == 3) {
+                                if ((parseInt(gd.Nhan1) + 1) > 0 && (parseInt(gd.Nhan1) + 1) < 8) {
+                                    categories[2] = "Thứ " + (parseInt(gd.Nhan1) + 1) + "(Tuần trước)";
+                                }
+                                if ((parseInt(gd.Nhan1) + 1) == 8) {
+                                    categories[2] = "Chủ nhật(Tuần trước)";
+                                }
+                            }
+                        }
+                        series.push(newSeries);
+                        series.push({
+                            type: 'line',
+                            name: "",
+                            data: [0,(Math.round((100*(newSeries.data[1] - newSeries.data[0])/ newSeries.data[0]) * Math.pow(10, 2)) / Math.pow(10, 2)),0]
+                        });
+                        series.push({
+                            type: 'line',
+                            name: "",
+                            data: [0,(Math.round((100*(newSeries.data[1] - newSeries.data[2]) / newSeries.data[2]) * Math.pow(10, 2)) / Math.pow(10, 2)),0]
+                        });
+                        label = "";
+                        _baocaoNgayChart(series, categories);
+                    });
+                }
+                var d = new Date();
+                var month = d.getMonth() + 1;
+                var day = d.getDate();
+                var year = d.getFullYear();
+                get_chart(year,month,day,0);
+            });
+        </script>
+        <!--end::Chart-->
+    </div>
+    <!--end::Body-->
+</div>
+
