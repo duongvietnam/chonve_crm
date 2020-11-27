@@ -375,9 +375,9 @@ namespace Nop.Web.Areas.CRM.Controllers
                                                     {
                                                         var giaoDich = _gdGiaoDichService.GetGiaoDichByMaNguon(MaNguon: datVe.Ma, DoanhNghiepId: DoanhNghiepId);
                                                         var danhBa = _khDanhBaDienThoaiService.GetKhDanhBaDienThoaiBySoDienThoai(datVe.DienThoai, DoanhNghiepId);
-                                                        var map = _gdGiaoDichKhachHangMapService.GetGdGiaoDichKhachHangMapByGiaoDichId(giaoDich.Id, DoanhNghiepId);
                                                         if (giaoDich != null && danhBa != null)
                                                         {
+                                                            var map = _gdGiaoDichKhachHangMapService.GetGdGiaoDichKhachHangMapByGiaoDichId(giaoDich.Id, DoanhNghiepId);
                                                             if (map == null || map.Count == 0)
                                                             {
                                                                 // giao dich khach hang map
