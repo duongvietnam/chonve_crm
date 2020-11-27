@@ -1,44 +1,43 @@
 ﻿@model MarMaGiamGiaModel
 
-@*<div class="content d-flex flex-column flex-column-fluid">
-    <div class="container">
-        <label class="col-2 col-form-label">Nhóm khách hàng</label>
-        <div class="col-2">
-            <nop-select asp-for="ListHangKhachHangSelectedId" asp-items="Model.DDLHangKhachHang" />
+<nop-antiforgery-token />
+<div class="content d-flex flex-column flex-column-fluid">
+    <div class="container row">
+        <input asp-for="MarketingId" type="hidden" />
+        <label class="col-3 col-form-label">Nhóm khách hàng</label>
+        <div class="col-9">
+            <nop-select asp-for="ListHangKhachHangSelectedId" asp-items="Model.DDLHangKhachHang" asp-multiple="true" />
         </div>
-        <div class="col-2">
+        <div class="col-3"></div>
+        <div class="col-9">
             <div class="checkbox-inline">
                 <label class="checkbox">
                     @Html.CheckBoxFor(m => m.Random)
                     <span></span>
                 </label>
-                <span></span>Gửi ngẫu nhiên nếu số phiếu ít hơn số khách hàng
+                <label class="col-form-label">Gửi ngẫu nhiên nếu số phiếu ít hơn số khách hàng</label>
             </div>
         </div>
-        <div class="mb-10 border-top mt-10"></div>
-        <div class="pb-0 mb-3 pb-3">
-            <div class="row">
-                <div class="col-xl-4"></div>
-                <div class="col-xl-7">
-                    <div class="row">
-                        <div class="col-3"></div>
-                        <div class="col-9">
-                            <button id="btnSave" class="btn btn-light-primary font-weight-bold">Xác nhận</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="col-12 mb-10 border-top mt-10"></div>
+        <div class="col-12" style="text-align:center">
+            <button id="btnSaveHangKhachHang" class="btn btn-light-primary">Xác nhận</button>
         </div>
     </div>
 </div>
 
 <script>
-    $("#btnSave").click(function () {
+    $("#btnSaveHangKhachHang").click(function () {
+        var _data = {
+            MarketingId: $("#MarketingId").val(),
+            ListHangKhachHangSelectedId: $("#ListHangKhachHangSelectedId").val(),
+            Random: $("#Random").val()
+        };
+        addAntiForgeryToken(_data);
         $.ajax({
             cache: false,
             type: "POST",
             url: "@(Url.Action("_TangTheoHangKhachHang", "MarMarketing"))",
-            data: postData,
+            data: _data,
             success: function (data, textStatus, jqXHR) {
                 ShowSuccess(data.Message);
                 HideModalManual();
@@ -48,6 +47,4 @@
             }
         });
     })
-</script>*@
-
-<h6>duong viet namss</h6>
+</script>

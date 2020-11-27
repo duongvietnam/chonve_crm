@@ -79,9 +79,9 @@
         <div class="card">
             <h5 class="card-header">
                 Tình trạng các phiếu giảm giá
-                <a href="javascript:TangPhieuTheoKhachHang(@Model.marMaGiamGiaSearchModel.MarketingId)" class="btn btn-light-danger font-weight-bolder btn-sm" style="float: right; margin-left: 10px; margin-right: 10px;">Tặng theo khách hàng</a>
-                <a href="javascript:TangPhieuTheoHangKhachHang(@Model.marMaGiamGiaSearchModel.MarketingId)" class="btn btn-light-warning font-weight-bolder btn-sm" style="float: right; margin-left: 10px; margin-right: 10px;">Tặng theo hạng khách hàng</a>
-                <a href="javascript:TangPhieuTheoNhomKhachHang(@Model.marMaGiamGiaSearchModel.MarketingId)" class="btn btn-light-success font-weight-bolder btn-sm" style="float: right; margin-left: 10px; margin-right: 10px;">Tặng theo nhóm khách hàng</a>
+                <a href="javascript:TangPhieuTheoKhachHang(@Model.MarketingId)" class="btn btn-light-danger font-weight-bolder btn-sm" style="float: right; margin-left: 10px; margin-right: 10px;">Tặng theo khách hàng</a>
+                <a href="javascript:TangPhieuTheoHangKhachHang(@Model.MarketingId)" class="btn btn-light-warning font-weight-bolder btn-sm" style="float: right; margin-left: 10px; margin-right: 10px;">Tặng theo hạng khách hàng</a>
+                <a href="javascript:TangPhieuTheoNhomKhachHang(@Model.MarketingId)" class="btn btn-light-success font-weight-bolder btn-sm" style="float: right; margin-left: 10px; margin-right: 10px;">Tặng theo nhóm khách hàng</a>
             </h5>
             <div class="card-body">
                 <nop-antiforgery-token />
@@ -97,8 +97,8 @@
                                 LengthMenu = Model.marMaGiamGiaSearchModel.AvailablePageSizes,
                                 Filters = new List<FilterParameter>
                                 {
-                                    new FilterParameter(nameof(Model.marMaGiamGiaSearchModel.KeySearch)),
-                                    new FilterParameter(name: nameof(Model.marMaGiamGiaSearchModel.MarketingId), value: Model.marMaGiamGiaSearchModel.MarketingId)
+                                    new FilterParameter(nameof(Model.MarketingId)),
+                                    new FilterParameter(name: nameof(Model.marMaGiamGiaSearchModel.MarketingId), value: Model.MarketingId)
                                 },
                                 ColumnCollection = new List<ColumnProperty>
                                 {
@@ -137,7 +137,7 @@
 
     function TangPhieuTheoHangKhachHang(marId) {
         var _url = "@(Url.Action("_TangTheoHangKhachHang", "MarMarketing"))?marId=" + marId;
-	    var titlePopup = "namdv";
+        var titlePopup = "Tặng theo hạng khách hàng";
         OpenModalManual(titlePopup, _url, "modal-lg");
     }
 

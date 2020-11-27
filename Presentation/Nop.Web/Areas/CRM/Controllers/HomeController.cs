@@ -108,14 +108,13 @@ namespace Nop.Web.Areas.CRM.Controllers
                         }
                     }
                 }
-
-                // xử lý chuyến đi -> giao dịch
-                foreach (var dichvu in _dvDichVuService.GetAllDvDichVus(false, DoanhNghiepId))
+                var DateFrom = new DateTime(year: 2020, month: 11, day: 26, hour: 0, minute: 0, second: 0);
+                for (var day = DateFrom.Date; day.Date <= DateTime.Now.Date; day = day.AddDays(1))
                 {
-                    if (dichvu.ID_NGUON > 0)
+                    // xử lý chuyến đi -> giao dịch
+                    foreach (var dichvu in _dvDichVuService.GetAllDvDichVus(false, DoanhNghiepId))
                     {
-                        var DateFrom = new DateTime(year: 2020, month: 11, day: 26, hour: 0, minute: 0, second: 0);
-                        for (var day = DateFrom.Date; day.Date <= DateTime.Now.Date; day = day.AddDays(1))
+                        if (dichvu.ID_NGUON > 0)
                         {
                             var paramChuyenDi = new ParameterChuyenDiModel
                             {
@@ -145,6 +144,7 @@ namespace Nop.Web.Areas.CRM.Controllers
                                                 itemChuyenDi.SO_KHACH = chuyendi.SoKhach;
                                                 itemChuyenDi.TEN_LAI_XE = chuyendi.TenLaiXe;
                                                 itemChuyenDi.TEN_LOAI_XE = chuyendi.TenLoaiXe;
+                                                itemChuyenDi.NGAY_DI = chuyendi.NgayDiThuc;
 
                                                 _cdChuyenDiService.UpdateCdChuyenDi(itemChuyenDi);
                                             }
@@ -159,6 +159,7 @@ namespace Nop.Web.Areas.CRM.Controllers
                                                 itemChuyenDi.TEN_LAI_XE = chuyendi.TenLaiXe;
                                                 itemChuyenDi.TEN_LOAI_XE = chuyendi.TenLoaiXe;
                                                 itemChuyenDi.DOANH_NGHIEP_ID = DoanhNghiepId;
+                                                itemChuyenDi.NGAY_DI = chuyendi.NgayDiThuc;
 
                                                 _cdChuyenDiService.InsertCdChuyenDi(itemChuyenDi);
                                             }
@@ -295,6 +296,7 @@ namespace Nop.Web.Areas.CRM.Controllers
                                     }
                                 }
                             }
+
                         }
                     }
                 }

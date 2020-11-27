@@ -4,6 +4,7 @@
     <div class="container">
         <label class="col-2 col-form-label">Nhóm khách hàng</label>
         <div class="col-2">
+            <input asp-for="MarketingId" type="hidden" />
             <nop-select asp-for="NhomKhachHangSelectedId" asp-items="Model.DDLNhomKhachHang" asp-multiple="true" />
         </div>
         <div class="col-2">

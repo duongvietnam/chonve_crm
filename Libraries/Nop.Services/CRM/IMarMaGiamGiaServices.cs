@@ -23,6 +23,7 @@ namespace Nop.Services.CRM
         int GetSoMaGiamGiaDaGuiByMarId(int marId, bool chuaGuiKhachHang = false);
         int GetSoMaGiamGiaDaSuDungByMarId(int marId);
         IList<MarMaGiamGia> GetMarMaGiamGias(int marId, bool chuaGuiKhachHang);
+        IList<int> GetListKhachHang(int marId);
         void InsertMarMaGiamGia(MarMaGiamGia entity);
         void UpdateMarMaGiamGia(MarMaGiamGia entity);
         void DeleteMarMaGiamGia(MarMaGiamGia entity);

@@ -17,6 +17,7 @@ namespace Nop.Core.Domain.CRM
         public Int32? SO_KHACH { get; set; }
         public Int32? SO_GHE { get; set; }
         public Int32? DOANH_NGHIEP_ID { get; set; }
+        public String NGAY_DI { get; set; }
     }
 }
 

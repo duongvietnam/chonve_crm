@@ -479,6 +479,32 @@ namespace Nop.Web.Areas.CRM.Factories.CRM
 
             return selectList;
         }
+
+        public IList<SelectListItem> PrepareMultiSelectHangKhachHang()
+        {
+            var selectList = new List<SelectListItem>();
+            var cauHinh = _chPhanHangKhachHangService.GetChPhanHangKhachHangActive(_storeContext.CurrentStore.Id);
+            if (cauHinh != null)
+            {
+                selectList.Insert(0, new SelectListItem
+                {
+                    Text = cauHinh.TEN_CAP_1,
+                    Value = "1"
+                });
+                selectList.Insert(1, new SelectListItem
+                {
+                    Text = cauHinh.TEN_CAP_2,
+                    Value = "2"
+                });
+                selectList.Insert(2, new SelectListItem
+                {
+                    Text = cauHinh.TEN_CAP_3,
+                    Value = "3"
+                });
+            }
+
+            return selectList;
+        }
         #endregion
     }
 }

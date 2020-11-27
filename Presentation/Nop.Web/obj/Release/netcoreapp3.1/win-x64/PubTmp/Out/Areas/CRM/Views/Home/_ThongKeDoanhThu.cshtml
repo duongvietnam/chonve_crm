@@ -6,7 +6,19 @@
             <div class="card-label">
                 <h3 class="card-title align-items-start flex-column">
                     <span class="font-weight-bolder text-dark">
-                        Thống kê tổng doanh thu
+                        Thống kê tổng 
+                        <ul class="mx-2 nav nav-pills nav-pills-sm nav-dark-75 d-inline-flex" role="tablist">
+                            <li class="nav-item">
+                                <a data-revenue="True" data-volume="False" class="btn-chart-TKGD nav-link py-0 px-4 label-info active" data-toggle="tab" href="#kt_charts_widget_4_chart">
+                                    <span id="rev-btn-click" class="nav-text font-size-sm">Doanh thu</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a data-revenue="False" data-volume="True" class="btn-chart-TKGD  nav-link py-0 px-4 label-info" data-toggle="tab" href="#kt_charts_widget_4_chart">
+                                    <span class="nav-text font-size-sm">Số lượt</span>
+                                </a>
+                            </li>
+                        </ul>
                         <span id="spanBtnTime" class="label label-info label-inline mr-2">Tất cả các năm</span>
                     </span>
                     <span class="text-muted mt-3 font-weight-bold font-size-sm"></span>
@@ -39,7 +51,7 @@
         <div id="kt_charts_widget_4_chart" style="min-height: 365px; ">
                 <script>
         $(document).ready(function () {
-            var _chartTKDT = function (labels, values, total) {
+            var _chartTKDT = function (labels, values, prefix, subffix) {
                 const apexChart = "#kt_charts_widget_4_chart";
                 $(apexChart).empty();
                 //console.log(labels);
@@ -118,7 +130,7 @@
                         labels: {
                             show: false,
                             formatter: function (val) {
-                                return "₫" + val + " Triệu";
+                                return prefix + val + subffix;
                             }
                         }
 
@@ -162,21 +174,46 @@
                 $('#btnChart').removeClass("d-none");
             };
             var getChartTKDT = function (year, month, day) {
+                rev = $('.btn-chart-TKGD.active').data("revenue");
+                vol = $('.btn-chart-TKGD.active').data("volume");
                 $('#kt_charts_widget_4_chart').empty();
                 $.get("@Url.Action("GetGDChart", "GdGiaoDich")", { year: year, month: month, day: day }, function (data) {
                     var data_x = [];
                     var data_y = [];
+                    prefix = "";
+                    subffix = "";
                     var total = 0;
-                    for (item of data) {
-                        data_x.push(item.Time);
-                        data_y.push(item.Amount / 1000000);
-                        total += item.Amount;
+                    if (rev == "True" && vol == "False") {
+                        prefix = "₫";
+                        subffix = " Triệu VNĐ";
+                        for (item of data) {
+                            data_x.push(item.Time);
+                            data_y.push(item.Amount / 1000000);
+                            total += item.Amount;
+                        }
+                        $('#totalVal').text(Math.round((total / 1000000000) * Math.pow(10, 2)) / Math.pow(10, 2) + " Tỷ VNĐ");
                     }
-                    $('#totalVal').text(Math.round((total / 1000000000) * Math.pow(10, 2)) / Math.pow(10, 2) + " Tỷ VNĐ");
-                    _chartTKDT(data_x, data_y, total);
+                    if (rev == "False" && vol == "True") {
+                        subffix = " Lượt";
+                        for (item of data) {
+                            data_x.push(item.Time);
+                            data_y.push(item.Quantity);
+                            total += item.Quantity;
+                        }
+                        $('#totalVal').text(total + " Lượt");
+                    }
+                    _chartTKDT(data_x, data_y, prefix, subffix);
                 });
             }
             getChartTKDT(0, 0, 0);
+            $('.btn-chart-TKGD').click(function () {
+                $('.btn-chart-TKGD').removeClass("active");
+                $(this).addClass("active");
+                ye = $('#btnChart').data("year");
+                mo = $('#btnChart').data("month");
+                da = $('#btnChart').data("day");
+                getChartTKDT(ye, mo, da);
+            });
             $('#secheckHour').click(function () {
                 if ($('#btnChart').data("day") < 0) {
                     $('#btnChart').data("day", 0);

@@ -231,7 +231,8 @@ namespace Nop.Web.Areas.CRM.Controllers
                     listData.Add(new ChartGiaoDichModel
                     {
                         Amount = 0,
-                        Time = i.ToString()
+                        Time = i.ToString(),
+                        Quantity = 0
                     });
                 }
             }
@@ -242,7 +243,8 @@ namespace Nop.Web.Areas.CRM.Controllers
                     listData.Add(new ChartGiaoDichModel
                     {
                         Amount = 0,
-                        Time = i.ToString()
+                        Time = i.ToString(),
+                        Quantity = 0
                     });
                 }
             }
@@ -253,7 +255,8 @@ namespace Nop.Web.Areas.CRM.Controllers
                     listData.Add(new ChartGiaoDichModel
                     {
                         Amount = 0,
-                        Time = i.ToString()
+                        Time = i.ToString(),
+                        Quantity=0
                     });
                 }
             }
@@ -264,6 +267,7 @@ namespace Nop.Web.Areas.CRM.Controllers
                 foreach (var item in listRawThongKe)
                 {
                     listData.FirstOrDefault(l => l.Time == item.Nhan).Amount = item.GiaTri;
+                    listData.FirstOrDefault(l => l.Time == item.Nhan).Quantity = item.GiaTri1;
                 }
             }
             else
@@ -271,7 +275,8 @@ namespace Nop.Web.Areas.CRM.Controllers
                 listData = listRawThongKe.Select(gl => new ChartGiaoDichModel
                 {
                     Time = gl.Nhan,
-                    Amount = gl.GiaTri
+                    Amount = gl.GiaTri,
+                    Quantity = gl.GiaTri1
                 }).OrderBy(g => g.Time).ToList();
             }
             return Json(listData);

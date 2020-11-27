@@ -8,13 +8,13 @@
                 </span>
                 <ul class="nav nav-pills nav-pills-sm nav-dark-75 d-inline-flex" role="tablist">
                     <li class="nav-item">
-                        <a data-revenue="True" data-volume="False" data-year="@DateTime.Now.Year" class="btn-chart-TKGDHT  nav-link py-0 px-4 label-info active" data-toggle="tab" href="#chart_11">
+                        <a data-revenue="True" data-volume="False" class="btn-chart-TKGDHT  nav-link py-0 px-4 label-info active" data-toggle="tab" href="#kt_charts_widget_2_chart">
                             <span id="rev-btn-click" class="nav-text font-size-sm">Doanh thu</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a data-revenue="False" data-volume="True" data-year="@DateTime.Now.Year" class="btn-chart-TKGDHT  nav-link py-0 px-4 label-info" data-toggle="tab" href="#chart_11">
-                            <span class="nav-text font-size-sm">Số Lượt</span>
+                        <a data-revenue="False" data-volume="True" class="btn-chart-TKGDHT  nav-link py-0 px-4 label-info" data-toggle="tab" href="#kt_charts_widget_2_chart">
+                            <span class="nav-text font-size-sm">Số lượt</span>
                         </a>
                     </li>
                 </ul>
@@ -76,8 +76,8 @@
                 var get_chart = function (nam = 0, thang = 0, wd = false) {
                     rev = $('.btn-chart-TKGDHT.active').data("revenue");
                     vol = $('.btn-chart-TKGDHT.active').data("volume");
-                    console.log(rev);
-                    console.log(vol);
+                    //console.log(rev);
+                    //console.log(vol);
                     $.get("@Url.Action("GetSSGDNTChart", "GdGiaoDich")", { soMoc: 2, year: nam, month: thang ,weekday: wd}, function (data) {
                          series = [];
                         categories = [];
@@ -92,7 +92,7 @@
                             categories = pushCate(1, 31, "Ng ", "");
                                 maxlength = 31;
                         }
-                        console.log(data);
+                        //console.log(data);
                         if (nam > 0 && thang == 0 && wd == "True") {
                             categories = pushCate(2, 7, "Thứ ", "");
                             categories.push("Chủ Nhật");

@@ -33,6 +33,8 @@ namespace Nop.Web.Areas.CRM.Factories.CRM
         KhKhachHangModel PrepareKhKhachHangTradeDetailModel(KhKhachHangModel model, KhKhachHang item);
 
         IList<SelectListItem> PrepareDDLHangKhachHang();
+
+        IList<SelectListItem> PrepareMultiSelectHangKhachHang();
         #endregion
     }
 }
