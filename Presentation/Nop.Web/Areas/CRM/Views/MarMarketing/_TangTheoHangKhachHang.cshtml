@@ -40,7 +40,7 @@
             data: _data,
             success: function (data, textStatus, jqXHR) {
                 ShowSuccess(data.Message);
-                HideModalManual();
+                CloseModalManual();
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 display_valid_error(data.ObjectInfo);

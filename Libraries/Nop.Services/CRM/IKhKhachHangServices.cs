@@ -21,6 +21,7 @@ namespace Nop.Services.CRM
         KhKhachHang GetKhKhachHangById(int Id);
         IList<KhKhachHang> GetKhKhachHangByIds(int[] Ids);
         IQueryable<KhKhachHang> GetQueryableKhachHang(int doanhNgiepId);
+        IList<KhKhachHang> GetKhachHangByCount(int count, string ten);
         void InsertKhKhachHang(KhKhachHang entity);
         void UpdateKhKhachHang(KhKhachHang entity);
         void DeleteKhKhachHang(KhKhachHang entity);

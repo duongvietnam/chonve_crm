@@ -136,7 +136,7 @@ namespace Nop.Web.Areas.CRM.Factories.CRM
             return selectList.OrderBy(c => c.Value).ToList();
         }
 
-        public IList<SelectListItem> PrepareMultiSelectListNhomKhachHang(IList<int> valSelected, bool isAddFirst = false, string strFirstRow = "-- Chọn nhóm khách hàng --", string valueFirstRow = "", int storeId = 0)
+        public IList<SelectListItem> PrepareMultiSelectListNhomKhachHang(IList<int> valSelected, int storeId = 0)
         {
             var _listItems = _itemService.GetAllKhNhomKhachHangs(storeId);
             var selectList = _listItems.Select(c => new SelectListItem
@@ -145,12 +145,6 @@ namespace Nop.Web.Areas.CRM.Factories.CRM
                 Value = c.Id.ToString(),
                 Selected = valSelected.Contains(c.Id)
             }).ToList();
-            if (isAddFirst)
-                selectList.Add(new SelectListItem
-                {
-                    Text = strFirstRow,
-                    Value = valueFirstRow,
-                });
 
             return selectList.OrderBy(c => c.Value).ToList();
         }

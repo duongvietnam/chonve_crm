@@ -245,6 +245,11 @@ namespace Nop.Services.CRM
             return _itemRepository.Table.Where(c => c.DOANH_NGHIEP_ID == doanhNgiepId);
         }
 
+        public virtual IList<KhKhachHang> GetKhachHangByCount(int count, string ten)
+        {
+            return _itemRepository.Table.Where(c => c.TEN.Contains(ten)).Take(count).ToList();
+        }
+
         public virtual void InsertKhKhachHang(KhKhachHang entity)
         {
             if (entity == null)

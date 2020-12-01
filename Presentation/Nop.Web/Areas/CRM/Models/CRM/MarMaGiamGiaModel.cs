@@ -22,6 +22,8 @@ namespace Nop.Web.Areas.CRM.Models.CRM
             DDLNhomKhachHang = new List<SelectListItem>();
             ListHangKhachHangSelectedId = new List<int>();
             DDLHangKhachHang = new List<SelectListItem>();
+            KhachHangSelectedId = new List<int>();
+            DDLKhachHang = new List<SelectListItem>();
         }
         public String MA { get; set; }
         public DateTime? NGAY_SU_DUNG { get; set; }
@@ -70,6 +72,8 @@ namespace Nop.Web.Areas.CRM.Models.CRM
         public IList<SelectListItem> DDLNhomKhachHang { get; set; }
         public IList<int> ListHangKhachHangSelectedId { get; set; }
         public IList<SelectListItem> DDLHangKhachHang { get; set; }
+        public IList<int> KhachHangSelectedId { get; set; }
+        public IList<SelectListItem> DDLKhachHang { get; set; }
         public bool Random { get; set; }
         public int MarketingId { get; set; }
     }
@@ -80,6 +84,7 @@ namespace Nop.Web.Areas.CRM.Models.CRM
         }
         public string KeySearch { get; set; }
         public int MarketingId { get; set; }
+        public int TrangThaiPhieu { get; set; }
     }
     public partial class MarMaGiamGiaListModel : BasePagedListModel<MarMaGiamGiaModel>
     {

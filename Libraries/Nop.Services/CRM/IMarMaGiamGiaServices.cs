@@ -15,12 +15,11 @@ namespace Nop.Services.CRM
     {    
     #region MarMaGiamGia
         IList<MarMaGiamGia> GetAllMarMaGiamGias(int StoreId=0);
-        IPagedList <MarMaGiamGia> SearchMarMaGiamGias(int marId, int StoreId =0,string Keysearch = null,int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList <MarMaGiamGia> SearchMarMaGiamGias(int marId, int StoreId =0,string Keysearch = null,int pageIndex = 0, int pageSize = int.MaxValue, int trangThai = 0);
         MarMaGiamGia GetMarMaGiamGiaById(int Id);
         IList<MarMaGiamGia> GetMarMaGiamGiaByIds(int[] Ids);
-        int GetSoMaGiamGiaByMarId(int marId);
         int GetCountByMa(string ma, int doanhNghiepId);
-        int GetSoMaGiamGiaDaGuiByMarId(int marId, bool chuaGuiKhachHang = false);
+        int GetSoMaGiamGiaDaGuiByMarId(int marId, bool? chuaGuiKhachHang);
         int GetSoMaGiamGiaDaSuDungByMarId(int marId);
         IList<MarMaGiamGia> GetMarMaGiamGias(int marId, bool chuaGuiKhachHang);
         IList<int> GetListKhachHang(int marId);

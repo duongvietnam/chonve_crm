@@ -55,10 +55,18 @@ namespace Nop.Services.CRM
             return query.ToList();
         }
 
-        public virtual IPagedList<MarMaGiamGia> SearchMarMaGiamGias(int marId, int StoreId = 0, string Keysearch = null, int pageIndex = 0, int pageSize = int.MaxValue)
+        public virtual IPagedList<MarMaGiamGia> SearchMarMaGiamGias(int marId, int StoreId = 0, string Keysearch = null, int pageIndex = 0, int pageSize = int.MaxValue, int trangThai = 0)
         {
-            var query = _itemRepository.Table.Where(c => c.MARKETING_ID == marId).OrderByDescending(c => c.KHACH_HANG_ID).OrderByDescending(c => c.NGAY_SU_DUNG);
-            return new PagedList<MarMaGiamGia>(query, pageIndex, pageSize);
+            var query = _itemRepository.Table.Where(c => c.MARKETING_ID == marId);
+            if (trangThai == 1)
+            {
+                query = query.Where(c => c.KHACH_HANG_ID > 0);
+            }
+            if (trangThai == 2)
+            {
+                query = query.Where(c => c.NGAY_SU_DUNG != null);
+            }
+            return new PagedList<MarMaGiamGia>(query.OrderByDescending(c => c.KHACH_HANG_ID).OrderByDescending(c => c.NGAY_SU_DUNG), pageIndex, pageSize);
         }
 
         public virtual MarMaGiamGia GetMarMaGiamGiaById(int Id)
@@ -74,23 +82,26 @@ namespace Nop.Services.CRM
             return query.Where(c => Ids.Contains(c.Id)).ToList();
         }
 
-        public virtual int GetSoMaGiamGiaByMarId(int marId)
-        {
-            return _itemRepository.Table.Where(c => c.MARKETING_ID == marId && c.DOANH_NGHIEP_ID == _storeContext.CurrentStore.Id).Count();
-        }
-
         public virtual int GetCountByMa(string ma, int doanhNghiepId)
         {
             return _itemRepository.Table.Where(c => c.MA == ma && c.DOANH_NGHIEP_ID == doanhNghiepId).Count();
         }
 
-        public virtual int GetSoMaGiamGiaDaGuiByMarId(int marId, bool chuaGuiKhachHang = false)
+        public virtual int GetSoMaGiamGiaDaGuiByMarId(int marId, bool? chuaGuiKhachHang)
         {
             var query = _itemRepository.Table.Where(c => c.MARKETING_ID == marId && c.DOANH_NGHIEP_ID == _storeContext.CurrentStore.Id);
-            if (chuaGuiKhachHang)
+            if (chuaGuiKhachHang != null)
             {
-                query = query.Where(c => c.KHACH_HANG_ID == 0 || c.KHACH_HANG_ID == null);
+                if ((bool)chuaGuiKhachHang)
+                {
+                    query = query.Where(c => c.KHACH_HANG_ID == 0 || c.KHACH_HANG_ID == null);
+                }
+                else
+                {
+                    query = query.Where(c => c.KHACH_HANG_ID > 0);
+                }
             }
+            
             return query.Count();
         }
 

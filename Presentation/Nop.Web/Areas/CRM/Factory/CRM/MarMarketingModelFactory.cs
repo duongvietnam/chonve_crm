@@ -101,7 +101,7 @@ namespace Nop.Web.Areas.CRM.Factories.CRM
                     switch (item.HINH_THUC)
                     {
                         case (int)EnumHinhThucMarketing.MaGiamGia:
-                            itemModel.TEN = itemModel.TEN + " (" + _marMaGiamGiaService.GetSoMaGiamGiaByMarId(item.Id) + " phiếu)";
+                            itemModel.TEN = itemModel.TEN + " (" + _marMaGiamGiaService.GetSoMaGiamGiaDaGuiByMarId(item.Id, false) + " phiếu)";
                             itemModel.SaleString = dieuKien.FirstOrDefault().SALE.ToVNStringNumber() + _dvDonViTinhService.GetDvDonViTinhById((int)dieuKien.FirstOrDefault().DON_VI_TINH).TEN;
                             itemModel.TuNgayString = dieuKien.FirstOrDefault().TU_NGAY.toDateVNString();
                             itemModel.DenNgayString = dieuKien.FirstOrDefault().DEN_NGAY.toDateVNString();

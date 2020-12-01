@@ -25,7 +25,7 @@ namespace Nop.Web.Areas.CRM.Factories.CRM
 
         IList<SelectListItem> PrepareSelectListNhomKhachHang(int valSelected = 0, bool isAddFirst = false, string strFirstRow = "-- Chọn nhóm khách hàng --", string valueFirstRow = "", int storeId = 0);
 
-        IList<SelectListItem> PrepareMultiSelectListNhomKhachHang(IList<int> valSelected, bool isAddFirst = false, string strFirstRow = "-- Chọn nhóm khách hàng --", string valueFirstRow = "", int storeId = 0);
+        IList<SelectListItem> PrepareMultiSelectListNhomKhachHang(IList<int> valSelected, int storeId = 0);
 
         #endregion
     }

@@ -570,8 +570,8 @@ namespace Nop.Web.Areas.CRM.Controllers
             var dieuKien = _marMarketingDieuKienService.GetMarMarketingDieuKiens(marId).FirstOrDefault();
             var model = new MarMaGiamGiaModel
             {
-                SoPhieuTao = _marMaGiamGiaService.GetSoMaGiamGiaByMarId(marId),
-                SoPhieuDaGui = _marMaGiamGiaService.GetSoMaGiamGiaDaGuiByMarId(marId),
+                SoPhieuTao = _marMaGiamGiaService.GetSoMaGiamGiaDaGuiByMarId(marId, null),
+                SoPhieuDaGui = _marMaGiamGiaService.GetSoMaGiamGiaDaGuiByMarId(marId, false),
                 SoPhieuKhachHangDaSuDung = _marMaGiamGiaService.GetSoMaGiamGiaDaSuDungByMarId(marId),
                 CO_THE_KET_HOP = mar.CO_THE_KET_HOP,
                 TuNgayString = dieuKien.TU_NGAY.toDateVNString(),
@@ -584,7 +584,13 @@ namespace Nop.Web.Areas.CRM.Controllers
 
         public virtual IActionResult _TangTheoKhachHang(int marId)
         {
-            return PartialView();
+            var model = new MarMaGiamGiaModel
+            {
+                MarketingId = marId,
+            };
+            model.DDLKhachHang = _khKhachHangModelFactory.PrepareMultiSelectKhachHang(model.KhachHangSelectedId);
+
+            return PartialView(model);
         }
 
         public virtual IActionResult _TangTheoHangKhachHang(int marId)
@@ -647,6 +653,7 @@ namespace Nop.Web.Areas.CRM.Controllers
                     phieuGiamGia.KHACH_HANG_ID = khachHangId;
                     _marMaGiamGiaService.UpdateMarMaGiamGia(phieuGiamGia);
                 }
+                sttPhieu++;
             }
 
             return this.JsonSuccessMessage("Thành công !");
@@ -656,23 +663,42 @@ namespace Nop.Web.Areas.CRM.Controllers
         public virtual IActionResult _TangTheoNhomKhachHang(MarMaGiamGiaModel model)
         {
             var listKhachHangId = _khNhomKhachHangMapService.GetKhachHangIdsByNhomId(model.NhomKhachHangSelectedId);
-            int soPhieu = _marMaGiamGiaService.GetSoMaGiamGiaDaGuiByMarId(model.marMaGiamGiaSearchModel.MarketingId, true);
+            var listKhachHangDaGui = _marMaGiamGiaService.GetListKhachHang(marId: model.MarketingId);
+            listKhachHangId = listKhachHangId.Where(c => !listKhachHangDaGui.Contains(c)).ToList();
+            int soPhieu = _marMaGiamGiaService.GetSoMaGiamGiaDaGuiByMarId(model.MarketingId, true);
 
             if (!model.Random && listKhachHangId.Count() > soPhieu)
             {
                 return this.JsonErrorMessage("Số phiếu (" + soPhieu + ") không đủ cho số khách hàng (" + listKhachHangId.Count() + ")", ModelState.SerializeErrors());
             }
 
-            var listPhieuGiamGia = _marMaGiamGiaService.GetMarMaGiamGias(model.marMaGiamGiaSearchModel.MarketingId, true);
+            var listPhieuGiamGia = _marMaGiamGiaService.GetMarMaGiamGias(model.MarketingId, true);
             int sttPhieu = 0;
             foreach (var khachHangId in listKhachHangId)
             {
-                var phieuGiamGia = listPhieuGiamGia[sttPhieu];
-                phieuGiamGia.KHACH_HANG_ID = khachHangId;
-                _marMaGiamGiaService.UpdateMarMaGiamGia(phieuGiamGia);
+                if (!listKhachHangDaGui.Contains(khachHangId))
+                {
+                    var phieuGiamGia = listPhieuGiamGia[sttPhieu];
+                    phieuGiamGia.KHACH_HANG_ID = khachHangId;
+                    _marMaGiamGiaService.UpdateMarMaGiamGia(phieuGiamGia);
+                }
+                sttPhieu++;
             }
 
             return this.JsonSuccessMessage("Thành công !");
+        }
+
+        [HttpPost]
+        public virtual IActionResult _LoadMultiSelectKhachHang(string q)
+        {
+            if (string.IsNullOrEmpty(q))
+            {
+                return Json("");
+            }
+
+            var listKhachHang = _khKhachHangService.GetKhachHangByCount(30, q);
+
+            return Json(listKhachHang);
         }
         #endregion
     }

@@ -35,6 +35,8 @@ namespace Nop.Web.Areas.CRM.Factories.CRM
         IList<SelectListItem> PrepareDDLHangKhachHang();
 
         IList<SelectListItem> PrepareMultiSelectHangKhachHang();
+
+        IList<SelectListItem> PrepareMultiSelectKhachHang(IList<int> valSelected);
         #endregion
     }
 }

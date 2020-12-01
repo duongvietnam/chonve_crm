@@ -75,7 +75,7 @@ namespace Nop.Web.Areas.CRM.Factories.CRM
                 throw new ArgumentNullException(nameof(searchModel));
 
             //get items
-            var items = _itemService.SearchMarMaGiamGias(StoreId: _storeContext.CurrentStore.Id, Keysearch: searchModel.KeySearch, pageIndex: searchModel.Page - 1, pageSize: searchModel.PageSize, marId: searchModel.MarketingId);
+            var items = _itemService.SearchMarMaGiamGias(StoreId: _storeContext.CurrentStore.Id, Keysearch: searchModel.KeySearch, pageIndex: searchModel.Page - 1, pageSize: searchModel.PageSize, marId: searchModel.MarketingId, trangThai: searchModel.TrangThaiPhieu);
 
             //prepare list model
             var model = new MarMaGiamGiaListModel().PrepareToGrid(searchModel, items, () =>
@@ -132,7 +132,7 @@ namespace Nop.Web.Areas.CRM.Factories.CRM
                 DenNgay = dieuKien.DEN_NGAY,
                 DonGia = dieuKien.DON_GIA,
                 CO_THE_KET_HOP = item.CO_THE_KET_HOP,
-                SoPhieuTao = _itemService.GetSoMaGiamGiaByMarId(item.Id),
+                SoPhieuTao = _itemService.GetSoMaGiamGiaDaGuiByMarId(item.Id, false),
                 Id = item.Id
             };
             if (_dvDonViTinhService.GetDvDonViTinhById((int)dieuKien.DON_VI_TINH).MA == "PhanTram")

@@ -4572,10 +4572,7 @@
         },
         "runtime": {
           "bin/placeholder/Nop.Core.dll": {}
-        },
-        "frameworkReferences": [
-          "Microsoft.AspNetCore.App"
-        ]
+        }
       },
       "Nop.Data/4.3.0": {
         "type": "project",
@@ -4593,10 +4590,7 @@
         },
         "runtime": {
           "bin/placeholder/Nop.Data.dll": {}
-        },
-        "frameworkReferences": [
-          "Microsoft.AspNetCore.App"
-        ]
+        }
       },
       "Nop.Services/4.3.0": {
         "type": "project",
@@ -4620,10 +4614,7 @@
         },
         "runtime": {
           "bin/placeholder/Nop.Services.dll": {}
-        },
-        "frameworkReferences": [
-          "Microsoft.AspNetCore.App"
-        ]
+        }
       },
       "Nop.Web.Framework/4.3.0": {
         "type": "project",
@@ -4643,10 +4634,7 @@
         },
         "runtime": {
           "bin/placeholder/Nop.Web.Framework.dll": {}
-        },
-        "frameworkReferences": [
-          "Microsoft.AspNetCore.App"
-        ]
+        }
       }
     }
   },
@@ -13558,43 +13546,40 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\namdv\\.nuget\\packages\\": {}
+    "/Users/duongvietnam/.nuget/packages/": {}
   },
   "project": {
     "version": "4.3.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\namdv\\Source\\Workspaces\\CRM2020\\CRM2020\\Presentation\\Nop.Web\\Nop.Web.csproj",
+      "projectUniqueName": "/Users/duongvietnam/Projects/CRM/crm_chonve/Presentation/Nop.Web/Nop.Web.csproj",
       "projectName": "Nop.Web",
-      "projectPath": "C:\\Users\\namdv\\Source\\Workspaces\\CRM2020\\CRM2020\\Presentation\\Nop.Web\\Nop.Web.csproj",
-      "packagesPath": "C:\\Users\\namdv\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\namdv\\Source\\Workspaces\\CRM2020\\CRM2020\\Presentation\\Nop.Web\\obj\\",
+      "projectPath": "/Users/duongvietnam/Projects/CRM/crm_chonve/Presentation/Nop.Web/Nop.Web.csproj",
+      "packagesPath": "/Users/duongvietnam/.nuget/packages/",
+      "outputPath": "/Users/duongvietnam/Projects/CRM/crm_chonve/Presentation/Nop.Web/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\namdv\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/Users/duongvietnam/.config/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp3.1"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "\\\\172.16.10.145\\gem-packages": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "netcoreapp3.1": {
           "projectReferences": {
-            "C:\\Users\\namdv\\Source\\Workspaces\\CRM2020\\CRM2020\\Libraries\\Nop.Core\\Nop.Core.csproj": {
-              "projectPath": "C:\\Users\\namdv\\Source\\Workspaces\\CRM2020\\CRM2020\\Libraries\\Nop.Core\\Nop.Core.csproj"
+            "/Users/duongvietnam/Projects/CRM/crm_chonve/Libraries/Nop.Core/Nop.Core.csproj": {
+              "projectPath": "/Users/duongvietnam/Projects/CRM/crm_chonve/Libraries/Nop.Core/Nop.Core.csproj"
             },
-            "C:\\Users\\namdv\\Source\\Workspaces\\CRM2020\\CRM2020\\Libraries\\Nop.Data\\Nop.Data.csproj": {
-              "projectPath": "C:\\Users\\namdv\\Source\\Workspaces\\CRM2020\\CRM2020\\Libraries\\Nop.Data\\Nop.Data.csproj"
+            "/Users/duongvietnam/Projects/CRM/crm_chonve/Libraries/Nop.Data/Nop.Data.csproj": {
+              "projectPath": "/Users/duongvietnam/Projects/CRM/crm_chonve/Libraries/Nop.Data/Nop.Data.csproj"
             },
-            "C:\\Users\\namdv\\Source\\Workspaces\\CRM2020\\CRM2020\\Libraries\\Nop.Services\\Nop.Services.csproj": {
-              "projectPath": "C:\\Users\\namdv\\Source\\Workspaces\\CRM2020\\CRM2020\\Libraries\\Nop.Services\\Nop.Services.csproj"
+            "/Users/duongvietnam/Projects/CRM/crm_chonve/Libraries/Nop.Services/Nop.Services.csproj": {
+              "projectPath": "/Users/duongvietnam/Projects/CRM/crm_chonve/Libraries/Nop.Services/Nop.Services.csproj"
             },
-            "C:\\Users\\namdv\\Source\\Workspaces\\CRM2020\\CRM2020\\Presentation\\Nop.Web.Framework\\Nop.Web.Framework.csproj": {
-              "projectPath": "C:\\Users\\namdv\\Source\\Workspaces\\CRM2020\\CRM2020\\Presentation\\Nop.Web.Framework\\Nop.Web.Framework.csproj"
+            "/Users/duongvietnam/Projects/CRM/crm_chonve/Presentation/Nop.Web.Framework/Nop.Web.Framework.csproj": {
+              "projectPath": "/Users/duongvietnam/Projects/CRM/crm_chonve/Presentation/Nop.Web.Framework/Nop.Web.Framework.csproj"
             }
           }
         }
@@ -13635,7 +13620,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.401\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/3.1.403/RuntimeIdentifierGraph.json"
       }
     }
   }

@@ -1,1 +1,78 @@
 ﻿@model MarMaGiamGiaModel
+
+<nop-antiforgery-token />
+<div class="content d-flex flex-column flex-column-fluid">
+    <div class="container row">
+        <input asp-for="MarketingId" type="hidden" />
+        <label class="col-3 col-form-label">Khách hàng</label>
+        <div class="col-9">
+            <nop-select asp-for="KhachHangSelectedId" asp-items="Model.DDLKhachHang" asp-multiple="true" />
+        </div>
+        <div class="col-12 mb-10 border-top mt-10"></div>
+        <div class="col-12" style="text-align:center">
+            <button id="btnSaveHangKhachHang" class="btn btn-light-primary">Xác nhận</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#KhachHangSelectedId").select2({
+        placeholder: "Nhập tên khách hàng",
+        allowClear: true,
+        ajax: {
+            url: "@(Url.Action("_LoadMultiSelectKhachHang", "MarMarketing"))",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    q: params.term, // search term
+                    page: params.page
+                };
+            },
+            processResults: function (data, params) {
+                return {
+                    results: data.items,
+                    pagination: {
+                        more: (params.page * 30) & lt;
+                        data.total_count
+                    }
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (markup) {
+            return markup;
+        }, // let our custom formatter work
+        minimumInputLength: 1,
+        templateResult: formatRepo, // omitted for brevity, see the source of this page
+        templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+    });
+
+    var KhachHangSelectedId = $("#KhachHangSelectedId").data("kendoKhachHangSelectedId");
+    KhachHangSelectedId.bind("filtering", KhachHangSelectedId_filtering);
+
+    $("#btnSaveHangKhachHang").click(function () {
+        var _data = {
+            MarketingId: $("#MarketingId").val(),
+            KhachHangSelectedId: $("#KhachHangSelectedId").val()
+        };
+        addAntiForgeryToken(_data);
+        $.ajax({
+            cache: false,
+            type: "POST",
+            url: "@(Url.Action("_TangTheoNhomKhachHang", "MarMarketing"))",
+            data: _data,
+            success: function (data, textStatus, jqXHR) {
+                if (data.IsSuccess) {
+                    ShowSuccess(data.Message);
+                    CloseModalManual();
+                } else {
+                    display_valid_error(data.Message);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                display_valid_error(data.ObjectInfo);
+            }
+        });
+    })
+</script>

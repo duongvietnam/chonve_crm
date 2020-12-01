@@ -6,6 +6,7 @@
     Html.SetActiveMenuItemSystemName("Marketing.SuKien");
 }
 
+<input asp-for="MarketingId" type="hidden" />
 <div class="content d-flex flex-column flex-column-fluid">
     <div class="container">
         <div class="alert alert-custom alert-white alert-shadow fade show gutter-b" role="alert">
@@ -34,7 +35,7 @@
                     <div class="card-body d-flex flex-column p-0" style="position: relative;">
                         <div class="d-flex align-items-center justify-content-between card-spacer flex-grow-1">
                             <div class="d-flex flex-column mr-2">
-                                <a href="#" class="text-dark-75 text-hover-primary font-weight-bolder font-size-h5">Tổng</a>
+                                <a href="javascript:LoadDataGridView(0)" class="text-dark-75 text-hover-primary font-weight-bolder font-size-h5">Tổng</a>
                                 <span class="text-muted font-weight-bold mt-2">Tổng số phiếu giảm giá</span>
                             </div>
                             <span class="symbol symbol-light-danger symbol-45">
@@ -49,7 +50,7 @@
                     <div class="card-body d-flex flex-column p-0" style="position: relative;">
                         <div class="d-flex align-items-center justify-content-between card-spacer">
                             <div class="d-flex flex-column mr-2">
-                                <a href="#" class="text-dark-75 text-hover-primary font-weight-bolder font-size-h5">Đã gửi</a>
+                                <a href="javascript:LoadDataGridView(1)" class="text-dark-75 text-hover-primary font-weight-bolder font-size-h5">Đã gửi</a>
                                 <span class="text-muted font-weight-bold mt-2">Tổng số phiếu đã gửi đến khách hàng</span>
                             </div>
                             <span class="symbol symbol-light-success symbol-45">
@@ -64,7 +65,7 @@
                     <div class="card-body d-flex flex-column p-0" style="position: relative;">
                         <div class="d-flex align-items-center justify-content-between card-spacer">
                             <div class="d-flex flex-column mr-2">
-                                <a href="#" class="text-dark-75 text-hover-primary font-weight-bolder font-size-h5">Đã sử dụng</a>
+                                <a href="javascript:LoadDataGridView(2)" class="text-dark-75 text-hover-primary font-weight-bolder font-size-h5">Đã sử dụng</a>
                                 <span class="text-muted font-weight-bold mt-2">Tổng số phiếu đã được sử dụng</span>
                             </div>
                             <span class="symbol symbol-light-primary symbol-45">
@@ -86,6 +87,7 @@
             <div class="card-body">
                 <nop-antiforgery-token />
                 <input asp-for="marMaGiamGiaSearchModel.MarketingId" type="hidden" />
+                <input type="hidden" id="TrangThaiPhieu">
                 <div class="d-flex flex-column-fluid">
                     <div class="container">
                         <div class="kt-portlet__body">
@@ -98,7 +100,8 @@
                                 Filters = new List<FilterParameter>
                                 {
                                     new FilterParameter(nameof(Model.MarketingId)),
-                                    new FilterParameter(name: nameof(Model.marMaGiamGiaSearchModel.MarketingId), value: Model.MarketingId)
+                                    new FilterParameter(name: nameof(Model.marMaGiamGiaSearchModel.MarketingId), value: Model.MarketingId),
+                                    new FilterParameter(nameof(MarMaGiamGiaSearchModel.TrangThaiPhieu))
                                 },
                                 ColumnCollection = new List<ColumnProperty>
                                 {
@@ -145,5 +148,11 @@
         var _url = "@(Url.Action("_TangTheoNhomKhachHang", "MarMarketing"))?marId=" + marId;
 	    var titlePopup = "Tặng theo nhóm khách hàng";
         OpenModalManual(titlePopup, _url, "modal-lg");
+    }
+
+    function LoadDataGridView(e) {
+        $("#TrangThaiPhieu").val(e);
+
+        $("#items-MarMaGiamGia").DataTable().ajax.reload();
     }
 </script>

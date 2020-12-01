@@ -311,100 +311,101 @@ namespace Nop.Web.Areas.CRM.Controllers
                 int DoanhNghiepId = 2;
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                // xử lý chuyến đi -> giao dịch
-                foreach (var dichvu in _dvDichVuService.GetAllDvDichVus(false, DoanhNghiepId))
+                var DateFrom = new DateTime(year: 2018, month: 12, day: 01, hour: 0, minute: 0, second: 0);
+                for (var day = DateFrom.Date; day.Date <= DateTime.Now.Date; day = day.AddDays(1))
                 {
-                    if (dichvu.ID_NGUON > 0)
+                    // xử lý chuyến đi -> giao dịch
+                    foreach (var dichvu in _dvDichVuService.GetAllDvDichVus(false, DoanhNghiepId))
                     {
-                        var DateFrom = new DateTime(year: 2018, month: 11, day: 01, hour: 0, minute: 0, second: 0);
-                        for (var day = DateFrom.Date; day.Date <= DateTime.Now.Date; day = day.AddDays(1))
+                        if (dichvu.ID_NGUON > 0)
                         {
-                            var paramChuyenDi = new ParameterChuyenDiModel
-                            {
-                                HanhTrinhId = dichvu.ID_NGUON,
-                                TuNgay = day.ToString("yyyy-MM-dd HH:mm:ss"),
-                                DenNgay = day.AddDays(1).ToString("yyyy-MM-dd HH:mm:ss")
-                            };
-                            StringContent content = new StringContent(JsonConvert.SerializeObject(paramChuyenDi), Encoding.UTF8, "application/json");
-                            using (var ListChuyenDi = await httpClient.PostAsync(new Uri("http://thoidai.chonve.vn:8080/api/CRMSvc/GetChuyenDi"), content))
-                            {
-                                if (ListChuyenDi.IsSuccessStatusCode)
+                                var paramChuyenDi = new ParameterChuyenDiModel
                                 {
-                                    string apiResponse = await ListChuyenDi.Content.ReadAsStringAsync();
-                                    var listChuyenDi = JsonConvert.DeserializeObject<ResponseApi<List<ChuyenDiModel>>>(apiResponse).objectInfo;
-                                    foreach (var chuyendi in listChuyenDi)
+                                    HanhTrinhId = dichvu.ID_NGUON,
+                                    TuNgay = day.ToString("yyyy-MM-dd HH:mm:ss"),
+                                    DenNgay = day.AddDays(1).ToString("yyyy-MM-dd HH:mm:ss")
+                                };
+                                StringContent content = new StringContent(JsonConvert.SerializeObject(paramChuyenDi), Encoding.UTF8, "application/json");
+                                using (var ListChuyenDi = await httpClient.PostAsync(new Uri("http://thoidai.chonve.vn:8080/api/CRMSvc/GetChuyenDi"), content))
+                                {
+                                    if (ListChuyenDi.IsSuccessStatusCode)
                                     {
-                                        if (!string.IsNullOrEmpty(chuyendi.Ma))
+                                        string apiResponse = await ListChuyenDi.Content.ReadAsStringAsync();
+                                        var listChuyenDi = JsonConvert.DeserializeObject<ResponseApi<List<ChuyenDiModel>>>(apiResponse).objectInfo;
+                                        foreach (var chuyendi in listChuyenDi)
                                         {
-                                            // Chuyen Di
-                                            var itemChuyenDi = _cdChuyenDiService.GetChuyenDi(ma: chuyendi.Ma, doanhNghiepId: DoanhNghiepId);
-                                            if (itemChuyenDi != null)
+                                            if (!string.IsNullOrEmpty(chuyendi.Ma))
                                             {
-                                                itemChuyenDi.BIEN_SO_XE = chuyendi.BienSoXe;
-                                                itemChuyenDi.DICH_VU_ID = dichvu.Id;
-                                                itemChuyenDi.MA = chuyendi.Ma;
-                                                itemChuyenDi.SO_GHE = chuyendi.SoGhe;
-                                                itemChuyenDi.SO_KHACH = chuyendi.SoKhach;
-                                                itemChuyenDi.TEN_LAI_XE = chuyendi.TenLaiXe;
-                                                itemChuyenDi.TEN_LOAI_XE = chuyendi.TenLoaiXe;
-
-                                                _cdChuyenDiService.UpdateCdChuyenDi(itemChuyenDi);
-                                            }
-                                            else
-                                            {
-                                                itemChuyenDi = new CdChuyenDi();
-                                                itemChuyenDi.BIEN_SO_XE = chuyendi.BienSoXe;
-                                                itemChuyenDi.DICH_VU_ID = dichvu.Id;
-                                                itemChuyenDi.MA = chuyendi.Ma;
-                                                itemChuyenDi.SO_GHE = chuyendi.SoGhe;
-                                                itemChuyenDi.SO_KHACH = chuyendi.SoKhach;
-                                                itemChuyenDi.TEN_LAI_XE = chuyendi.TenLaiXe;
-                                                itemChuyenDi.TEN_LOAI_XE = chuyendi.TenLoaiXe;
-                                                itemChuyenDi.DOANH_NGHIEP_ID = DoanhNghiepId;
-
-                                                _cdChuyenDiService.InsertCdChuyenDi(itemChuyenDi);
-                                            }
-
-                                            // Dat Ve
-                                            using (var ListDatVe = await httpClient.GetAsync(new Uri("http://thoidai.chonve.vn:8080/api/CRMSvc/GetDatVe?ChuyenDiId=" + chuyendi.Ma)))
-                                            {
-                                                string apiResponseDatVe = await ListDatVe.Content.ReadAsStringAsync();
-                                                var listDatVe = JsonConvert.DeserializeObject<ResponseApi<List<DatVeModel>>>(apiResponseDatVe).objectInfo;
-                                                foreach (var datVe in listDatVe)
+                                                // Chuyen Di
+                                                var itemChuyenDi = _cdChuyenDiService.GetChuyenDi(ma: chuyendi.Ma, doanhNghiepId: DoanhNghiepId);
+                                                if (itemChuyenDi != null)
                                                 {
-                                                    // khach hang
-                                                    if (!string.IsNullOrEmpty(datVe.DienThoai) && !string.IsNullOrEmpty(datVe.Ma))
-                                                    {
-                                                        var giaoDich = _gdGiaoDichService.GetGiaoDichByMaNguon(MaNguon: datVe.Ma, DoanhNghiepId: DoanhNghiepId);
-                                                        var danhBa = _khDanhBaDienThoaiService.GetKhDanhBaDienThoaiBySoDienThoai(datVe.DienThoai, DoanhNghiepId);
-                                                        if (giaoDich != null && danhBa != null)
-                                                        {
-                                                            var map = _gdGiaoDichKhachHangMapService.GetGdGiaoDichKhachHangMapByGiaoDichId(giaoDich.Id, DoanhNghiepId);
-                                                            if (map == null || map.Count == 0)
-                                                            {
-                                                                // giao dich khach hang map
-                                                                var giaoDichKhachHangMap = new GdGiaoDichKhachHangMap
-                                                                {
-                                                                    GIAO_DICH_ID = giaoDich.Id,
-                                                                    KHACH_HANG_CHINH = danhBa.KHACH_HANG_ID,
-                                                                    KHACH_HANG_ID = danhBa.KHACH_HANG_ID,
-                                                                    DICH_VU_ID = dichvu.Id,
-                                                                    DOANH_NGHIEP_ID = DoanhNghiepId,
-                                                                    CHUYEN_DI_ID = itemChuyenDi.Id,
-                                                                    DIEM_DON = datVe.TenDiemDon,
-                                                                    DIEM_TRA = datVe.TenDiemTra
-                                                                };
-                                                                _gdGiaoDichKhachHangMapService.InsertGdGiaoDichKhachHangMap(giaoDichKhachHangMap);
-                                                            }
-                                                            else
-                                                            {
-                                                                foreach (var m in map)
-                                                                {
-                                                                    m.CHUYEN_DI_ID = itemChuyenDi.Id;
-                                                                    m.DIEM_DON = datVe.TenDiemDon;
-                                                                    m.DIEM_TRA = datVe.TenDiemTra;
+                                                    itemChuyenDi.BIEN_SO_XE = chuyendi.BienSoXe;
+                                                    itemChuyenDi.DICH_VU_ID = dichvu.Id;
+                                                    itemChuyenDi.MA = chuyendi.Ma;
+                                                    itemChuyenDi.SO_GHE = chuyendi.SoGhe;
+                                                    itemChuyenDi.SO_KHACH = chuyendi.SoKhach;
+                                                    itemChuyenDi.TEN_LAI_XE = chuyendi.TenLaiXe;
+                                                    itemChuyenDi.TEN_LOAI_XE = chuyendi.TenLoaiXe;
 
-                                                                    _gdGiaoDichKhachHangMapService.UpdateGdGiaoDichKhachHangMap(m);
+                                                    _cdChuyenDiService.UpdateCdChuyenDi(itemChuyenDi);
+                                                }
+                                                else
+                                                {
+                                                    itemChuyenDi = new CdChuyenDi();
+                                                    itemChuyenDi.BIEN_SO_XE = chuyendi.BienSoXe;
+                                                    itemChuyenDi.DICH_VU_ID = dichvu.Id;
+                                                    itemChuyenDi.MA = chuyendi.Ma;
+                                                    itemChuyenDi.SO_GHE = chuyendi.SoGhe;
+                                                    itemChuyenDi.SO_KHACH = chuyendi.SoKhach;
+                                                    itemChuyenDi.TEN_LAI_XE = chuyendi.TenLaiXe;
+                                                    itemChuyenDi.TEN_LOAI_XE = chuyendi.TenLoaiXe;
+                                                    itemChuyenDi.DOANH_NGHIEP_ID = DoanhNghiepId;
+
+                                                    _cdChuyenDiService.InsertCdChuyenDi(itemChuyenDi);
+                                                }
+
+                                                // Dat Ve
+                                                using (var ListDatVe = await httpClient.GetAsync(new Uri("http://thoidai.chonve.vn:8080/api/CRMSvc/GetDatVe?ChuyenDiId=" + chuyendi.Ma)))
+                                                {
+                                                    string apiResponseDatVe = await ListDatVe.Content.ReadAsStringAsync();
+                                                    var listDatVe = JsonConvert.DeserializeObject<ResponseApi<List<DatVeModel>>>(apiResponseDatVe).objectInfo;
+                                                    foreach (var datVe in listDatVe)
+                                                    {
+                                                        // khach hang
+                                                        if (!string.IsNullOrEmpty(datVe.DienThoai) && !string.IsNullOrEmpty(datVe.Ma))
+                                                        {
+                                                            var giaoDich = _gdGiaoDichService.GetGiaoDichByMaNguon(MaNguon: datVe.Ma, DoanhNghiepId: DoanhNghiepId);
+                                                            var danhBa = _khDanhBaDienThoaiService.GetKhDanhBaDienThoaiBySoDienThoai(datVe.DienThoai, DoanhNghiepId);
+                                                            if (giaoDich != null && danhBa != null)
+                                                            {
+                                                                var map = _gdGiaoDichKhachHangMapService.GetGdGiaoDichKhachHangMapByGiaoDichId(giaoDich.Id, DoanhNghiepId);
+                                                                if (map == null || map.Count == 0)
+                                                                {
+                                                                    // giao dich khach hang map
+                                                                    var giaoDichKhachHangMap = new GdGiaoDichKhachHangMap
+                                                                    {
+                                                                        GIAO_DICH_ID = giaoDich.Id,
+                                                                        KHACH_HANG_CHINH = danhBa.KHACH_HANG_ID,
+                                                                        KHACH_HANG_ID = danhBa.KHACH_HANG_ID,
+                                                                        DICH_VU_ID = dichvu.Id,
+                                                                        DOANH_NGHIEP_ID = DoanhNghiepId,
+                                                                        CHUYEN_DI_ID = itemChuyenDi.Id,
+                                                                        DIEM_DON = datVe.TenDiemDon,
+                                                                        DIEM_TRA = datVe.TenDiemTra
+                                                                    };
+                                                                    _gdGiaoDichKhachHangMapService.InsertGdGiaoDichKhachHangMap(giaoDichKhachHangMap);
+                                                                }
+                                                                else
+                                                                {
+                                                                    foreach (var m in map)
+                                                                    {
+                                                                        m.CHUYEN_DI_ID = itemChuyenDi.Id;
+                                                                        m.DIEM_DON = datVe.TenDiemDon;
+                                                                        m.DIEM_TRA = datVe.TenDiemTra;
+
+                                                                        _gdGiaoDichKhachHangMapService.UpdateGdGiaoDichKhachHangMap(m);
+                                                                    }
                                                                 }
                                                             }
                                                         }
@@ -414,7 +415,6 @@ namespace Nop.Web.Areas.CRM.Controllers
                                         }
                                     }
                                 }
-                            }
                         }
                     }
                 }
