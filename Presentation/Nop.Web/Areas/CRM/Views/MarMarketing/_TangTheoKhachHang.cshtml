@@ -16,8 +16,12 @@
 </div>
 
 <script>
+    function formatRepoSelection(repo) {
+        return repo.full_name || repo.text;
+    }
+
     $("#KhachHangSelectedId").select2({
-        placeholder: "Nhập tên khách hàng",
+        placeholder: "Search for git repositories",
         allowClear: true,
         ajax: {
             url: "@(Url.Action("_LoadMultiSelectKhachHang", "MarMarketing"))",
@@ -25,16 +29,17 @@
             delay: 250,
             data: function (params) {
                 return {
-                    q: params.term, // search term
+                    q: params.term,
                     page: params.page
                 };
             },
             processResults: function (data, params) {
+                params.page = params.page || 1;
+
                 return {
                     results: data.items,
                     pagination: {
-                        more: (params.page * 30) & lt;
-                        data.total_count
+                        more: (params.page * 30) & lt; data.total_count
                     }
                 };
             },
@@ -42,14 +47,28 @@
         },
         escapeMarkup: function (markup) {
             return markup;
-        }, // let our custom formatter work
+        },
         minimumInputLength: 1,
-        templateResult: formatRepo, // omitted for brevity, see the source of this page
-        templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+        templateResult: formatRepo,
+        templateSelection: formatRepoSelection
     });
 
-    var KhachHangSelectedId = $("#KhachHangSelectedId").data("kendoKhachHangSelectedId");
-    KhachHangSelectedId.bind("filtering", KhachHangSelectedId_filtering);
+    function formatRepo(repo) {
+        if (repo.loading) return repo.text;
+        var markup = "&lt;div class='select2-result-repository clearfix'&gt;" +
+            "&lt;div class='select2-result-repository__meta'&gt;" +
+            "&lt;div class='select2-result-repository__title'&gt;" + repo.full_name + "&lt;/div&gt;";
+        if (repo.description) {
+            markup += "&lt;div class='select2-result-repository__description'&gt;" + repo.description + "&lt;/div&gt;";
+        }
+        markup += "&lt;div class='select2-result-repository__statistics'&gt;" +
+            "&lt;div class='select2-result-repository__forks'&gt;&lt;i class='fa fa-flash'&gt;&lt;/i&gt; " + repo.forks_count + " Forks&lt;/div&gt;" +
+            "&lt;div class='select2-result-repository__stargazers'&gt;&lt;i class='fa fa-star'&gt;&lt;/i&gt; " + repo.stargazers_count + " Stars&lt;/div&gt;" +
+            "&lt;div class='select2-result-repository__watchers'&gt;&lt;i class='fa fa-eye'&gt;&lt;/i&gt; " + repo.watchers_count + " Watchers&lt;/div&gt;" +
+            "&lt;/div&gt;" +
+            "&lt;/div&gt;&lt;/div&gt;";
+        return markup;
+    }
 
     $("#btnSaveHangKhachHang").click(function () {
         var _data = {
@@ -74,5 +93,5 @@
                 display_valid_error(data.ObjectInfo);
             }
         });
-    })
+    });
 </script>

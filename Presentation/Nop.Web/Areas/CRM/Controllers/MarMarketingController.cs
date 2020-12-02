@@ -588,7 +588,6 @@ namespace Nop.Web.Areas.CRM.Controllers
             {
                 MarketingId = marId,
             };
-            model.DDLKhachHang = _khKhachHangModelFactory.PrepareMultiSelectKhachHang(model.KhachHangSelectedId);
 
             return PartialView(model);
         }
