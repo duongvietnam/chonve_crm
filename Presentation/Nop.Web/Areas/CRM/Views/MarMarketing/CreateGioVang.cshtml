@@ -8,7 +8,7 @@
 
 <div class="d-flex flex-column-fluid">
     <div class="container">
-        <form asp-controller="MarMarketing" asp-action="CreateChuongTrinhGiamGia" method="post">
+        <form asp-controller="MarMarketing" asp-action="CreateGioVang" method="post">
             <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
                 <div class="subheader py-2 py-lg-4 subheader-transparent" id="kt_subheader">
                     <div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
@@ -35,7 +35,7 @@
                     </div>
                 </div>
 
-                @await Html.PartialAsync("_CreateOrUpdateChuongTrinhGiamGia", Model)
+                @await Html.PartialAsync("_CreateOrUpdateGioVang", Model)
 
             </div>
         </form>

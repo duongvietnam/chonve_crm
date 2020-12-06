@@ -62,13 +62,21 @@ namespace Nop.Web.Areas.CRM.Models.CRM
             }
         }
         public string HinhThucMarketingString { get; set; }
-        [UIHint("DateTimeNullable")]
+        [UIHint("Date")]
         public DateTime? TuNgay { get; set; }
-        [UIHint("DateTimeNullable")]
+        [UIHint("Date")]
         public DateTime? DenNgay { get; set; }
         public string SaleString { get; set; }
         public string TuNgayString { get; set; }
         public string DenNgayString { get; set; }
+        [UIHint("Money")]
+        public decimal SaleTheoSoTien { get; set; }
+        [UIHint("NumberCustomize")]
+        public decimal SaleTheoPhanTram { get; set; }
+        [UIHint("TimeNullable")]
+        public DateTime? TuGio { get; set; }
+        [UIHint("TimeNullable")]
+        public DateTime? DenGio { get; set; }
     }
     public partial class MarMarketingSearchModel : BaseSearchModel
     {

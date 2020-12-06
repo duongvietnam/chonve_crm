@@ -21,6 +21,14 @@ namespace Nop.Web.Areas.CRM.Validators.CRM
                 {
                     return true;
                 }
+                else if (model.SaleTheoSoTien > 0)
+                {
+                    return true;
+                }
+                else if (model.SaleTheoPhanTram > 0)
+                {
+                    return true;
+                }
                 else
                 {
                     return false;

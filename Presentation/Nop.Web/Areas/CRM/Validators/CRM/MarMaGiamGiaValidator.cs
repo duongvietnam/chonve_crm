@@ -29,6 +29,17 @@ namespace Nop.Web.Areas.CRM.Validators.CRM
                 }
             }).WithMessage("Chưa nhập mức giảm !");
 
+            RuleFor(c => c.SaleTheoSoTien).Must((model, SaleTheoSoTien) => {
+                if (model.SaleTheoPhanTram > 100)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }).WithMessage("Tỉ lệ không được vượt quá 100% !");
+
             RuleFor(c => c.SoPhieuTao).Must((model, SoPhieuTao) => {
                 if (SoPhieuTao > 0)
                 {

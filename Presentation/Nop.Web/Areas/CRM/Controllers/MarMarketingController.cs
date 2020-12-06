@@ -312,6 +312,7 @@ namespace Nop.Web.Areas.CRM.Controllers
             return PartialView(model);
         }
 
+        #region Giam gia theo hang khach hang
         public virtual IActionResult CreateMarGiamGia()
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.CRMQLMarketing))
@@ -430,7 +431,9 @@ namespace Nop.Web.Areas.CRM.Controllers
         {
             return View();
         }
+        #endregion
 
+        #region Ma giam gia
         public virtual IActionResult CreateMaGiamGia()
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.CRMQLMarketing))
@@ -686,6 +689,7 @@ namespace Nop.Web.Areas.CRM.Controllers
 
             return this.JsonSuccessMessage("Thành công !");
         }
+        #endregion
 
         public virtual IActionResult _LoadMultiSelectKhachHang(string q)
         {
@@ -700,17 +704,19 @@ namespace Nop.Web.Areas.CRM.Controllers
             return Json(listKhachHang);
         }
 
+        #region Chuong trinh khuyen mai
         public virtual IActionResult CreateChuongTrinhGiamGia()
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.CRMQLMarketing))
                 return AccessDeniedView();
-            var model = _marMaGiamGiaModelFactory.PrepareMarMaGiamGiaModel(new MarMaGiamGiaModel(), null);
+            var model = _itemModelFactory.PrepareMarMarketingModel(new MarMarketingModel(), null);
+            model.HINH_THUC = (int)EnumHinhThucMarketing.ChuongTrinhKhuyenMai;
 
             return View(model);
         }
 
         [HttpPost]
-        public virtual IActionResult CreateChuongTrinhGiamGia(MarMaGiamGiaModel model)
+        public virtual IActionResult CreateChuongTrinhGiamGia(MarMarketingModel model)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.CRMQLMarketing))
                 return AccessDeniedView();
@@ -720,7 +726,7 @@ namespace Nop.Web.Areas.CRM.Controllers
                 {
                     HINH_THUC = (int)EnumHinhThucMarketing.ChuongTrinhKhuyenMai,
                     CO_THE_KET_HOP = model.CO_THE_KET_HOP,
-                    TEN = model.TenChuongTrinh
+                    TEN = model.TEN
                 };
                 _itemService.InsertMarMarketing(mar);
 
@@ -747,7 +753,7 @@ namespace Nop.Web.Areas.CRM.Controllers
                 {
                     DOANH_NGHIEP_ID = _storeContext.CurrentStore.Id,
                     MARKETING_ID = mar.Id,
-                    TEN = model.TenChuongTrinh,
+                    TEN = model.TEN,
                     THOI_GIAN_BAT_DAU = model.TuNgay,
                     THOI_GIAN_KET_THUC = model.DenNgay
                 };
@@ -759,9 +765,78 @@ namespace Nop.Web.Areas.CRM.Controllers
             }
 
             //prepare model
-            model = _marMaGiamGiaModelFactory.PrepareMarMaGiamGiaModel(model, null);
+            model = _itemModelFactory.PrepareMarMarketingModel(model, null);
             return View(model);
         }
+
+        public virtual IActionResult EditChuongTrinhGiamGia(int id)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.CRMQLMarketing))
+                return AccessDeniedView();
+
+            var item = _itemService.GetMarMarketingById(id);
+            if (item == null)
+                return RedirectToAction("List");
+            //prepare model
+            var model = _itemModelFactory.PrepareMarMarketingModel(null, item);
+            return View(model);
+        }
+
+        [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+        [FormValueRequired("save", "save-continue")]
+        public virtual IActionResult EditChuongTrinhGiamGia(MarMarketingModel model, bool continueEditing)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.CRMQLMarketing))
+                return AccessDeniedView();
+            //try to get a store with the specified id
+            var item = _itemService.GetMarMarketingById(model.Id);
+            if (item == null)
+                return RedirectToAction("List");
+            if (ModelState.IsValid)
+            {
+                var listDieuKien = _marMarketingDieuKienService.GetMarMarketingDieuKiens(model.Id);
+                foreach (var dieuKien in listDieuKien)
+                {
+                    dieuKien.SALE = model.SaleTheoPhanTram > 0 ? model.SaleTheoPhanTram : model.SaleTheoSoTien;
+                    dieuKien.DON_GIA = model.DonGia;
+                    if (model.TuNgay != null)
+                    {
+                        dieuKien.TU_GIO = ((DateTime)model.TuNgay).TimeOfDay;
+                    }
+                    if (model.DenNgay != null)
+                    {
+                        dieuKien.DEN_GIO = ((DateTime)model.DenNgay).TimeOfDay;
+                    }
+                    _marMarketingDieuKienService.UpdateMarMarketingDieuKien(dieuKien);
+                }
+
+                _itemModelFactory.PrepareMarMarketing(model, item);
+                _itemService.UpdateMarMarketing(item);
+                var eventMar = _marEventMarketingService.GetEventMarketing(item.Id);
+                eventMar.TEN = model.TEN;
+                _marEventMarketingService.UpdateMarEventMarketing(eventMar);
+                _customerActivityService.InsertActivity("EditChuongTrinhGiamGia", string.Format("Cập nhật: {0}", item.Id), item);
+                _notificationService.SuccessNotification("Cập nhật dữ liệu thành công !");
+                return continueEditing ? RedirectToAction("EditChuongTrinhGiamGia", new { id = item.Id }) : RedirectToAction("List");
+            }
+            //prepare model
+            model = _itemModelFactory.PrepareMarMarketingModel(model, item);
+            return View(model);
+        }
+        #endregion
+
+        #region Khuyen mai gio vang
+        public virtual IActionResult CreateGioVang()
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.CRMQLMarketing))
+                return AccessDeniedView();
+            var model = _itemModelFactory.PrepareMarMarketingModel(new MarMarketingModel(), null);
+            model.HINH_THUC = (int)EnumHinhThucMarketing.ChuongTrinhKhuyenMai;
+
+            return View(model);
+        }
+        #endregion
+
         #endregion
     }
 }
