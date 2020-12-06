@@ -76,6 +76,7 @@ namespace Nop.Web.Areas.CRM.Models.CRM
         public IList<SelectListItem> DDLKhachHang { get; set; }
         public bool Random { get; set; }
         public int MarketingId { get; set; }
+        public string TenChuongTrinh { get; set; }
     }
     public partial class MarMaGiamGiaSearchModel : BaseSearchModel
     {

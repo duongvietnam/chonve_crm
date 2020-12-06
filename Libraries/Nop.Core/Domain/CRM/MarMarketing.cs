@@ -15,7 +15,7 @@ namespace Nop.Core.Domain.CRM
         public Int32? NGUOI_TAO { get; set; }
         public int? HINH_THUC { get; set; }
         public int? CO_THE_KET_HOP { get; set; }
-        public EnumHinhThucMarketing hinhThucMarketing
+        public EnumHinhThucMarketing HinhThucMarketing
         {
             get
             {
@@ -32,12 +32,25 @@ namespace Nop.Core.Domain.CRM
     {
         TatCa = 0,
         GiamGiaKhachHangPhanHang = 1,
-        MaGiamGia = 2
+        MaGiamGia = 2,
+        ChuongTrinhKhuyenMai = 3
     }
 
     public class LocDieuKienMarketing
     {
         public string Ten { get; set; }
         public Decimal Sale { get; set; }
+    }
+
+    public class LocDieuKienMaGiamGia
+    {
+        public string MaGiamGia { get; set; }
+        public Decimal Sale { get; set; }
+        public string TrangThai { get; set; }
+        public bool CoTheKetHop { get; set; }
+        public string DonViTinh { get; set; }
+        public decimal DonGia { get; set; }
+        public DateTime? TuNgay { get; set; }
+        public DateTime? DenNgay { get; set; }
     }
 }

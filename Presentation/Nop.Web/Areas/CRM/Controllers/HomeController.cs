@@ -4,6 +4,7 @@ using Nop.Core;
 using Nop.Core.Domain.CRM;
 using Nop.Core.Domain.Localization;
 using Nop.Services.CRM;
+using Nop.Web.Areas.CRM.Models.CRM;
 using Nop.Web.Areas.CRM.Models.HeThongNguon;
 using System;
 using System.Collections.Generic;
@@ -58,7 +59,7 @@ namespace Nop.Web.Areas.CRM.Controllers
         }
         public virtual IActionResult Test()
         {
-            return View();
+            return View(new KhKhachHangModel());
         }
 
         public async Task ExportDataLinq()

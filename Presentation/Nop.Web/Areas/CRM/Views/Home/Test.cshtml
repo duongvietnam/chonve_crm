@@ -1,4 +1,4 @@
-﻿<a href="/CRM/Home/ExportDataExcel">get data</a>
+﻿@*<a href="/CRM/Home/ExportDataExcel">get data</a>
 
 <a href="/CRM/Home/ExportDataLinq">get data linq</a>
 
@@ -10,4 +10,39 @@
             <input type='checkbox' checked='checked' name='select'>
         </label>
     </span>
-</div>
+</div>*@
+@model KhKhachHangModel
+    <div class="card">
+        <div class="card-header row">
+            <div class="col-9">
+                <nop-editor asp-for="TEN" />
+            </div>
+            <div class="col-3">
+                <button id="btnSaveHangKhachHang" class="btn btn-light-primary">Search</button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="container row">
+                <h5 class="col-2">Vị trí của cấu kiện</h5>
+                <div class="col-2 row">
+                    <label class="col-8">Theo phương X: </label>
+                    <label class="col-4">0</label>
+                    <label class="col-8">Theo phương Y: </label>
+                    <label class="col-4">1900</label>
+                    <label class="col-8">Theo phương Z: </label>
+                    <label class="col-4">2145</label>
+                </div>
+
+                <h5 class="col-2">Kích thước đối tượng</h5>
+                <div class="col-2 row">
+                    <label class="col-8">Dài: </label>
+                    <label class="col-4">0</label>
+                    <label class="col-8">Rộng: </label>
+                    <label class="col-4">1900</label>
+                    <label class="col-8">Dày: </label>
+                    <label class="col-4">2145</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    

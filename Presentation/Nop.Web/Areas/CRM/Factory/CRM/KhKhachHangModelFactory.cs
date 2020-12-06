@@ -506,9 +506,9 @@ namespace Nop.Web.Areas.CRM.Factories.CRM
             return selectList;
         }
 
-        public IList<SelectListItem> PrepareMultiSelectKhachHang(IList<int> valSelected)
+        public IList<SelectListItem> PrepareMultiSelectKhachHang(IList<int> valSelected, string g)
         {
-            var listItem = _itemService.GetKhachHangByCount(10, "");
+            var listItem = _itemService.GetKhachHangByCount(30, g);
             var selectList = listItem.Select(c => new SelectListItem
             {
                 Text = c.TEN,

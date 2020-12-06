@@ -26,6 +26,8 @@ namespace Nop.Services.CRM
         private readonly IStoreContext _storeContext;
         private readonly IWorkContext _workContext;
         private readonly IRepository<MarMarketingDieuKien> _marketingDieuKienRepository;
+        private readonly IRepository<MarMaGiamGia> _marMaGiamGiaRepository;
+        private readonly IRepository<DvDonViTinh> _donViTinhRepository;
         #endregion
 
         #region Ctor
@@ -37,7 +39,9 @@ namespace Nop.Services.CRM
             IRepository<MarMarketing> itemRepository,
             IStoreContext storeContext,
             IWorkContext workContext,
-            IRepository<MarMarketingDieuKien> marketingDieuKienRepository
+            IRepository<MarMarketingDieuKien> marketingDieuKienRepository,
+            IRepository<MarMaGiamGia> marMaGiamGiaRepository,
+            IRepository<DvDonViTinh> donViTinhRepository
             )
         {
             this._eventPublisher = eventPublisher;
@@ -47,6 +51,8 @@ namespace Nop.Services.CRM
             this._storeContext = storeContext;
             this._workContext = workContext;
             this._marketingDieuKienRepository = marketingDieuKienRepository;
+            this._marMaGiamGiaRepository = marMaGiamGiaRepository;
+            this._donViTinhRepository = donViTinhRepository;
         }
 
         #endregion
@@ -119,6 +125,72 @@ namespace Nop.Services.CRM
             else
             {
                 return new LocDieuKienMarketing();
+            }
+        }
+
+        public virtual LocDieuKienMaGiamGia CheckMaGiamGia(string ma, int doanhNgiepId, decimal donGia, DateTime ngayGiaoDich)
+        {
+            var maGiamGia = _marMaGiamGiaRepository.Table.FirstOrDefault(c => c.MA == ma && c.DOANH_NGHIEP_ID == doanhNgiepId);
+            var mar = _itemRepository.GetById(maGiamGia.MARKETING_ID);
+            var dieuKien = _marketingDieuKienRepository.GetById(maGiamGia.MAR_DIEU_KIEN_ID);
+            var item = new LocDieuKienMaGiamGia
+            {
+                MaGiamGia = ma,
+                CoTheKetHop = mar.CO_THE_KET_HOP == 1,
+                DonViTinh = _donViTinhRepository.GetById(dieuKien.DON_VI_TINH).TEN,
+                Sale = (decimal)dieuKien.SALE,
+                TrangThai = "Còn hiệu lực",
+                DenNgay = dieuKien.DEN_NGAY,
+                TuNgay = dieuKien.TU_NGAY,
+                DonGia = dieuKien.DON_GIA > 0 ? (decimal)dieuKien.DON_GIA : 0
+            };
+            if (dieuKien.TU_NGAY != null && dieuKien.TU_NGAY > ngayGiaoDich)
+                item.TrangThai = "Mã hết hạn";
+            if (dieuKien.DEN_NGAY != null && dieuKien.DEN_NGAY < ngayGiaoDich)
+                item.TrangThai = "Mã chưa đến hạn";
+            if (donGia > 0 && dieuKien.DON_GIA > donGia)
+                item.TrangThai = "Đơn giá thấp hơn yêu cầu";
+            if (maGiamGia.NGAY_SU_DUNG != null)
+                item.TrangThai = "Mã đã được sử dụng";
+
+            return item;
+        }
+
+        public virtual string ApDungMaGiamGia(IList<string> listMa, int doanhNgiepId, int khachHangId, int giaoDichId, DateTime ngayGiaoDich)
+        {
+            try
+            {
+                if (listMa.Count() > 1)
+                {
+                    var listMarId = _marMaGiamGiaRepository.Table.Where(c => listMa.Contains(c.MA)).Select(c => c.MARKETING_ID);
+                    var listMarketing = _itemRepository.Table.Where(c => listMarId.Contains(c.Id));
+                    if (listMarketing.Any(c => c.CO_THE_KET_HOP == 0))
+                    {
+                        IList<int> listMarKhongHopLeId = listMarketing.Where(c => c.CO_THE_KET_HOP == 0).Select(c => c.Id).ToList();
+                        string maKhongPhuHop = string.Join(", ", _marMaGiamGiaRepository.Table.Where(c => listMarKhongHopLeId.Contains((int)c.MARKETING_ID)).Select(c => c.MA));
+
+                        return "Mã " + maKhongPhuHop + " không được sử dụng kết hợp";
+                    }
+                }
+
+                foreach (string ma in listMa)
+                {
+                    var maGiamGia = _marMaGiamGiaRepository.Table.FirstOrDefault(c => c.MA == ma && c.DOANH_NGHIEP_ID == doanhNgiepId);
+                    if(khachHangId > 0)
+                    {
+                        maGiamGia.KHACH_HANG_ID = khachHangId;
+                    }
+                    maGiamGia.NGAY_SU_DUNG = ngayGiaoDich;
+                    maGiamGia.GIAO_DICH_AP_DUNG = giaoDichId;
+
+                    _marMaGiamGiaRepository.Update(maGiamGia);
+                }
+
+                return "Áp dụng mã thành công";
+            }
+            catch (Exception ex)
+            {
+                return "Có lỗi trong quá trình xử lý: " + ex;
             }
         }
 

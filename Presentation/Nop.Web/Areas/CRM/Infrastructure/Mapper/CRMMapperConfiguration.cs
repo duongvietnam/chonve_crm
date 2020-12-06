@@ -127,7 +127,7 @@ namespace Nop.Web.Areas.CRM.Infrastructure.Mapper
             CreateMap<MarMaGiamGia, MarMaGiamGiaModel>();
             CreateMap<MarMaGiamGiaModel, MarMaGiamGia>();
             CreateMap<MarMarketing, MarMarketingModel>()
-                .ForMember(model => model.HinhThucMarketingString, o => o.MapFrom(e => EngineContext.Current.Resolve<ILocalizationService>().GetLocalizedEnum(e.hinhThucMarketing, null)));
+                .ForMember(model => model.HinhThucMarketingString, o => o.MapFrom(e => EngineContext.Current.Resolve<ILocalizationService>().GetLocalizedEnum(e.HinhThucMarketing, null)));
             CreateMap<MarMarketingModel, MarMarketing>();
             CreateMap<MarMarketingDieuKien, MarMarketingDieuKienModel>();
             CreateMap<MarMarketingDieuKienModel, MarMarketingDieuKien>();

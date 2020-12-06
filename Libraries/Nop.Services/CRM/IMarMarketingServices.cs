@@ -19,6 +19,8 @@ namespace Nop.Services.CRM
         MarMarketing GetMarMarketingById(int Id);
         IList<MarMarketing> GetMarMarketingByIds(int[] Ids);
         LocDieuKienMarketing LocDieuKienMarketing(int HangKhachHang, Decimal DonGia, DateTime NgayGiaoDich, int DichVuId);
+        LocDieuKienMaGiamGia CheckMaGiamGia(string ma, int doanhNgiepId, decimal donGia, DateTime ngayGiaoDich);
+        string ApDungMaGiamGia(IList<string> listMa, int doanhNgiepId, int khachHangId, int giaoDichId, DateTime ngayGiaoDich);
         void InsertMarMarketing(MarMarketing entity);
         void UpdateMarMarketing(MarMarketing entity);
         void DeleteMarMarketing(MarMarketing entity);    

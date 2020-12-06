@@ -6,7 +6,8 @@
         <input asp-for="MarketingId" type="hidden" />
         <label class="col-3 col-form-label">Khách hàng</label>
         <div class="col-9">
-            <nop-select asp-for="KhachHangSelectedId" asp-items="Model.DDLKhachHang" asp-multiple="true" />
+            <select class="js-example-data-ajax form-control" id="KhachHangSelectedId">
+            </select>
         </div>
         <div class="col-12 mb-10 border-top mt-10"></div>
         <div class="col-12" style="text-align:center">
@@ -39,7 +40,7 @@
                 return {
                     results: data.items,
                     pagination: {
-                        more: (params.page * 30) & lt; data.total_count
+                        more: (params.page * 30) > data.total_count
                     }
                 };
             },
@@ -54,20 +55,32 @@
     });
 
     function formatRepo(repo) {
-        if (repo.loading) return repo.text;
-        var markup = "&lt;div class='select2-result-repository clearfix'&gt;" +
-            "&lt;div class='select2-result-repository__meta'&gt;" +
-            "&lt;div class='select2-result-repository__title'&gt;" + repo.full_name + "&lt;/div&gt;";
-        if (repo.description) {
-            markup += "&lt;div class='select2-result-repository__description'&gt;" + repo.description + "&lt;/div&gt;";
+        if (repo.loading) {
+            return repo.text;
         }
-        markup += "&lt;div class='select2-result-repository__statistics'&gt;" +
-            "&lt;div class='select2-result-repository__forks'&gt;&lt;i class='fa fa-flash'&gt;&lt;/i&gt; " + repo.forks_count + " Forks&lt;/div&gt;" +
-            "&lt;div class='select2-result-repository__stargazers'&gt;&lt;i class='fa fa-star'&gt;&lt;/i&gt; " + repo.stargazers_count + " Stars&lt;/div&gt;" +
-            "&lt;div class='select2-result-repository__watchers'&gt;&lt;i class='fa fa-eye'&gt;&lt;/i&gt; " + repo.watchers_count + " Watchers&lt;/div&gt;" +
-            "&lt;/div&gt;" +
-            "&lt;/div&gt;&lt;/div&gt;";
-        return markup;
+
+        var $container = $(
+            "<div class='select2-result-repository clearfix'>" +
+            "<div class='select2-result-repository__avatar'><img src='" + repo.owner.avatar_url + "' /></div>" +
+            "<div class='select2-result-repository__meta'>" +
+            "<div class='select2-result-repository__title'></div>" +
+            "<div class='select2-result-repository__description'></div>" +
+            "<div class='select2-result-repository__statistics'>" +
+            "<div class='select2-result-repository__forks'><i class='fa fa-flash'></i> </div>" +
+            "<div class='select2-result-repository__stargazers'><i class='fa fa-star'></i> </div>" +
+            "<div class='select2-result-repository__watchers'><i class='fa fa-eye'></i> </div>" +
+            "</div>" +
+            "</div>" +
+            "</div>"
+        );
+
+        $container.find(".select2-result-repository__title").text(repo.full_name);
+        $container.find(".select2-result-repository__description").text(repo.description);
+        $container.find(".select2-result-repository__forks").append(repo.forks_count + " Forks");
+        $container.find(".select2-result-repository__stargazers").append(repo.stargazers_count + " Stars");
+        $container.find(".select2-result-repository__watchers").append(repo.watchers_count + " Watchers");
+
+        return $container;
     }
 
     $("#btnSaveHangKhachHang").click(function () {

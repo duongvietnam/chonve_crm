@@ -17,6 +17,7 @@ namespace Nop.Core.Domain.CRM
         public Int32? NGUOI_TAO { get; set; }
         public Int32? MAR_DIEU_KIEN_ID { get; set; }
         public Int32? MARKETING_ID { get; set; }
+        public Int32? GIAO_DICH_AP_DUNG { get; set; }
     }
 }
 

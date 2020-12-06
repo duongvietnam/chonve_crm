@@ -687,7 +687,6 @@ namespace Nop.Web.Areas.CRM.Controllers
             return this.JsonSuccessMessage("Thành công !");
         }
 
-        [HttpPost]
         public virtual IActionResult _LoadMultiSelectKhachHang(string q)
         {
             if (string.IsNullOrEmpty(q))
@@ -696,8 +695,72 @@ namespace Nop.Web.Areas.CRM.Controllers
             }
 
             var listKhachHang = _khKhachHangService.GetKhachHangByCount(30, q);
+            var ddl = _khKhachHangModelFactory.PrepareMultiSelectKhachHang(new List<int>(), q);
 
             return Json(listKhachHang);
+        }
+
+        public virtual IActionResult CreateChuongTrinhGiamGia()
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.CRMQLMarketing))
+                return AccessDeniedView();
+            var model = _marMaGiamGiaModelFactory.PrepareMarMaGiamGiaModel(new MarMaGiamGiaModel(), null);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public virtual IActionResult CreateChuongTrinhGiamGia(MarMaGiamGiaModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.CRMQLMarketing))
+                return AccessDeniedView();
+            if (ModelState.IsValid)
+            {
+                var mar = new MarMarketing
+                {
+                    HINH_THUC = (int)EnumHinhThucMarketing.ChuongTrinhKhuyenMai,
+                    CO_THE_KET_HOP = model.CO_THE_KET_HOP,
+                    TEN = model.TenChuongTrinh
+                };
+                _itemService.InsertMarMarketing(mar);
+
+                var dieuKien = new MarMarketingDieuKien
+                {
+                    DON_GIA = model.DonGia,
+                    TU_NGAY = model.TuNgay,
+                    DEN_NGAY = model.DenNgay,
+                    MARKETING_ID = mar.Id,
+                    SALE = model.SaleTheoPhanTram > 0 ? model.SaleTheoPhanTram : model.SaleTheoSoTien,
+                    DON_VI_TINH = model.SaleTheoPhanTram > 0 ? _dvDonViTinhService.GetByMa("PhanTram").Id : _dvDonViTinhService.GetByMa("SoTienVND").Id
+                };
+                if (model.TuNgay != null)
+                {
+                    dieuKien.TU_GIO = ((DateTime)model.TuNgay).TimeOfDay;
+                }
+                if (model.DenNgay != null)
+                {
+                    dieuKien.DEN_GIO = ((DateTime)model.DenNgay).TimeOfDay;
+                }
+                _marMarketingDieuKienService.InsertMarMarketingDieuKien(dieuKien);
+
+                var eventMar = new MarEventMarketing
+                {
+                    DOANH_NGHIEP_ID = _storeContext.CurrentStore.Id,
+                    MARKETING_ID = mar.Id,
+                    TEN = model.TenChuongTrinh,
+                    THOI_GIAN_BAT_DAU = model.TuNgay,
+                    THOI_GIAN_KET_THUC = model.DenNgay
+                };
+                _marEventMarketingService.InsertMarEventMarketing(eventMar);
+
+                _customerActivityService.InsertActivity("AddNewMarMarketing", string.Format("Thêm mới: {0}", mar.Id), mar);
+                _notificationService.SuccessNotification("Tạo mới dữ liệu thành công !");
+                return RedirectToAction("List");
+            }
+
+            //prepare model
+            model = _marMaGiamGiaModelFactory.PrepareMarMaGiamGiaModel(model, null);
+            return View(model);
         }
         #endregion
     }
