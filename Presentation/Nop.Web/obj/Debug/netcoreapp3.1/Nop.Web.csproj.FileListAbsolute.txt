@@ -1019,7 +1019,6 @@ C:/Users/namdv/Source/Workspaces/CRM2020/CRM2020/Presentation/Nop.Web/obj/Debug/
 /Users/duongvietnam/Projects/CRM/crm_chonve/Presentation/Nop.Web/bin/Debug/netcoreapp3.1/Nop.Data.pdb
 /Users/duongvietnam/Projects/CRM/crm_chonve/Presentation/Nop.Web/bin/Debug/netcoreapp3.1/Nop.Services.pdb
 /Users/duongvietnam/Projects/CRM/crm_chonve/Presentation/Nop.Web/bin/Debug/netcoreapp3.1/Nop.Web.Framework.pdb
-/Users/duongvietnam/Projects/CRM/crm_chonve/Presentation/Nop.Web/obj/Debug/netcoreapp3.1/Nop.Web.csprojAssemblyReference.cache
 /Users/duongvietnam/Projects/CRM/crm_chonve/Presentation/Nop.Web/obj/Debug/netcoreapp3.1/Nop.Web.AssemblyInfoInputs.cache
 /Users/duongvietnam/Projects/CRM/crm_chonve/Presentation/Nop.Web/obj/Debug/netcoreapp3.1/Nop.Web.AssemblyInfo.cs
 /Users/duongvietnam/Projects/CRM/crm_chonve/Presentation/Nop.Web/obj/Debug/netcoreapp3.1/Nop.Web.csproj.CoreCompileInputs.cache
